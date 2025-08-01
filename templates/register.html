@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Center Deep{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <img src="{{ url_for('static', filename='images/magic-unicorn-logo.png') }}" alt="Magic Unicorn" class="auth-logo">
+            <h1>Join Center Deep</h1>
+            <p>Create your account</p>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+            
+            <button type="submit" class="btn-primary btn-full">Create Account</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+            <p><a href="/">Back to search</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

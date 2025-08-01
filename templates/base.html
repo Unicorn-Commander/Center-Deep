@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Center Deep - Private Search Engine{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-dark.css') }}" id="theme-css">
+</head>
+<body>
+    {% block content %}{% endblock %}
+    
+    <footer class="footer">
+        <div class="container">
+            <p>
+                Center Deep - Private Search | 
+                <a href="/preferences">Preferences</a>
+                | <button id="theme-toggle" class="theme-toggle" title="Switch theme">🌙</button>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                    | <a href="/admin">Admin</a>
+                    {% endif %}
+                    | <a href="/logout">Logout ({{ current_user.username }})</a>
+                {% else %}
+                    | <a href="/login">Login</a>
+                {% endif %}
+            </p>
+        </div>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

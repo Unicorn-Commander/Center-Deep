@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Center Deep{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <img src="{{ url_for('static', filename='images/center-deep-logo.png') }}" alt="Center Deep" class="auth-logo">
+            <h1>Welcome Back</h1>
+            <p>Login to access Center Deep</p>
+        </div>
+        
+        {% if show_default_message %}
+        <div class="alert alert-warning">
+            <strong>Security Notice:</strong> You are using the default credentials. Please change your password after logging in.
+            <br><small>Default login: <code>ucadmin</code> / <code>MagicUnicorn!8-)</code></small>
+        </div>
+        {% endif %}
+        
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="btn-primary btn-full">Login</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+            <p><a href="/">Back to search</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

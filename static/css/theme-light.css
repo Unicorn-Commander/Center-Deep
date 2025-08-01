@@ -1,0 +1,205 @@
+/* Light Theme - Professional and Clean */
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #dbeafe;
+    --secondary: #64748b;
+    --accent: #0ea5e9;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-hover: #f8fafc;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #64748b;
+    --text-muted: #94a3b8;
+    --text-link: #2563eb;
+    
+    --border-primary: #e2e8f0;
+    --border-secondary: #cbd5e1;
+    --border-focus: #2563eb;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Search Header */
+.search-header-compact {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Search Form */
+.search-form-compact {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+}
+
+.search-form-compact:focus-within {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-input-compact {
+    color: var(--text-primary);
+}
+
+.search-input-compact::placeholder {
+    color: var(--text-muted);
+}
+
+/* Category Tabs */
+.category-tabs {
+    border-bottom: 2px solid var(--border-primary);
+    padding-bottom: 0;
+}
+
+.tab {
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: 0;
+}
+
+.tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.tab.active {
+    color: var(--primary);
+    background: transparent;
+    border-bottom-color: var(--primary);
+}
+
+/* Filter Buttons */
+.filter-btn {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+}
+
+.filter-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-secondary);
+}
+
+/* Dropdown */
+.dropdown-menu {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.dropdown-menu a:hover {
+    background: var(--bg-hover);
+}
+
+/* Results */
+.result-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.result-item:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-secondary);
+}
+
+.result-title {
+    color: var(--text-link);
+}
+
+.result-url {
+    color: var(--success);
+}
+
+.result-content {
+    color: var(--text-secondary);
+}
+
+/* Sidebar */
+.sidebar-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+}
+
+.safe-search-select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+}
+
+/* Home Page */
+.search-home {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+}
+
+.search-form-home {
+    background: var(--bg-card);
+    border: 2px solid var(--border-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.search-form-home:hover,
+.search-form-home:focus-within {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-xl);
+}
+
+.logo-text {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+/* Admin */
+.admin-header {
+    background: var(--bg-primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+}
+
+/* Stats */
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+}
+
+/* Footer */
+.footer {
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-tertiary);
+}

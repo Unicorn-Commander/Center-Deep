@@ -1,0 +1,550 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Center Deep{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="admin-header">
+        <div class="container">
+            <div class="admin-nav">
+                <a href="/" class="admin-logo">
+                    <img src="{{ url_for('static', filename='images/unicorn-commander-logo.png') }}" alt="Admin" class="admin-logo-img">
+                    <span>Center Deep Admin</span>
+                </a>
+                <nav class="admin-menu">
+                    <a href="#proxy" class="active">Proxy Settings</a>
+                    <a href="#monitoring">Monitoring</a>
+                    <a href="#searxng">SearXNG Config</a>
+                    <a href="#users">Users</a>
+                    <a href="#stats">Statistics</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container admin-content">
+        <!-- Proxy Settings Section -->
+        <section id="proxy" class="admin-section">
+            <h2>🔐 Proxy Configuration</h2>
+            <div class="admin-card">
+                <h3>BrightData Rotating Proxy</h3>
+                <form id="proxyForm" class="admin-form">
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Rotating Proxy</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="proxyEnabled" name="proxyEnabled">
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brightdataUrl">BrightData Proxy URL</label>
+                        <input type="url" id="brightdataUrl" name="brightdataUrl" 
+                               placeholder="https://proxy.brightdata.com:22225">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brightdataUsername">BrightData Username</label>
+                        <input type="text" id="brightdataUsername" name="brightdataUsername" 
+                               placeholder="username-session">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brightdataPassword">BrightData Password</label>
+                        <input type="password" id="brightdataPassword" name="brightdataPassword" 
+                               placeholder="••••••••">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rotationInterval">Rotation Interval (seconds)</label>
+                        <input type="number" id="rotationInterval" name="rotationInterval" 
+                               value="300" min="60" max="3600">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Proxy Settings</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Monitoring Section -->
+        <section id="monitoring" class="admin-section">
+            <h2>📊 Monitoring & Analytics</h2>
+            <div class="admin-card">
+                <h3>Prometheus Configuration</h3>
+                <form id="prometheusForm" class="admin-form">
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Prometheus Metrics</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="prometheusEnabled" name="prometheusEnabled">
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prometheusUrl">Prometheus Server URL</label>
+                        <input type="url" id="prometheusUrl" name="prometheusUrl" 
+                               value="http://localhost:9090">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metricsPort">Metrics Export Port</label>
+                        <input type="number" id="metricsPort" name="metricsPort" 
+                               value="9091" min="1024" max="65535">
+                    </div>
+                </form>
+                
+                <h3>Grafana Dashboard</h3>
+                <form id="grafanaForm" class="admin-form">
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Grafana Integration</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="grafanaEnabled" name="grafanaEnabled">
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grafanaUrl">Grafana Server URL</label>
+                        <input type="url" id="grafanaUrl" name="grafanaUrl" 
+                               value="http://localhost:3000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grafanaApiKey">Grafana API Key</label>
+                        <input type="password" id="grafanaApiKey" name="grafanaApiKey" 
+                               placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Monitoring Settings</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- SearXNG Configuration -->
+        <section id="searxng" class="admin-section">
+            <h2>🔍 SearXNG Configuration</h2>
+            <div class="admin-card">
+                <form id="searxngForm" class="admin-form">
+                    <div class="form-group">
+                        <label for="searxngUrl">SearXNG Instance URL</label>
+                        <input type="url" id="searxngUrl" name="searxngUrl" 
+                               value="http://localhost:8888">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="searxngTimeout">Request Timeout (seconds)</label>
+                        <input type="number" id="searxngTimeout" name="searxngTimeout" 
+                               value="10" min="5" max="60">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxResults">Max Results per Page</label>
+                        <input type="number" id="maxResults" name="maxResults" 
+                               value="20" min="10" max="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="defaultEngines">Default Search Engines</label>
+                        <textarea id="defaultEngines" name="defaultEngines" rows="4"
+                                  placeholder="google&#10;bing&#10;duckduckgo&#10;qwant">google
+bing
+duckduckgo
+qwant</textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save SearXNG Settings</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- User Management Section -->
+        <section id="users" class="admin-section">
+            <h2>👥 User Management</h2>
+            
+            <!-- Password Change -->
+            <div class="admin-card">
+                <h3>Change Password</h3>
+                <form id="passwordForm" class="admin-form">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required minlength="8">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Change Password</button>
+                </form>
+            </div>
+            
+            <!-- User List -->
+            <div class="admin-card">
+                <h3>Manage Users</h3>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addUserBtn" class="btn-primary">+ Add New User</button>
+                </div>
+                <div id="usersList">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Add User Modal -->
+            <div id="addUserModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add New User</h3>
+                        <button class="close-btn" onclick="closeModal()">&times;</button>
+                    </div>
+                    <form id="addUserForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="newUsername">Username</label>
+                            <input type="text" id="newUsername" name="username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newEmail">Email</label>
+                            <input type="email" id="newEmail" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newUserPassword">Password</label>
+                            <input type="password" id="newUserPassword" name="password" required minlength="8">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Admin Access</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="newUserAdmin" name="is_admin">
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Create User</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Statistics Section -->
+        <section id="stats" class="admin-section">
+            <h2>📈 Live Statistics</h2>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h4>Total Searches</h4>
+                    <div class="stat-value" id="totalSearches">{{ stats.total_searches }}</div>
+                    <div class="stat-change">All time</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Active Users</h4>
+                    <div class="stat-value" id="activeUsers">{{ stats.active_users }}</div>
+                    <div class="stat-change">Last 24h</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Proxy Status</h4>
+                    <div class="stat-value" id="proxyStatus">-</div>
+                    <div class="stat-change" id="proxyRotations">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Avg Response Time</h4>
+                    <div class="stat-value" id="avgResponseTime">{{ stats.avg_response_time }}s</div>
+                    <div class="stat-change">Average</div>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h3>Recent Activity</h3>
+                <div class="activity-log" id="activityLog">
+                    <div class="log-entry">
+                        <span class="log-message">Loading recent activity...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+// Load current settings
+async function loadSettings() {
+    try {
+        const response = await fetch('/api/admin/settings');
+        const settings = await response.json();
+        
+        // Populate forms with current settings
+        document.getElementById('proxyEnabled').checked = settings.proxy.enabled;
+        document.getElementById('brightdataUrl').value = settings.proxy.brightdata_url;
+        document.getElementById('brightdataUsername').value = settings.proxy.brightdata_username;
+        document.getElementById('rotationInterval').value = settings.proxy.rotation_interval;
+        
+        document.getElementById('prometheusEnabled').checked = settings.monitoring.prometheus_enabled;
+        document.getElementById('prometheusUrl').value = settings.monitoring.prometheus_url;
+        document.getElementById('grafanaEnabled').checked = settings.monitoring.grafana_enabled;
+        document.getElementById('grafanaUrl').value = settings.monitoring.grafana_url;
+        
+        document.getElementById('searxngUrl').value = settings.searxng.url;
+        document.getElementById('searxngTimeout').value = settings.searxng.timeout;
+        document.getElementById('maxResults').value = settings.searxng.max_results;
+    } catch (error) {
+        console.error('Failed to load settings:', error);
+    }
+}
+
+// Save settings
+async function saveSettings(section, data) {
+    try {
+        const response = await fetch('/api/admin/settings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({section, data})
+        });
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            showNotification('Settings saved successfully!', 'success');
+        }
+    } catch (error) {
+        showNotification('Failed to save settings', 'error');
+    }
+}
+
+// Show notification
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// Form handlers
+document.getElementById('proxyForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    data.enabled = document.getElementById('proxyEnabled').checked;
+    saveSettings('proxy', data);
+});
+
+// Initialize
+loadSettings();
+loadStats();
+
+// Auto-refresh statistics every 5 seconds
+setInterval(loadStats, 5000);
+
+// Load real-time statistics
+async function loadStats() {
+    try {
+        const response = await fetch('/api/admin/stats');
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('totalSearches').textContent = data.total_searches;
+        document.getElementById('activeUsers').textContent = data.active_users;
+        document.getElementById('avgResponseTime').textContent = data.avg_response_time + 's';
+        
+        // Update proxy status
+        const proxyStatus = document.getElementById('proxyStatus');
+        proxyStatus.textContent = data.proxy_status === 'active' ? 'Active' : 'Inactive';
+        proxyStatus.className = 'stat-value ' + (data.proxy_status === 'active' ? 'status-active' : '');
+        
+        // Update activity log
+        const activityLog = document.getElementById('activityLog');
+        activityLog.innerHTML = '';
+        
+        if (data.recent_activity && data.recent_activity.length > 0) {
+            data.recent_activity.forEach(activity => {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = `
+                    <span class="log-time">${activity.time}</span>
+                    <span class="log-message">Search: "${activity.query}" by ${activity.user} (${activity.response_time}s)</span>
+                `;
+                activityLog.appendChild(entry);
+            });
+        } else {
+            activityLog.innerHTML = '<div class="log-entry"><span class="log-message">No recent activity</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load stats:', error);
+    }
+}
+
+// Password change functionality
+document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (newPassword !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/admin/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            document.getElementById('passwordForm').reset();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to change password', 'error');
+    }
+});
+
+// User management functionality
+async function loadUsers() {
+    try {
+        const response = await fetch('/api/admin/users');
+        const users = await response.json();
+        
+        const usersList = document.getElementById('usersList');
+        usersList.innerHTML = '';
+        
+        users.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-item';
+            userDiv.innerHTML = `
+                <div class="user-info">
+                    <strong>${user.username}</strong>
+                    <span class="user-email">${user.email}</span>
+                    <span class="user-role">${user.is_admin ? 'Admin' : 'User'}</span>
+                    <span class="user-date">Created: ${user.created_at || 'N/A'}</span>
+                </div>
+                <div class="user-actions">
+                    <button onclick="deleteUser(${user.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            usersList.appendChild(userDiv);
+        });
+    } catch (error) {
+        console.error('Failed to load users:', error);
+    }
+}
+
+// Add user functionality
+document.getElementById('addUserBtn').addEventListener('click', () => {
+    document.getElementById('addUserModal').style.display = 'flex';
+});
+
+document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const userData = {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        is_admin: document.getElementById('newUserAdmin').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            closeModal();
+            loadUsers();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to create user', 'error');
+    }
+});
+
+async function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/users/${userId}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            loadUsers();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to delete user', 'error');
+    }
+}
+
+function closeModal() {
+    document.getElementById('addUserModal').style.display = 'none';
+    document.getElementById('addUserForm').reset();
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Load users on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadUsers();
+});
+
+// Smooth scrolling for navigation
+document.querySelectorAll('.admin-menu a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(e.target.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth' });
+        
+        // Update active state
+        document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
+</script>
+{% endblock %}

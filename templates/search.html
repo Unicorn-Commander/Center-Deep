@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}{{ query }} - Center Deep Search{% endblock %}
+
+{% block content %}
+<div class="search-results-page">
+    <div class="search-header-compact">
+        <div class="container">
+            <div class="search-row">
+                <a href="/" class="logo-compact">
+                    <img src="{{ url_for('static', filename='images/center-deep-logo.png') }}" alt="Center Deep" class="logo-img-compact">
+                    <span>Center Deep</span>
+                </a>
+                <form action="/search" method="GET" class="search-form-compact">
+                    <input type="text" 
+                           name="q" 
+                           class="search-input-compact" 
+                           value="{{ query }}"
+                           autocomplete="off">
+                    <button type="submit" class="search-button-compact">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search Filters Bar -->
+    <div class="filters-bar">
+        <div class="container">
+            <div class="filters-container">
+                <!-- Category Tabs -->
+                <div class="category-tabs">
+                    <a href="/search?q={{ query|urlencode }}{% if time_range %}&time_range={{ time_range }}{% endif %}{% if language %}&language={{ language }}{% endif %}" 
+                       class="tab{% if not request.args.get('categories') %} active{% endif %}">
+                        <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M10,2A8,8 0 0,0 2,10A8,8 0 0,0 10,18A8,8 0 0,0 18,10A8,8 0 0,0 10,2M10,4A6,6 0 0,1 16,10A6,6 0 0,1 10,16A6,6 0 0,1 4,10A6,6 0 0,1 10,4M10,6A4,4 0 0,0 6,10A4,4 0 0,0 10,14A4,4 0 0,0 14,10A4,4 0 0,0 10,6Z"/>
+                        </svg>
+                        General
+                    </a>
+                    <a href="/search?q={{ query|urlencode }}&categories=images{% if time_range %}&time_range={{ time_range }}{% endif %}{% if language %}&language={{ language }}{% endif %}" 
+                       class="tab{% if request.args.get('categories') == 'images' %} active{% endif %}">
+                        <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z"/>
+                        </svg>
+                        Images
+                    </a>
+                    <a href="/search?q={{ query|urlencode }}&categories=videos{% if time_range %}&time_range={{ time_range }}{% endif %}{% if language %}&language={{ language }}{% endif %}" 
+                       class="tab{% if request.args.get('categories') == 'videos' %} active{% endif %}">
+                        <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z"/>
+                        </svg>
+                        Videos
+                    </a>
+                    <a href="/search?q={{ query|urlencode }}&categories=news{% if time_range %}&time_range={{ time_range }}{% endif %}{% if language %}&language={{ language }}{% endif %}" 
+                       class="tab{% if request.args.get('categories') == 'news' %} active{% endif %}">
+                        <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M20,11H4V8H20M20,15H13V13H20M20,19H13V17H20M11,19H4V13H11M20.33,4.67L18.67,3L17,4.67L15.33,3L13.67,4.67L12,3L10.33,4.67L8.67,3L7,4.67L5.33,3L3.67,4.67L2,3V19A2,2 0 0,0 4,21H20A2,2 0 0,0 22,19V3L20.33,4.67Z"/>
+                        </svg>
+                        News
+                    </a>
+                    <a href="/search?q={{ query|urlencode }}&categories=map{% if time_range %}&time_range={{ time_range }}{% endif %}{% if language %}&language={{ language }}{% endif %}" 
+                       class="tab{% if request.args.get('categories') == 'map' %} active{% endif %}">
+                        <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M12,2C8.13,2 5,5.13 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9C19,5.13 15.87,2 12,2M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5Z"/>
+                        </svg>
+                        Maps
+                    </a>
+                    <a href="/search?q={{ query|urlencode }}&categories=music{% if time_range %}&time_range={{ time_range }}{% endif %}{% if language %}&language={{ language }}{% endif %}" 
+                       class="tab{% if request.args.get('categories') == 'music' %} active{% endif %}">
+                        <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M12,3V13.55C11.41,13.21 10.73,13 10,13A4,4 0 0,0 6,17A4,4 0 0,0 10,21A4,4 0 0,0 14,17V7H18V3H12Z"/>
+                        </svg>
+                        Music
+                    </a>
+                </div>
+                
+                <!-- Filter Options -->
+                <div class="filter-options">
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" type="button">
+                            <span>{% if request.args.get('time_range') == 'day' %}Past 24 hours{% elif request.args.get('time_range') == 'week' %}Past week{% elif request.args.get('time_range') == 'month' %}Past month{% elif request.args.get('time_range') == 'year' %}Past year{% else %}Any time{% endif %}</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M7,10L12,15L17,10H7Z"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="/search?q={{ query|urlencode }}{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if language %}&language={{ language }}{% endif %}">Any time</a>
+                            <a href="/search?q={{ query|urlencode }}&time_range=day{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if language %}&language={{ language }}{% endif %}">Past 24 hours</a>
+                            <a href="/search?q={{ query|urlencode }}&time_range=week{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if language %}&language={{ language }}{% endif %}">Past week</a>
+                            <a href="/search?q={{ query|urlencode }}&time_range=month{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if language %}&language={{ language }}{% endif %}">Past month</a>
+                            <a href="/search?q={{ query|urlencode }}&time_range=year{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if language %}&language={{ language }}{% endif %}">Past year</a>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" type="button">
+                            <span>{% if request.args.get('language') == 'en' %}English{% elif request.args.get('language') == 'es' %}Spanish{% elif request.args.get('language') == 'fr' %}French{% elif request.args.get('language') == 'de' %}German{% else %}All languages{% endif %}</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M7,10L12,15L17,10H7Z"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="/search?q={{ query|urlencode }}{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if time_range %}&time_range={{ time_range }}{% endif %}">All languages</a>
+                            <a href="/search?q={{ query|urlencode }}&language=en{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if time_range %}&time_range={{ time_range }}{% endif %}">English</a>
+                            <a href="/search?q={{ query|urlencode }}&language=es{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if time_range %}&time_range={{ time_range }}{% endif %}">Spanish</a>
+                            <a href="/search?q={{ query|urlencode }}&language=fr{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if time_range %}&time_range={{ time_range }}{% endif %}">French</a>
+                            <a href="/search?q={{ query|urlencode }}&language=de{% if request.args.get('categories') %}&categories={{ request.args.get('categories') }}{% endif %}{% if time_range %}&time_range={{ time_range }}{% endif %}">German</a>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-dropdown">
+                        <button class="filter-btn advanced-btn" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M3,4H21V8H21L14,15V22H10V15L3,8V4M5,6V7L10,12L11,13V20H13V13L14,12L19,7V6H5Z"/>
+                            </svg>
+                            Advanced
+                        </button>
+                        <div class="dropdown-menu advanced-menu">
+                            <div class="advanced-section">
+                                <h4>Safe Search</h4>
+                                <select class="safesearch-select" onchange="updateSafeSearch(this.value)">
+                                    <option value="0"{% if request.args.get('safesearch', '0') == '0' %} selected{% endif %}>Off</option>
+                                    <option value="1"{% if request.args.get('safesearch') == '1' %} selected{% endif %}>Moderate</option>
+                                    <option value="2"{% if request.args.get('safesearch') == '2' %} selected{% endif %}>Strict</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container results-layout">
+        <!-- Sidebar -->
+        <div class="results-sidebar">
+            <div class="sidebar-section">
+                <h3>Search Engines</h3>
+                <div class="engine-list">
+                    <label class="engine-item">
+                        <input type="checkbox" checked> Google
+                    </label>
+                    <label class="engine-item">
+                        <input type="checkbox" checked> Bing
+                    </label>
+                    <label class="engine-item">
+                        <input type="checkbox" checked> DuckDuckGo
+                    </label>
+                    <label class="engine-item">
+                        <input type="checkbox" checked> Qwant
+                    </label>
+                    <label class="engine-item">
+                        <input type="checkbox"> Yandex
+                    </label>
+                    <label class="engine-item">
+                        <input type="checkbox"> Startpage
+                    </label>
+                </div>
+            </div>
+            
+            
+            <div class="sidebar-section">
+                <h3>Results Info</h3>
+                <p class="results-meta">
+                    {% if results.results %}
+                        About {{ results.number_of_results|default(results.results|length) }} results
+                    {% else %}
+                        No results found
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Main Results -->
+        <div class="results-main">
+            {% if query %}
+                {% if results.error %}
+                <div class="error-message">
+                    <p>{{ results.error }}</p>
+                    <p>Please try again later or check if SearXNG is running.</p>
+                </div>
+                {% elif results.results %}
+                
+                {% if request.args.get('categories') == 'images' %}
+                <!-- Image Results Grid -->
+                <div class="images-grid">
+                    {% for result in results.results %}
+                    <div class="image-result">
+                        <a href="{{ result.url }}" target="_blank" class="image-link">
+                            <div class="image-container">
+                                <img src="{{ result.img_src|default(result.thumbnail) }}" 
+                                     alt="{{ result.title|safe }}" 
+                                     loading="lazy"
+                                     onerror="this.parentElement.classList.add('broken-image')">
+                                <div class="image-overlay">
+                                    <div class="image-info">
+                                        <span class="image-dimensions">{{ result.img_format|default('Image') }}</span>
+                                        <span class="image-source">{{ result.parsed_url[1]|default(result.engine) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="image-meta">
+                                <h4 class="image-title">{{ result.title|safe }}</h4>
+                                <p class="image-site">{{ result.pretty_url|default(result.url)|truncate(40) }}</p>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- General/Text Results -->
+                {% for result in results.results %}
+                <article class="result-item">
+                    <div class="result-header">
+                        <h3><a href="{{ result.url }}" class="result-title" target="_blank">{{ result.title|safe }}</a></h3>
+                        <div class="result-actions">
+                            <button class="result-action" title="Save bookmark" data-url="{{ result.url }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z"/>
+                                </svg>
+                            </button>
+                            <button class="result-action" title="Share link" data-url="{{ result.url }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/>
+                                </svg>
+                            </button>
+                            <button class="result-action" title="View cached" data-url="{{ result.url }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12.5,7V12.5L16,14.5L15.28,15.5L11,13V7H12.5Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="result-url-container">
+                        <span class="result-url">{{ result.pretty_url|default(result.url) }}</span>
+                        {% if result.publishedDate %}
+                        <span class="result-date">{{ result.publishedDate }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if request.args.get('categories') == 'videos' %}
+                    <!-- Video Result Format -->
+                    <div class="video-result-content">
+                        {% if result.thumbnail or result.img_src %}
+                        <div class="video-thumbnail">
+                            <img src="{{ result.thumbnail|default(result.img_src) }}" alt="Video thumbnail" loading="lazy">
+                            <div class="video-play-overlay">
+                                <svg width="32" height="32" viewBox="0 0 24 24">
+                                    <path fill="white" d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                                </svg>
+                            </div>
+                            {% if result.length %}
+                            <span class="video-duration">{{ result.length }}</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        <div class="video-details">
+                            <div class="result-content">{{ result.content|safe }}</div>
+                            {% if result.publishedDate %}
+                            <div class="video-meta">
+                                <span class="video-date">{{ result.publishedDate }}</span>
+                                {% if result.author %}
+                                <span class="video-author">by {{ result.author }}</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% elif request.args.get('categories') == 'news' %}
+                    <!-- News Result Format -->
+                    <div class="news-result-content">
+                        {% if result.img_src %}
+                        <div class="news-thumbnail">
+                            <img src="{{ result.img_src }}" alt="News image" loading="lazy">
+                        </div>
+                        {% endif %}
+                        <div class="news-details">
+                            <div class="result-content">{{ result.content|safe }}</div>
+                            <div class="news-meta">
+                                {% if result.publishedDate %}
+                                <span class="news-date">{{ result.publishedDate }}</span>
+                                {% endif %}
+                                {% if result.author %}
+                                <span class="news-author">{{ result.author }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- General Result Content -->
+                    <div class="result-content">{{ result.content|safe }}</div>
+                    
+                    {% if result.img_src %}
+                    <div class="result-thumbnail">
+                        <img src="{{ result.img_src }}" alt="Thumbnail" loading="lazy">
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    
+                    <div class="result-footer">
+                        <div class="result-metadata">
+                            {% if result.engine %}
+                            <span class="result-engine">
+                                <svg width="12" height="12" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4Z"/>
+                                </svg>
+                                {{ result.engine }}
+                            </span>
+                            {% endif %}
+                            {% if result.category %}
+                            <span class="result-category">{{ result.category }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="result-tags">
+                            {% if result.tags %}
+                                {% for tag in result.tags %}
+                                <span class="result-tag">{{ tag }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+                {% endif %}
+                
+                {% if results.results|length >= 10 %}
+                <div class="pagination">
+                    {% if page > 1 %}
+                    <a href="/search?q={{ query|urlencode }}&page={{ page - 1 }}" class="page-link">← Previous</a>
+                    {% endif %}
+                    <span class="page-info">Page {{ page }}</span>
+                    <a href="/search?q={{ query|urlencode }}&page={{ page + 1 }}" class="page-link">Next →</a>
+                </div>
+                {% endif %}
+                
+                {% else %}
+                <div class="no-results">
+                    <svg width="64" height="64" viewBox="0 0 24 24" opacity="0.3">
+                        <path fill="currentColor" d="M15.5,12C18,12 20,14 20,16.5C20,17.38 19.75,18.21 19.31,18.9L22.39,22L21,23.39L17.88,20.32C17.19,20.75 16.37,21 15.5,21C13,21 11,19 11,16.5C11,14 13,12 15.5,12M15.5,14A2.5,2.5 0 0,0 13,16.5A2.5,2.5 0 0,0 15.5,19A2.5,2.5 0 0,0 18,16.5A2.5,2.5 0 0,0 15.5,14M5,3H19C20.11,3 21,3.89 21,5V13.03C20.5,12.23 19.81,11.54 19,11V5H5V19H11C11.54,19.81 12.23,20.5 13.03,21H5C3.89,21 3,20.11 3,19V5C3,3.89 3.89,3 5,3M7,7H17V9H7V7M7,11H12.03C11.23,11.5 10.54,12.19 10,13H7V11M7,15H9.17C9.06,15.5 9,16 9,16.5V17H7V15Z"/>
+                    </svg>
+                    <h3>No results found</h3>
+                    <p>Try different keywords or check your spelling</p>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-search">
+                    <p>Enter a search query to see results</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Handle dropdown menus
+document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+    const btn = dropdown.querySelector('.filter-btn');
+    const menu = dropdown.querySelector('.dropdown-menu');
+    
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+    });
+});
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', () => {
+    document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('active'));
+});
+
+// Handle engine selection
+document.querySelectorAll('.engine-item input').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        // In a real implementation, this would update the search
+        console.log('Engine toggled:', checkbox.parentElement.textContent.trim());
+    });
+});
+
+// Handle safe search update
+function updateSafeSearch(value) {
+    const currentUrl = new URL(window.location);
+    currentUrl.searchParams.set('safesearch', value);
+    window.location.href = currentUrl.toString();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Preferences - Center Deep{% endblock %}
+
+{% block content %}
+<div class="preferences-page">
+    <div class="container">
+        <div class="prefs-header">
+            <a href="/" class="back-link">← Back to search</a>
+            <h1>Search Preferences</h1>
+        </div>
+        
+        <form class="preferences-form" id="prefsForm">
+            <section class="pref-section">
+                <h2>Search Settings</h2>
+                
+                <div class="pref-item">
+                    <label for="safesearch">Safe Search</label>
+                    <select id="safesearch" name="safesearch">
+                        <option value="0">Off</option>
+                        <option value="1" selected>Moderate</option>
+                        <option value="2">Strict</option>
+                    </select>
+                </div>
+                
+                <div class="pref-item">
+                    <label for="results_per_page">Results per page</label>
+                    <select id="results_per_page" name="results_per_page">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                
+                <div class="pref-item">
+                    <label for="open_links">Open links in</label>
+                    <select id="open_links" name="open_links">
+                        <option value="new_tab" selected>New tab</option>
+                        <option value="same_tab">Same tab</option>
+                    </select>
+                </div>
+            </section>
+            
+            <section class="pref-section">
+                <h2>Privacy & Data</h2>
+                
+                <div class="pref-item">
+                    <div class="pref-item-with-info">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="trackDataLocally" name="trackDataLocally">
+                            <span class="toggle-switch"></span>
+                            <span>Track Data Locally</span>
+                        </label>
+                        <button type="button" class="info-btn" title="Learn more about local data tracking">ℹ️</button>
+                    </div>
+                    <div id="localTrackingInfo" class="info-panel" style="display: none;">
+                        <p><strong>What does this do?</strong></p>
+                        <p>When enabled, this feature stores your search history, preferences, and suggestions locally on your device for a better search experience.</p>
+                        <p><strong>Your privacy is protected:</strong></p>
+                        <ul>
+                            <li>✅ Data stays on YOUR computer</li>
+                            <li>✅ Nothing is sent to Center Deep servers</li>
+                            <li>✅ You can clear this data anytime</li>
+                            <li>✅ Provides better search suggestions</li>
+                            <li>✅ Remembers your preferences</li>
+                        </ul>
+                        <p><em>Note: Disabling this will clear all locally stored data.</em></p>
+                    </div>
+                </div>
+                
+                <div class="pref-item" id="clearDataSection" style="display: none;">
+                    <button type="button" id="clearLocalData" class="btn-danger">Clear All Local Data</button>
+                    <small>Remove all locally stored search history and preferences</small>
+                </div>
+            </section>
+            
+            <section class="pref-section">
+                <h2>Enabled Search Engines</h2>
+                <p class="pref-description">Select which search engines to include in results</p>
+                
+                <div class="engines-grid">
+                    <label class="engine-checkbox">
+                        <input type="checkbox" name="engines" value="google" checked>
+                        <span>Google</span>
+                    </label>
+                    <label class="engine-checkbox">
+                        <input type="checkbox" name="engines" value="bing" checked>
+                        <span>Bing</span>
+                    </label>
+                    <label class="engine-checkbox">
+                        <input type="checkbox" name="engines" value="duckduckgo" checked>
+                        <span>DuckDuckGo</span>
+                    </label>
+                    <label class="engine-checkbox">
+                        <input type="checkbox" name="engines" value="qwant" checked>
+                        <span>Qwant</span>
+                    </label>
+                    <label class="engine-checkbox">
+                        <input type="checkbox" name="engines" value="startpage">
+                        <span>Startpage</span>
+                    </label>
+                    <label class="engine-checkbox">
+                        <input type="checkbox" name="engines" value="searx">
+                        <span>Searx</span>
+                    </label>
+                </div>
+            </section>
+            
+            <section class="pref-section">
+                <h2>Interface</h2>
+                
+                <div class="pref-item">
+                    <label for="theme">Theme</label>
+                    <select id="theme" name="theme">
+                        <option value="light" selected>Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="auto">Auto (follow system)</option>
+                    </select>
+                </div>
+                
+                <div class="pref-item">
+                    <label for="language">Language</label>
+                    <select id="language" name="language">
+                        <option value="en" selected>English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+            </section>
+            
+            <div class="pref-actions">
+                <button type="submit" class="btn-save">Save Preferences</button>
+                <button type="reset" class="btn-reset">Reset to Defaults</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Local data tracking functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const trackDataToggle = document.getElementById('trackDataLocally');
+    const clearDataSection = document.getElementById('clearDataSection');
+    const clearDataBtn = document.getElementById('clearLocalData');
+    const infoBtn = document.querySelector('.info-btn');
+    const infoPanel = document.getElementById('localTrackingInfo');
+    
+    // Load current setting
+    const isTrackingEnabled = localStorage.getItem('centerDeepTracking') === 'true';
+    trackDataToggle.checked = isTrackingEnabled;
+    
+    // Show/hide clear data section
+    function updateClearDataVisibility() {
+        clearDataSection.style.display = trackDataToggle.checked ? 'block' : 'none';
+    }
+    updateClearDataVisibility();
+    
+    // Handle toggle change
+    trackDataToggle.addEventListener('change', function() {
+        const isEnabled = this.checked;
+        localStorage.setItem('centerDeepTracking', isEnabled.toString());
+        
+        if (!isEnabled) {
+            // Clear all local data when disabled
+            clearAllLocalData();
+            showNotification('Local data tracking disabled and data cleared', 'success');
+        } else {
+            showNotification('Local data tracking enabled', 'success');
+        }
+        
+        updateClearDataVisibility();
+    });
+    
+    // Handle info button click
+    infoBtn.addEventListener('click', function() {
+        const isVisible = infoPanel.style.display !== 'none';
+        infoPanel.style.display = isVisible ? 'none' : 'block';
+    });
+    
+    // Handle clear data button
+    clearDataBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to clear all local data? This includes search history and preferences.')) {
+            clearAllLocalData();
+            showNotification('All local data cleared', 'success');
+        }
+    });
+    
+    // Load other preferences
+    loadPreferences();
+    
+    // Handle form submission
+    document.getElementById('prefsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        savePreferences();
+        showNotification('Preferences saved', 'success');
+    });
+});
+
+function clearAllLocalData() {
+    // Clear search history
+    localStorage.removeItem('centerDeepSearchHistory');
+    // Clear search suggestions cache
+    localStorage.removeItem('centerDeepSuggestions');
+    // Clear user preferences (except tracking setting)
+    const tracking = localStorage.getItem('centerDeepTracking');
+    const theme = localStorage.getItem('theme');
+    localStorage.clear();
+    if (tracking) localStorage.setItem('centerDeepTracking', tracking);
+    if (theme) localStorage.setItem('theme', theme);
+}
+
+function loadPreferences() {
+    // Load safesearch default to off
+    const safesearch = localStorage.getItem('centerDeepSafesearch') || '0';
+    document.getElementById('safesearch').value = safesearch;
+    
+    // Load other preferences
+    const resultsPerPage = localStorage.getItem('centerDeepResultsPerPage') || '10';
+    document.getElementById('results_per_page').value = resultsPerPage;
+    
+    const openLinks = localStorage.getItem('centerDeepOpenLinks') || 'new_tab';
+    document.getElementById('open_links').value = openLinks;
+    
+    const language = localStorage.getItem('centerDeepLanguage') || 'en';
+    document.getElementById('language').value = language;
+    
+    // Load enabled engines
+    const enabledEngines = JSON.parse(localStorage.getItem('centerDeepEngines') || '["google", "bing", "duckduckgo", "qwant"]');
+    document.querySelectorAll('input[name="engines"]').forEach(checkbox => {
+        checkbox.checked = enabledEngines.includes(checkbox.value);
+    });
+}
+
+function savePreferences() {
+    // Save preferences to localStorage
+    localStorage.setItem('centerDeepSafesearch', document.getElementById('safesearch').value);
+    localStorage.setItem('centerDeepResultsPerPage', document.getElementById('results_per_page').value);
+    localStorage.setItem('centerDeepOpenLinks', document.getElementById('open_links').value);
+    localStorage.setItem('centerDeepLanguage', document.getElementById('language').value);
+    
+    // Save enabled engines
+    const enabledEngines = [];
+    document.querySelectorAll('input[name="engines"]:checked').forEach(checkbox => {
+        enabledEngines.push(checkbox.value);
+    });
+    localStorage.setItem('centerDeepEngines', JSON.stringify(enabledEngines));
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+
+{% endblock %}
