@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # Tool Servers - Managed via Center Deep Admin Dashboard
+  
+  tool-search:
+    build: ./toolserver/search
+    container_name: center-deep-tool-search
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - SEARXNG_URL=http://unicorn-searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${SEARCH_LLM_MODEL:-gpt-3.5-turbo}
+    networks:
+      - unicorn-network
+    labels:
+      - "center-deep.tool=search"
+      - "center-deep.description=Basic search tool for web, GitHub, Reddit, etc"
+      - "center-deep.port=8001"
+      - "center-deep.openai-compatible=true"
+  
+  tool-deep-search:
+    build: ./toolserver/deep-search
+    container_name: center-deep-tool-deep-search
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      - SEARXNG_URL=http://unicorn-searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${DEEP_SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${DEEP_SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${DEEP_SEARCH_LLM_MODEL:-gpt-4}
+    networks:
+      - unicorn-network
+    labels:
+      - "center-deep.tool=deep-search"
+      - "center-deep.description=Deep search with multi-source analysis"
+      - "center-deep.port=8002"
+      - "center-deep.openai-compatible=true"
+  
+  tool-report:
+    build: ./toolserver/report
+    container_name: center-deep-tool-report
+    restart: unless-stopped
+    ports:
+      - "8003:8003"
+    environment:
+      - SEARXNG_URL=http://unicorn-searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${REPORT_LLM_API_BASE:-}
+      - LLM_API_KEY=${REPORT_LLM_API_KEY:-}
+      - LLM_MODEL=${REPORT_LLM_MODEL:-gpt-4}
+    networks:
+      - unicorn-network
+    labels:
+      - "center-deep.tool=report"
+      - "center-deep.description=Professional report generation with citations"
+      - "center-deep.port=8003"
+      - "center-deep.openai-compatible=true"
+  
+  tool-academic:
+    build: ./toolserver/academic
+    container_name: center-deep-tool-academic
+    restart: unless-stopped
+    ports:
+      - "8004:8004"
+    environment:
+      - SEARXNG_URL=http://unicorn-searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${ACADEMIC_LLM_API_BASE:-}
+      - LLM_API_KEY=${ACADEMIC_LLM_API_KEY:-}
+      - LLM_MODEL=${ACADEMIC_LLM_MODEL:-gpt-4}
+    networks:
+      - unicorn-network
+    labels:
+      - "center-deep.tool=academic"
+      - "center-deep.description=Academic research reports with formal citations"
+      - "center-deep.port=8004"
+      - "center-deep.openai-compatible=true"
+
+networks:
+  unicorn-network:
+    external: true

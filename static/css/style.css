@@ -1641,6 +1641,269 @@ body {
     gap: 0.5rem;
 }
 
+/* LLM Configuration Styles */
+.tool-llm-config {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.tool-llm-config h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.llm-provider-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.provider-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.provider-info strong {
+    color: var(--text-color);
+    min-width: 150px;
+}
+
+.provider-model {
+    color: var(--accent-color);
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.provider-url {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.provider-status {
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.provider-status.status-active {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+}
+
+.provider-status.status-inactive {
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff6b6b;
+}
+
+.provider-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Tool Server Styles */
+.tool-servers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.tool-server-card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.tool-server-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow);
+}
+
+.server-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.server-header h4 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.server-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.server-status.status-running {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+}
+
+.server-status.status-stopped {
+    background: rgba(255, 255, 0, 0.1);
+    color: #ffeb3b;
+}
+
+.server-description {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.server-capabilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.capability-tag {
+    background: var(--surface-color);
+    color: var(--accent-color);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border-color);
+}
+
+.server-info {
+    background: var(--surface-color);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-item strong {
+    color: var(--text-muted);
+    min-width: 80px;
+}
+
+.info-item code {
+    background: var(--bg-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: monospace;
+    color: var(--accent-color);
+}
+
+.server-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.server-actions button {
+    flex: 1;
+}
+
+.server-health {
+    text-align: center;
+}
+
+.health-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.health-link:hover {
+    text-decoration: underline;
+}
+
+.section-description {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.config-info {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.config-info h4 {
+    color: var(--accent-color);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.config-info h4:first-child {
+    margin-top: 0;
+}
+
+.integration-urls {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.integration-urls li {
+    background: var(--surface-color);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.integration-urls strong {
+    color: var(--text-color);
+    display: inline-block;
+    min-width: 150px;
+}
+
+.integration-urls code {
+    background: var(--bg-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: monospace;
+    color: var(--accent-color);
+}
+
+.config-info pre {
+    background: var(--surface-color);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+}
+
+.config-info pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-color);
+}
+
 /* Alerts */
 .alert {
     padding: 1rem;

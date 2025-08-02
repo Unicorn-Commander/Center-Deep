@@ -471,5 +471,316 @@ def delete_user(user_id):
     
     return jsonify({'status': 'success', 'message': 'User deleted successfully'})
 
+# LLM Configuration Routes
+@app.route('/api/admin/llm/providers', methods=['GET', 'POST'])
+@admin_required
+def manage_llm_providers():
+    """Manage LLM providers"""
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        # Check if provider exists
+        existing = db.session.query(db.Table('llm_providers')).filter_by(name=data['name']).first() if db.metadata.tables.get('llm_providers') else None
+        if existing:
+            return jsonify({'error': 'Provider with this name already exists'}), 400
+        
+        # Import model from toolserver
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), 'toolserver'))
+        from toolserver.main import LLMProvider
+        
+        provider = LLMProvider(
+            name=data['name'],
+            api_base=data['api_base'],
+            api_key=data.get('api_key', ''),
+            model_name=data['model_name'],
+            enabled=data.get('enabled', True)
+        )
+        db.session.add(provider)
+        db.session.commit()
+        
+        return jsonify({'status': 'success', 'message': 'LLM provider added successfully'})
+    
+    # GET request - return all providers
+    from toolserver.main import LLMProvider
+    providers = LLMProvider.query.all()
+    provider_list = []
+    for provider in providers:
+        provider_list.append({
+            'id': provider.id,
+            'name': provider.name,
+            'api_base': provider.api_base,
+            'model_name': provider.model_name,
+            'enabled': provider.enabled,
+            'created_at': provider.created_at.strftime('%Y-%m-%d %H:%M:%S') if provider.created_at else None
+        })
+    
+    return jsonify(provider_list)
+
+@app.route('/api/admin/llm/providers/<int:provider_id>/toggle', methods=['POST'])
+@admin_required
+def toggle_llm_provider(provider_id):
+    """Toggle LLM provider status"""
+    from toolserver.main import LLMProvider
+    provider = LLMProvider.query.get_or_404(provider_id)
+    provider.enabled = not provider.enabled
+    db.session.commit()
+    return jsonify({'status': 'success', 'enabled': provider.enabled})
+
+@app.route('/api/admin/llm/providers/<int:provider_id>', methods=['DELETE'])
+@admin_required
+def delete_llm_provider(provider_id):
+    """Delete LLM provider"""
+    from toolserver.main import LLMProvider
+    provider = LLMProvider.query.get_or_404(provider_id)
+    db.session.delete(provider)
+    db.session.commit()
+    return jsonify({'status': 'success', 'message': 'Provider deleted successfully'})
+
+@app.route('/api/admin/llm/tool-config', methods=['GET', 'POST'])
+@admin_required
+def manage_tool_llm_config():
+    """Manage tool LLM configurations"""
+    from toolserver.main import ToolLLMConfig
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        configs = data.get('configs', [])
+        
+        for config_data in configs:
+            # Find existing config or create new
+            config = ToolLLMConfig.query.filter_by(
+                tool_name=config_data['tool_name']
+            ).first()
+            
+            if not config:
+                config = ToolLLMConfig(tool_name=config_data['tool_name'])
+                db.session.add(config)
+            
+            # Update config
+            config.llm_provider_id = config_data.get('llm_provider_id') or None
+            config.temperature = config_data.get('temperature', 0.7)
+            config.max_tokens = config_data.get('max_tokens', 4000)
+            config.enabled = True
+            config.purpose = f"LLM for {config_data['tool_name'].replace('_', ' ').title()}"
+        
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': 'Tool LLM configurations saved'})
+    
+    # GET request - return all configurations
+    configs = ToolLLMConfig.query.all()
+    config_list = []
+    for config in configs:
+        config_list.append({
+            'id': config.id,
+            'tool_name': config.tool_name,
+            'purpose': config.purpose,
+            'llm_provider_id': config.llm_provider_id,
+            'temperature': config.temperature,
+            'max_tokens': config.max_tokens,
+            'enabled': config.enabled
+        })
+    
+    return jsonify(config_list)
+
+# Tool Server Management Routes
+@app.route('/api/admin/tool-servers/status')
+@admin_required
+def get_tool_servers_status():
+    """Get status of all tool servers"""
+    import subprocess
+    import json
+    
+    statuses = {}
+    tool_servers = ['search', 'deep-search', 'report', 'academic']
+    
+    for server in tool_servers:
+        container_name = f'center-deep-tool-{server}'
+        try:
+            # Check if container exists and is running
+            result = subprocess.run(
+                ['docker', 'inspect', container_name],
+                capture_output=True,
+                text=True
+            )
+            
+            if result.returncode == 0:
+                container_info = json.loads(result.stdout)[0]
+                is_running = container_info['State']['Running']
+                statuses[server] = {
+                    'status': 'running' if is_running else 'stopped',
+                    'running': is_running,
+                    'container': container_name,
+                    'started_at': container_info['State'].get('StartedAt', ''),
+                    'health': container_info['State'].get('Health', {}).get('Status', 'unknown')
+                }
+            else:
+                statuses[server] = {
+                    'status': 'not_found',
+                    'running': False,
+                    'container': container_name
+                }
+        except Exception as e:
+            statuses[server] = {
+                'status': 'error',
+                'running': False,
+                'error': str(e)
+            }
+    
+    return jsonify(statuses)
+
+@app.route('/api/admin/tool-servers/<server_id>/start', methods=['POST'])
+@admin_required
+def start_tool_server(server_id):
+    """Start a tool server"""
+    import subprocess
+    
+    if server_id not in ['search', 'deep-search', 'report', 'academic']:
+        return jsonify({'error': 'Invalid server ID'}), 400
+    
+    try:
+        # Get LLM configuration for this tool
+        from toolserver.main import ToolLLMConfig, LLMProvider
+        
+        tool_name = server_id.replace('-', '_')
+        config = ToolLLMConfig.query.filter_by(
+            tool_name=tool_name,
+            enabled=True
+        ).first()
+        
+        env_vars = []
+        if config and config.llm_provider:
+            provider = config.llm_provider
+            env_vars = [
+                '-e', f'{tool_name.upper()}_LLM_API_BASE={provider.api_base}',
+                '-e', f'{tool_name.upper()}_LLM_API_KEY={provider.api_key}',
+                '-e', f'{tool_name.upper()}_LLM_MODEL={provider.model_name}'
+            ]
+        
+        # Start the container
+        cmd = [
+            'docker-compose', 
+            '-f', 'docker-compose.tools.yml',
+            'up', '-d',
+            f'tool-{server_id}'
+        ]
+        
+        if env_vars:
+            # Set environment variables
+            import os
+            for i in range(0, len(env_vars), 2):
+                key = env_vars[i+1].split('=')[0]
+                value = env_vars[i+1].split('=')[1]
+                os.environ[key] = value
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            return jsonify({'status': 'success', 'message': 'Tool server started'})
+        else:
+            return jsonify({'error': result.stderr}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/tool-servers/<server_id>/stop', methods=['POST'])
+@admin_required
+def stop_tool_server(server_id):
+    """Stop a tool server"""
+    import subprocess
+    
+    if server_id not in ['search', 'deep-search', 'report', 'academic']:
+        return jsonify({'error': 'Invalid server ID'}), 400
+    
+    try:
+        container_name = f'center-deep-tool-{server_id}'
+        result = subprocess.run(
+            ['docker', 'stop', container_name],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode == 0:
+            return jsonify({'status': 'success', 'message': 'Tool server stopped'})
+        else:
+            return jsonify({'error': result.stderr}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/tool-servers/<server_id>/restart', methods=['POST'])
+@admin_required
+def restart_tool_server(server_id):
+    """Restart a tool server"""
+    import subprocess
+    
+    if server_id not in ['search', 'deep-search', 'report', 'academic']:
+        return jsonify({'error': 'Invalid server ID'}), 400
+    
+    try:
+        container_name = f'center-deep-tool-{server_id}'
+        
+        # Stop container
+        subprocess.run(['docker', 'stop', container_name], capture_output=True)
+        
+        # Start it again
+        result = subprocess.run([
+            'docker-compose',
+            '-f', 'docker-compose.tools.yml',
+            'up', '-d',
+            f'tool-{server_id}'
+        ], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            return jsonify({'status': 'success', 'message': 'Tool server restarted'})
+        else:
+            return jsonify({'error': result.stderr}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/tool-servers/<server_id>/logs')
+@admin_required
+def get_tool_server_logs(server_id):
+    """Get tool server logs"""
+    import subprocess
+    
+    if server_id not in ['search', 'deep-search', 'report', 'academic']:
+        return jsonify({'error': 'Invalid server ID'}), 400
+    
+    try:
+        container_name = f'center-deep-tool-{server_id}'
+        result = subprocess.run(
+            ['docker', 'logs', '--tail', '100', container_name],
+            capture_output=True,
+            text=True
+        )
+        
+        return f'''
+        <html>
+        <head>
+            <title>{server_id} Logs</title>
+            <style>
+                body {{ 
+                    background: #0d1117; 
+                    color: #e8eaf6; 
+                    font-family: monospace; 
+                    padding: 20px;
+                    white-space: pre-wrap;
+                }}
+                h1 {{ color: #00bcd4; }}
+            </style>
+        </head>
+        <body>
+            <h1>Tool Server Logs: {server_id}</h1>
+            <pre>{result.stdout}\n{result.stderr}</pre>
+        </body>
+        </html>
+        '''
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8890, debug=True)
