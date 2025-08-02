@@ -79,6 +79,12 @@ This is the licensed professional version of our SearXNG fork, available for UC-
 ### Settings Page
 ![Settings](screenshots/settings.png)
 
+### Full Search Results View
+![Full Search Results](screenshots/search-results-long.png)
+
+### Complete Settings Interface
+![Full Settings](screenshots/settings-full.png)
+
 ## Installation
 
 ### Automated Installation (Recommended)

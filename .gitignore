@@ -51,3 +51,8 @@ build/
 
 # SearXNG directory
 searxng/
+
+# Development/temporary images
+center_deep_landing_*.png
+Center-Deep_Poster.png
+The_Colonel.png
