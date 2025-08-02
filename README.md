@@ -1,19 +1,40 @@
-# Center Deep - Advanced Metasearch Engine
+# Center Deep - Professional SearXNG Fork
 
-Center Deep is a powerful metasearch engine that aggregates results from multiple search engines, providing users with comprehensive and privacy-focused search capabilities.
+Center Deep is a professional, enterprise-ready fork of SearXNG metasearch engine, designed for businesses and licensed individual installations. This enhanced version includes advanced administration features, rotating proxy support, and comprehensive monitoring capabilities for professional deployments.
 
-## Features
+![Center Deep Main Page](screenshots/main-page.png)
 
-- **Multi-Engine Search**: Aggregates results from Google, Bing, DuckDuckGo, Qwant, and more
-- **Category Filtering**: Specialized search for Images, Videos, News, Maps, and Music
-- **Privacy-Focused**: Optional local data tracking with client-side storage
-- **Admin Dashboard**: Comprehensive admin panel for managing:
-  - BrightData rotating proxy configuration
-  - Prometheus and Grafana monitoring integration
-  - User management and authentication
-  - Real-time search statistics
-- **Modern UI**: Dark theme with responsive design
-- **Advanced Filtering**: Time range, language, and safe search options
+## Professional Features
+
+This is the licensed professional version of our SearXNG fork, available for UC-1-Pro enterprise deployments and licensed individual installations.
+
+### Core Enhancements
+- **Enterprise Admin Dashboard**: Complete control panel for system administrators
+- **Rotating Proxy Support**: Built-in BrightData proxy integration for enhanced anonymity
+- **Advanced Monitoring**: Prometheus and Grafana integration for real-time metrics
+- **User Management**: Multi-user support with role-based access control
+- **Professional UI**: Modern dark theme optimized for extended use
+- **Real-time Analytics**: Live search statistics and usage monitoring
+
+### Search Capabilities
+- **Multi-Engine Aggregation**: Simultaneous search across Google, Bing, DuckDuckGo, Qwant, and more
+- **Category-Specific Results**: Optimized layouts for Images, Videos, News, Maps, and Music
+- **Advanced Filtering**: Time range, language, and safe search controls
+- **Privacy Options**: Optional client-side data storage for enhanced privacy
+
+## Screenshots
+
+### Search Results
+![Search Results](screenshots/search-results.png)
+
+### Image Search
+![Image Search](screenshots/images-page.png)
+
+### Video Results
+![Video Results](screenshots/video-results.png)
+
+### Settings Page
+![Settings](screenshots/settings.png)
 
 ## Installation
 
@@ -93,10 +114,18 @@ Center-Deep/
 - Optional proxy support for anonymized searching
 - No tracking by default - users opt-in for local data storage
 
+## Licensing
+
+Center Deep is a commercial fork of SearXNG, developed by Magic Unicorn Unconventional Technology & Stuff Inc.
+
+- **Professional License**: Required for UC-1-Pro deployments and enterprise use
+- **Individual License**: Available for personal professional installations
+- **Base SearXNG**: Original SearXNG components maintain their open-source licensing
+
+For licensing inquiries, contact Magic Unicorn Unconventional Technology & Stuff Inc.
+
 ## Credits
 
-Developed by Magic Unicorn Unconventional Technology & Stuff Inc.
+Developed and maintained by Magic Unicorn Unconventional Technology & Stuff Inc.
 
-## License
-
-This project is proprietary software. All rights reserved.
+Based on the open-source SearXNG project with significant enhancements for professional use.
