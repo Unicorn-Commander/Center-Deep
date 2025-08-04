@@ -538,6 +538,122 @@ def delete_llm_provider(provider_id):
     db.session.commit()
     return jsonify({'status': 'success', 'message': 'Provider deleted successfully'})
 
+@app.route('/api/admin/embedding/providers', methods=['GET', 'POST'])
+@admin_required
+def manage_embedding_providers():
+    """Manage embedding providers"""
+    from toolserver.main import EmbeddingProvider
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        provider = EmbeddingProvider(
+            name=data['name'],
+            api_base=data['api_base'],
+            api_key=data.get('api_key', ''),
+            model_name=data['model_name'],
+            dimension=data.get('dimension', 1536),
+            enabled=data.get('enabled', True)
+        )
+        db.session.add(provider)
+        db.session.commit()
+        
+        return jsonify({'status': 'success', 'message': 'Embedding provider added successfully'})
+    
+    # GET request - return all providers
+    providers = EmbeddingProvider.query.all()
+    provider_list = []
+    for provider in providers:
+        provider_list.append({
+            'id': provider.id,
+            'name': provider.name,
+            'api_base': provider.api_base,
+            'model_name': provider.model_name,
+            'dimension': provider.dimension,
+            'enabled': provider.enabled,
+            'created_at': provider.created_at.strftime('%Y-%m-%d %H:%M:%S') if provider.created_at else None
+        })
+    
+    return jsonify(provider_list)
+
+@app.route('/api/admin/embedding/providers/<int:provider_id>/toggle', methods=['POST'])
+@admin_required
+def toggle_embedding_provider(provider_id):
+    """Toggle embedding provider status"""
+    from toolserver.main import EmbeddingProvider
+    provider = EmbeddingProvider.query.get_or_404(provider_id)
+    provider.enabled = not provider.enabled
+    db.session.commit()
+    return jsonify({'status': 'success', 'enabled': provider.enabled})
+
+@app.route('/api/admin/embedding/providers/<int:provider_id>', methods=['DELETE'])
+@admin_required
+def delete_embedding_provider(provider_id):
+    """Delete embedding provider"""
+    from toolserver.main import EmbeddingProvider
+    provider = EmbeddingProvider.query.get_or_404(provider_id)
+    db.session.delete(provider)
+    db.session.commit()
+    return jsonify({'status': 'success', 'message': 'Provider deleted successfully'})
+
+@app.route('/api/admin/reranker/providers', methods=['GET', 'POST'])
+@admin_required
+def manage_reranker_providers():
+    """Manage reranker providers"""
+    from toolserver.main import RerankerProvider
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        provider = RerankerProvider(
+            name=data['name'],
+            api_base=data['api_base'],
+            api_key=data.get('api_key', ''),
+            model_name=data['model_name'],
+            top_k=data.get('top_k', 10),
+            enabled=data.get('enabled', True)
+        )
+        db.session.add(provider)
+        db.session.commit()
+        
+        return jsonify({'status': 'success', 'message': 'Reranker provider added successfully'})
+    
+    # GET request - return all providers
+    providers = RerankerProvider.query.all()
+    provider_list = []
+    for provider in providers:
+        provider_list.append({
+            'id': provider.id,
+            'name': provider.name,
+            'api_base': provider.api_base,
+            'model_name': provider.model_name,
+            'top_k': provider.top_k,
+            'enabled': provider.enabled,
+            'created_at': provider.created_at.strftime('%Y-%m-%d %H:%M:%S') if provider.created_at else None
+        })
+    
+    return jsonify(provider_list)
+
+@app.route('/api/admin/reranker/providers/<int:provider_id>/toggle', methods=['POST'])
+@admin_required
+def toggle_reranker_provider(provider_id):
+    """Toggle reranker provider status"""
+    from toolserver.main import RerankerProvider
+    provider = RerankerProvider.query.get_or_404(provider_id)
+    provider.enabled = not provider.enabled
+    db.session.commit()
+    return jsonify({'status': 'success', 'enabled': provider.enabled})
+
+@app.route('/api/admin/reranker/providers/<int:provider_id>', methods=['DELETE'])
+@admin_required
+def delete_reranker_provider(provider_id):
+    """Delete reranker provider"""
+    from toolserver.main import RerankerProvider
+    provider = RerankerProvider.query.get_or_404(provider_id)
+    db.session.delete(provider)
+    db.session.commit()
+    return jsonify({'status': 'success', 'message': 'Provider deleted successfully'})
+
 @app.route('/api/admin/llm/tool-config', methods=['GET', 'POST'])
 @admin_required
 def manage_tool_llm_config():
@@ -560,6 +676,8 @@ def manage_tool_llm_config():
             
             # Update config
             config.llm_provider_id = config_data.get('llm_provider_id') or None
+            config.embedding_provider_id = config_data.get('embedding_provider_id') or None
+            config.reranker_provider_id = config_data.get('reranker_provider_id') or None
             config.temperature = config_data.get('temperature', 0.7)
             config.max_tokens = config_data.get('max_tokens', 4000)
             config.enabled = True
@@ -577,6 +695,8 @@ def manage_tool_llm_config():
             'tool_name': config.tool_name,
             'purpose': config.purpose,
             'llm_provider_id': config.llm_provider_id,
+            'embedding_provider_id': config.embedding_provider_id,
+            'reranker_provider_id': config.reranker_provider_id,
             'temperature': config.temperature,
             'max_tokens': config.max_tokens,
             'enabled': config.enabled

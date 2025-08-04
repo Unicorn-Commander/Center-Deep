@@ -33,6 +33,28 @@ class LLMProvider(db.Model):
     model_name = db.Column(db.String(200), nullable=False)
     enabled = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class EmbeddingProvider(db.Model):
+    __tablename__ = 'embedding_providers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    api_base = db.Column(db.String(500), nullable=False)
+    api_key = db.Column(db.String(500))
+    model_name = db.Column(db.String(200), nullable=False)
+    enabled = db.Column(db.Boolean, default=True)
+    dimension = db.Column(db.Integer, default=1536)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class RerankerProvider(db.Model):
+    __tablename__ = 'reranker_providers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    api_base = db.Column(db.String(500), nullable=False)
+    api_key = db.Column(db.String(500))
+    model_name = db.Column(db.String(200), nullable=False)
+    enabled = db.Column(db.Boolean, default=True)
+    top_k = db.Column(db.Integer, default=10)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
 class ToolLLMConfig(db.Model):
     __tablename__ = 'tool_llm_config'
@@ -40,12 +62,16 @@ class ToolLLMConfig(db.Model):
     tool_name = db.Column(db.String(100), nullable=False)
     purpose = db.Column(db.String(200), nullable=False)
     llm_provider_id = db.Column(db.Integer, db.ForeignKey('llm_providers.id'))
+    embedding_provider_id = db.Column(db.Integer, db.ForeignKey('embedding_providers.id'))
+    reranker_provider_id = db.Column(db.Integer, db.ForeignKey('reranker_providers.id'))
     temperature = db.Column(db.Float, default=0.7)
     max_tokens = db.Column(db.Integer, default=4000)
     system_prompt = db.Column(db.Text)
     enabled = db.Column(db.Boolean, default=True)
     settings = db.Column(db.JSON, default={})
     llm_provider = db.relationship('LLMProvider', backref='tool_configs')
+    embedding_provider = db.relationship('EmbeddingProvider', backref='tool_configs')
+    reranker_provider = db.relationship('RerankerProvider', backref='tool_configs')
 
 # Create tables
 with flask_app.app_context():

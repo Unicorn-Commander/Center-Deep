@@ -2107,3 +2107,15 @@ body {
         margin-top: 0.5rem;
     }
 }
+
+/* Embedding and Reranker Provider Styles */
+.provider-dimension,
+.provider-topk {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    display: inline-block;
+}

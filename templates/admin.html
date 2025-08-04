@@ -193,6 +193,18 @@ qwant</textarea>
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="searchEmbedding">Embedding Provider</label>
+                            <select id="searchEmbedding" name="search_embedding">
+                                <option value="">Select Embedding Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchReranker">Reranker Provider</label>
+                            <select id="searchReranker" name="search_reranker">
+                                <option value="">Select Reranker Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="searchTemp">Temperature</label>
                             <input type="number" id="searchTemp" name="search_temperature" 
                                    min="0" max="2" step="0.1" value="0.7">
@@ -210,6 +222,18 @@ qwant</textarea>
                             <label for="deepSearchLLM">LLM Provider</label>
                             <select id="deepSearchLLM" name="deep_search_llm">
                                 <option value="">Select LLM Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deepSearchEmbedding">Embedding Provider</label>
+                            <select id="deepSearchEmbedding" name="deep_search_embedding">
+                                <option value="">Select Embedding Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deepSearchReranker">Reranker Provider</label>
+                            <select id="deepSearchReranker" name="deep_search_reranker">
+                                <option value="">Select Reranker Provider</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -312,6 +336,156 @@ qwant</textarea>
                         
                         <div class="modal-actions">
                             <button type="button" onclick="closeLLMModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Add Provider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Embedding Configuration Section -->
+        <section id="embedding" class="admin-section">
+            <h2>🔍 Embedding Configuration</h2>
+            
+            <!-- Embedding Providers -->
+            <div class="admin-card">
+                <h3>Embedding Providers</h3>
+                <p class="section-description">
+                    Configure embedding models for semantic search and document retrieval. These models convert text into vector representations.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addEmbeddingBtn" class="btn-primary">+ Add Embedding Provider</button>
+                </div>
+                <div id="embeddingProvidersList">
+                    <!-- Embedding providers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Add Embedding Provider Modal -->
+            <div id="addEmbeddingModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add Embedding Provider</h3>
+                        <button class="close-btn" onclick="closeEmbeddingModal()">&times;</button>
+                    </div>
+                    <form id="addEmbeddingForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="embeddingName">Provider Name</label>
+                            <input type="text" id="embeddingName" name="name" required 
+                                   placeholder="e.g., OpenAI Embeddings, Cohere, Local Embeddings">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingApiBase">API Base URL</label>
+                            <input type="url" id="embeddingApiBase" name="api_base" required 
+                                   placeholder="https://api.openai.com/v1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingApiKey">API Key</label>
+                            <input type="password" id="embeddingApiKey" name="api_key" 
+                                   placeholder="sk-...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingModel">Model Name</label>
+                            <input type="text" id="embeddingModel" name="model_name" required 
+                                   placeholder="text-embedding-ada-002, embed-english-v3.0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingDimension">Vector Dimension</label>
+                            <input type="number" id="embeddingDimension" name="dimension" 
+                                   min="128" max="4096" value="1536" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Enable Provider</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="embeddingEnabled" name="enabled" checked>
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeEmbeddingModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Add Provider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Reranker Configuration Section -->
+        <section id="reranker" class="admin-section">
+            <h2>🔄 Reranker Configuration</h2>
+            
+            <!-- Reranker Providers -->
+            <div class="admin-card">
+                <h3>Reranker Providers</h3>
+                <p class="section-description">
+                    Configure reranking models to improve search result relevance. Rerankers re-score and reorder search results based on semantic similarity.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addRerankerBtn" class="btn-primary">+ Add Reranker Provider</button>
+                </div>
+                <div id="rerankerProvidersList">
+                    <!-- Reranker providers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Add Reranker Provider Modal -->
+            <div id="addRerankerModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add Reranker Provider</h3>
+                        <button class="close-btn" onclick="closeRerankerModal()">&times;</button>
+                    </div>
+                    <form id="addRerankerForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="rerankerName">Provider Name</label>
+                            <input type="text" id="rerankerName" name="name" required 
+                                   placeholder="e.g., Cohere Rerank, Local Reranker">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerApiBase">API Base URL</label>
+                            <input type="url" id="rerankerApiBase" name="api_base" required 
+                                   placeholder="https://api.cohere.ai/v1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerApiKey">API Key</label>
+                            <input type="password" id="rerankerApiKey" name="api_key" 
+                                   placeholder="API key">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerModel">Model Name</label>
+                            <input type="text" id="rerankerModel" name="model_name" required 
+                                   placeholder="rerank-english-v2.0, bge-reranker-large">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerTopK">Top K Results</label>
+                            <input type="number" id="rerankerTopK" name="top_k" 
+                                   min="1" max="100" value="10" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Enable Provider</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="rerankerEnabled" name="enabled" checked>
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeRerankerModal()" class="btn-secondary">Cancel</button>
                             <button type="submit" class="btn-primary">Add Provider</button>
                         </div>
                     </form>
@@ -786,18 +960,26 @@ async function loadToolLLMConfig() {
         configs.forEach(config => {
             if (config.tool_name === 'search') {
                 document.getElementById('searchLLM').value = config.llm_provider_id || '';
+                document.getElementById('searchEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('searchReranker').value = config.reranker_provider_id || '';
                 document.getElementById('searchTemp').value = config.temperature;
                 document.getElementById('searchTokens').value = config.max_tokens;
             } else if (config.tool_name === 'deep_search') {
                 document.getElementById('deepSearchLLM').value = config.llm_provider_id || '';
+                document.getElementById('deepSearchEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('deepSearchReranker').value = config.reranker_provider_id || '';
                 document.getElementById('deepSearchTemp').value = config.temperature;
                 document.getElementById('deepSearchTokens').value = config.max_tokens;
             } else if (config.tool_name === 'generate_report') {
                 document.getElementById('reportLLM').value = config.llm_provider_id || '';
+                document.getElementById('reportEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('reportReranker').value = config.reranker_provider_id || '';
                 document.getElementById('reportTemp').value = config.temperature;
                 document.getElementById('reportTokens').value = config.max_tokens;
             } else if (config.tool_name === 'academic_report') {
                 document.getElementById('academicLLM').value = config.llm_provider_id || '';
+                document.getElementById('academicEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('academicReranker').value = config.reranker_provider_id || '';
                 document.getElementById('academicTemp').value = config.temperature;
                 document.getElementById('academicTokens').value = config.max_tokens;
             }
@@ -853,24 +1035,32 @@ document.getElementById('toolLLMForm').addEventListener('submit', async (e) => {
         {
             tool_name: 'search',
             llm_provider_id: document.getElementById('searchLLM').value,
+            embedding_provider_id: document.getElementById('searchEmbedding').value,
+            reranker_provider_id: document.getElementById('searchReranker').value,
             temperature: parseFloat(document.getElementById('searchTemp').value),
             max_tokens: parseInt(document.getElementById('searchTokens').value)
         },
         {
             tool_name: 'deep_search',
             llm_provider_id: document.getElementById('deepSearchLLM').value,
+            embedding_provider_id: document.getElementById('deepSearchEmbedding').value,
+            reranker_provider_id: document.getElementById('deepSearchReranker').value,
             temperature: parseFloat(document.getElementById('deepSearchTemp').value),
             max_tokens: parseInt(document.getElementById('deepSearchTokens').value)
         },
         {
             tool_name: 'generate_report',
             llm_provider_id: document.getElementById('reportLLM').value,
+            embedding_provider_id: document.getElementById('reportEmbedding').value,
+            reranker_provider_id: document.getElementById('reportReranker').value,
             temperature: parseFloat(document.getElementById('reportTemp').value),
             max_tokens: parseInt(document.getElementById('reportTokens').value)
         },
         {
             tool_name: 'academic_report',
             llm_provider_id: document.getElementById('academicLLM').value,
+            embedding_provider_id: document.getElementById('academicEmbedding').value,
+            reranker_provider_id: document.getElementById('academicReranker').value,
             temperature: parseFloat(document.getElementById('academicTemp').value),
             max_tokens: parseInt(document.getElementById('academicTokens').value)
         }
@@ -930,6 +1120,266 @@ async function deleteLLMProvider(providerId) {
 function closeLLMModal() {
     document.getElementById('addLLMModal').style.display = 'none';
     document.getElementById('addLLMForm').reset();
+}
+
+// Embedding Configuration Functions
+async function loadEmbeddingProviders() {
+    try {
+        const response = await fetch('/api/admin/embedding/providers');
+        const providers = await response.json();
+        
+        const providersList = document.getElementById('embeddingProvidersList');
+        providersList.innerHTML = '';
+        
+        // Update provider selects
+        const selects = ['searchEmbedding', 'deepSearchEmbedding', 'reportEmbedding', 'academicEmbedding'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = '<option value="">Select Embedding Provider</option>';
+            }
+        });
+        
+        providers.forEach(provider => {
+            // Add to list
+            const providerDiv = document.createElement('div');
+            providerDiv.className = 'llm-provider-item';
+            providerDiv.innerHTML = `
+                <div class="provider-info">
+                    <strong>${provider.name}</strong>
+                    <span class="provider-model">${provider.model_name}</span>
+                    <span class="provider-url">${provider.api_base}</span>
+                    <span class="provider-dimension">Dim: ${provider.dimension}</span>
+                    <span class="provider-status ${provider.enabled ? 'status-active' : 'status-inactive'}">
+                        ${provider.enabled ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                <div class="provider-actions">
+                    <button onclick="toggleEmbeddingProvider(${provider.id})" class="btn-secondary">
+                        ${provider.enabled ? 'Disable' : 'Enable'}
+                    </button>
+                    <button onclick="deleteEmbeddingProvider(${provider.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            providersList.appendChild(providerDiv);
+            
+            // Add to selects if enabled
+            if (provider.enabled) {
+                selects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        const option = document.createElement('option');
+                        option.value = provider.id;
+                        option.textContent = `${provider.name} (${provider.model_name})`;
+                        select.appendChild(option);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Failed to load embedding providers:', error);
+    }
+}
+
+// Add Embedding Provider
+document.getElementById('addEmbeddingBtn').addEventListener('click', () => {
+    document.getElementById('addEmbeddingModal').style.display = 'flex';
+});
+
+document.getElementById('addEmbeddingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const embeddingData = {
+        name: formData.get('name'),
+        api_base: formData.get('api_base'),
+        api_key: formData.get('api_key'),
+        model_name: formData.get('model_name'),
+        dimension: parseInt(formData.get('dimension')),
+        enabled: document.getElementById('embeddingEnabled').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/embedding/providers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(embeddingData)
+        });
+        
+        if (response.ok) {
+            showNotification('Embedding provider added successfully', 'success');
+            closeEmbeddingModal();
+            await loadEmbeddingProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to add embedding provider', 'error');
+    }
+});
+
+async function toggleEmbeddingProvider(providerId) {
+    try {
+        const response = await fetch(`/api/admin/embedding/providers/${providerId}/toggle`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            await loadEmbeddingProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to toggle embedding provider', 'error');
+    }
+}
+
+async function deleteEmbeddingProvider(providerId) {
+    if (!confirm('Are you sure you want to delete this embedding provider?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/embedding/providers/${providerId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            showNotification('Embedding provider deleted successfully', 'success');
+            await loadEmbeddingProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to delete embedding provider', 'error');
+    }
+}
+
+function closeEmbeddingModal() {
+    document.getElementById('addEmbeddingModal').style.display = 'none';
+    document.getElementById('addEmbeddingForm').reset();
+}
+
+// Reranker Configuration Functions
+async function loadRerankerProviders() {
+    try {
+        const response = await fetch('/api/admin/reranker/providers');
+        const providers = await response.json();
+        
+        const providersList = document.getElementById('rerankerProvidersList');
+        providersList.innerHTML = '';
+        
+        // Update provider selects
+        const selects = ['searchReranker', 'deepSearchReranker', 'reportReranker', 'academicReranker'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = '<option value="">Select Reranker Provider</option>';
+            }
+        });
+        
+        providers.forEach(provider => {
+            // Add to list
+            const providerDiv = document.createElement('div');
+            providerDiv.className = 'llm-provider-item';
+            providerDiv.innerHTML = `
+                <div class="provider-info">
+                    <strong>${provider.name}</strong>
+                    <span class="provider-model">${provider.model_name}</span>
+                    <span class="provider-url">${provider.api_base}</span>
+                    <span class="provider-topk">Top ${provider.top_k}</span>
+                    <span class="provider-status ${provider.enabled ? 'status-active' : 'status-inactive'}">
+                        ${provider.enabled ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                <div class="provider-actions">
+                    <button onclick="toggleRerankerProvider(${provider.id})" class="btn-secondary">
+                        ${provider.enabled ? 'Disable' : 'Enable'}
+                    </button>
+                    <button onclick="deleteRerankerProvider(${provider.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            providersList.appendChild(providerDiv);
+            
+            // Add to selects if enabled
+            if (provider.enabled) {
+                selects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        const option = document.createElement('option');
+                        option.value = provider.id;
+                        option.textContent = `${provider.name} (${provider.model_name})`;
+                        select.appendChild(option);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Failed to load reranker providers:', error);
+    }
+}
+
+// Add Reranker Provider
+document.getElementById('addRerankerBtn').addEventListener('click', () => {
+    document.getElementById('addRerankerModal').style.display = 'flex';
+});
+
+document.getElementById('addRerankerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const rerankerData = {
+        name: formData.get('name'),
+        api_base: formData.get('api_base'),
+        api_key: formData.get('api_key'),
+        model_name: formData.get('model_name'),
+        top_k: parseInt(formData.get('top_k')),
+        enabled: document.getElementById('rerankerEnabled').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/reranker/providers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(rerankerData)
+        });
+        
+        if (response.ok) {
+            showNotification('Reranker provider added successfully', 'success');
+            closeRerankerModal();
+            await loadRerankerProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to add reranker provider', 'error');
+    }
+});
+
+async function toggleRerankerProvider(providerId) {
+    try {
+        const response = await fetch(`/api/admin/reranker/providers/${providerId}/toggle`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            await loadRerankerProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to toggle reranker provider', 'error');
+    }
+}
+
+async function deleteRerankerProvider(providerId) {
+    if (!confirm('Are you sure you want to delete this reranker provider?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/reranker/providers/${providerId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            showNotification('Reranker provider deleted successfully', 'success');
+            await loadRerankerProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to delete reranker provider', 'error');
+    }
+}
+
+function closeRerankerModal() {
+    document.getElementById('addRerankerModal').style.display = 'none';
+    document.getElementById('addRerankerForm').reset();
 }
 
 // Tool Server Management
@@ -1095,6 +1545,8 @@ async function viewToolServerLogs(serverId) {
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers();
     loadLLMProviders();
+    loadEmbeddingProviders();
+    loadRerankerProviders();
     loadToolServers();
     
     // Refresh tool server status every 30 seconds
