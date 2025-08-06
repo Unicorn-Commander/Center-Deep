@@ -8,6 +8,7 @@ import requests
 import json
 import redis
 from functools import wraps
+import markdown
 
 app = Flask(__name__)
 
@@ -901,6 +902,86 @@ def get_tool_server_logs(server_id):
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# Initialize blog system
+try:
+    from blog.routes import register_blog_routes
+    register_blog_routes(app)
+    
+    # Initialize database tables for blog
+    with app.app_context():
+        # Import blog models to create tables
+        from blog.models import BlogSettings, BlogCategory, BlogPost, BlogComment, AgentTrigger, BlogAnalytics
+        from agents.models import DataScraper, ScrapedData, ContentAgent, GeneratedContent, AgentSchedule
+        db.create_all()
+        
+        # Create default blog settings if none exist
+        if not BlogSettings.query.first():
+            default_settings = BlogSettings(
+                blog_enabled=True,
+                blog_title="Center Deep Blog",
+                blog_subtitle="Insights on Search, AI, and Technology",
+                blog_description="Stay updated with the latest developments in search technology, artificial intelligence, and web innovation.",
+                hero_content="# Welcome to Center Deep Blog\n\nDiscover insights, tutorials, and the latest developments in search technology and AI.",
+                about_section="Center Deep Blog brings you expert insights on search technology, artificial intelligence, and web development. Our team of experts and AI agents curate and create content to keep you at the forefront of technology trends.",
+                meta_description="Expert insights on search technology, AI, and web development from the Center Deep team.",
+                meta_keywords="search technology, artificial intelligence, web development, SEO, machine learning"
+            )
+            db.session.add(default_settings)
+            
+        # Create default categories if none exist
+        if not BlogCategory.query.first():
+            categories = [
+                BlogCategory(name="AI & Machine Learning", slug="ai-ml", 
+                           description="Articles about artificial intelligence and machine learning", 
+                           color="#FF6B35", sort_order=1),
+                BlogCategory(name="Search Technology", slug="search-tech", 
+                           description="Updates on search engines and discovery tools", 
+                           color="#00BCD4", sort_order=2),
+                BlogCategory(name="Open Source", slug="open-source", 
+                           description="Open source projects and community updates", 
+                           color="#4CAF50", sort_order=3),
+                BlogCategory(name="Web Development", slug="web-dev", 
+                           description="Web development trends and tutorials", 
+                           color="#9C27B0", sort_order=4),
+                BlogCategory(name="Industry News", slug="industry-news", 
+                           description="Latest news and trends in technology", 
+                           color="#FF9800", sort_order=5)
+            ]
+            for category in categories:
+                db.session.add(category)
+                
+        db.session.commit()
+        print("✅ Blog system initialized successfully")
+        
+except ImportError as e:
+    print(f"⚠️ Blog system not available: {e}")
+except Exception as e:
+    print(f"❌ Error initializing blog system: {e}")
+
+# Initialize newsletter system
+try:
+    from newsletter.routes import register_newsletter_routes
+    register_newsletter_routes(app)
+    
+    with app.app_context():
+        # Import newsletter models to create tables
+        from newsletter.models import NewsletterSubscriber, NewsletterCampaign, NewsletterSend, NewsletterTemplate
+        db.create_all()
+        print("✅ Newsletter system initialized successfully")
+        
+except ImportError as e:
+    print(f"⚠️ Newsletter system not available: {e}")
+except Exception as e:
+    print(f"❌ Error initializing newsletter system: {e}")
+
+# Add markdown filter for templates
+@app.template_filter('markdown')
+def markdown_filter(text):
+    """Convert markdown text to HTML"""
+    if text:
+        return markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
+    return ""
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8890, debug=True)

@@ -16,6 +16,10 @@
                     <a href="#monitoring">Monitoring</a>
                     <a href="#searxng">SearXNG Config</a>
                     <a href="#llm">LLM Config</a>
+                    <a href="#embedding">Embeddings</a>
+                    <a href="#reranker">Rerankers</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#agents">Agents</a>
                     <a href="#toolservers">Tool Servers</a>
                     <a href="#users">Users</a>
                     <a href="#stats">Statistics</a>
@@ -493,6 +497,123 @@ qwant</textarea>
             </div>
         </section>
         
+        <!-- Blog Management Section -->
+        <section id="blog" class="admin-section">
+            <h2>📝 Blog Management</h2>
+            
+            <!-- Blog Overview -->
+            <div class="admin-card">
+                <h3>Blog Overview</h3>
+                <div class="blog-stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalPosts">0</span>
+                        <span class="stat-label">Total Posts</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="publishedPosts">0</span>
+                        <span class="stat-label">Published</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="draftPosts">0</span>
+                        <span class="stat-label">Drafts</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="pendingPosts">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+                
+                <div class="blog-actions">
+                    <button id="newPostBtn" class="btn-primary">+ New Post</button>
+                    <button id="manageCategoriesBtn" class="btn-secondary">Manage Categories</button>
+                    <button id="blogSettingsBtn" class="btn-secondary">Blog Settings</button>
+                    <a href="/blog" target="_blank" class="btn-secondary">View Blog</a>
+                </div>
+            </div>
+            
+            <!-- Recent Posts -->
+            <div class="admin-card">
+                <h3>Recent Posts</h3>
+                <div class="posts-table-container">
+                    <table class="posts-table" id="postsTable">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Category</th>
+                                <th>Author</th>
+                                <th>Date</th>
+                                <th>Views</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTableBody">
+                            <!-- Posts will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-pagination" id="postsPagination">
+                    <!-- Pagination will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Pending Agent Content -->
+            <div class="admin-card">
+                <h3>Pending AI-Generated Content</h3>
+                <div id="pendingContentList">
+                    <!-- Pending content will be loaded here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Agent Management Section -->
+        <section id="agents" class="admin-section">
+            <h2>🤖 Agent Management</h2>
+            
+            <!-- Data Scrapers -->
+            <div class="admin-card">
+                <h3>Data Scrapers</h3>
+                <p class="section-description">
+                    Configure automated scrapers to collect data from RSS feeds, GitHub, Reddit, and custom URLs.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addScraperBtn" class="btn-primary">+ Add Scraper</button>
+                </div>
+                <div id="scrapersList">
+                    <!-- Scrapers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Content Agents -->
+            <div class="admin-card">
+                <h3>Content Generation Agents</h3>
+                <p class="section-description">
+                    AI agents that automatically create blog posts, social media content, and newsletters from scraped data.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addAgentBtn" class="btn-primary">+ Add Agent</button>
+                </div>
+                <div id="agentsList">
+                    <!-- Agents will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Agent Triggers -->
+            <div class="admin-card">
+                <h3>Intelligent Triggers</h3>
+                <p class="section-description">
+                    Set up triggers that automatically activate content generation based on data volume, keywords, or other conditions.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addTriggerBtn" class="btn-primary">+ Add Trigger</button>
+                </div>
+                <div id="triggersList">
+                    <!-- Triggers will be loaded here -->
+                </div>
+            </div>
+        </section>
+
         <!-- Tool Servers Section -->
         <section id="toolservers" class="admin-section">
             <h2>🛠️ Tool Servers Management</h2>

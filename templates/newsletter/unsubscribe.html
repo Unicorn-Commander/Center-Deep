@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Unsubscribe - Center Deep</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .unsubscribe-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            text-align: center;
+        }
+        .unsubscribe-container h1 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+        .unsubscribe-container p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .success-message {
+            color: #16a34a;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .error-message {
+            color: #dc2626;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="unsubscribe-container">
+        <h1>Newsletter Unsubscribe</h1>
+        
+        {% if success %}
+            <div class="success-message">
+                <h2>Successfully Unsubscribed</h2>
+                <p>You have been unsubscribed from the Center Deep newsletter.</p>
+                <p>Email: <strong>{{ email }}</strong></p>
+                <p>We're sorry to see you go! You can always resubscribe from our blog if you change your mind.</p>
+            </div>
+        {% elif error %}
+            <div class="error-message">
+                <h2>Error</h2>
+                <p>{{ error }}</p>
+            </div>
+        {% elif subscriber %}
+            <p>Are you sure you want to unsubscribe from the Center Deep newsletter?</p>
+            <p>Email: <strong>{{ subscriber.email }}</strong></p>
+            
+            <div style="margin-top: 2rem;">
+                <a href="{{ request.url }}&confirm=1" class="btn-primary" style="margin-right: 1rem;">
+                    Yes, Unsubscribe
+                </a>
+                <a href="/blog" class="btn-secondary">
+                    No, Keep Me Subscribed
+                </a>
+            </div>
+        {% endif %}
+        
+        <div style="margin-top: 2rem;">
+            <a href="/blog">← Back to Blog</a>
+        </div>
+    </div>
+</body>
+</html>
