@@ -235,7 +235,7 @@ The installer will:
 
 2. **Clone and Setup**
 ```bash
-git clone https://github.com/MagicUnicornInc/Center-Deep.git
+git clone https://github.com/Unicorn-Commander/Center-Deep.git
 cd Center-Deep
 ```
 

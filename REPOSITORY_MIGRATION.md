@@ -46,7 +46,7 @@ This document outlines the migration plan for moving Center-Deep Pro from Magic 
 ```bash
 # 1. Create new repository at Unicorn-Commander/Center-Deep
 # 2. Clone current repository
-git clone https://github.com/MagicUnicornInc/Center-Deep.git
+git clone https://github.com/Unicorn-Commander/Center-Deep.git
 cd Center-Deep
 
 # 3. Add new remote

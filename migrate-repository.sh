@@ -13,8 +13,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-OLD_REPO="https://github.com/MagicUnicornInc/Center-Deep.git"
-NEW_REPO="https://github.com/Unicorn-Commander/Center-Deep.git"
+OLD_REPO="https://github.com/MagicUnicornInc/Center-Deep.git"  # Original location (now redirects)
+NEW_REPO="https://github.com/Unicorn-Commander/Center-Deep.git"  # Current location
 BACKUP_DIR="center-deep-backup-$(date +%Y%m%d-%H%M%S)"
 
 echo -e "${BLUE}🚀 Center-Deep Repository Migration Script${NC}"
