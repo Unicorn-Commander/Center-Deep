@@ -27,11 +27,26 @@ login_manager.login_view = 'login'
 
 # Initialize Redis for statistics (optional, falls back to in-memory if not available)
 try:
-    redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    # Use environment variable or fallback to localhost
+    redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/2')
+    if redis_url.startswith('redis://'):
+        # Parse redis URL
+        import urllib.parse
+        parsed = urllib.parse.urlparse(redis_url)
+        redis_host = parsed.hostname or 'localhost'
+        redis_port = parsed.port or 6379
+        redis_db = int(parsed.path.lstrip('/')) if parsed.path.lstrip('/') else 0
+    else:
+        redis_host = 'localhost'
+        redis_port = 6379
+        redis_db = 0
+    
+    redis_client = redis.Redis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
     redis_client.ping()
-except:
+    print(f"✅ Redis connected successfully to {redis_host}:{redis_port}/{redis_db}")
+except Exception as e:
     redis_client = None
-    print("Redis not available, using in-memory statistics")
+    print(f"❌ Redis not available ({e}), using in-memory statistics")
 
 # In-memory statistics fallback
 stats_memory = {
@@ -57,7 +72,7 @@ app_settings = {
         'grafana_url': 'http://localhost:3000'
     },
     'searxng': {
-        'url': 'http://localhost:8888',
+        'url': os.environ.get('SEARXNG_BACKEND_URL', 'http://localhost:8080'),
         'timeout': 10,
         'max_results': 20
     }
