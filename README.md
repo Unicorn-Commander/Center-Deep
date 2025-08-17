@@ -1,28 +1,151 @@
-# Center Deep - Professional SearXNG Fork with AI Tool Servers
+# Center-Deep Pro
+### Enterprise Search Intelligence Platform
 
-Center Deep is a professional, enterprise-ready fork of SearXNG metasearch engine with integrated OpenAI API v1 compatible tool servers. Designed for businesses and licensed individual installations, it provides advanced search capabilities, AI-powered analysis tools, and comprehensive administrative controls.
+<div align="center">
+
+![Center-Deep Logo](Center-Deep.png)
+
+**The most advanced search intelligence platform for enterprises**
+
+[![License](https://img.shields.io/badge/License-Commercial-red.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-2.0.0-blue.svg)](CHANGELOG.md)
+[![Support](https://img.shields.io/badge/Support-Enterprise-green.svg)](mailto:support@unicorncommander.com)
+
+[Features](#features) • [Installation](#installation) • [Documentation](#documentation) • [Support](#support)
+
+</div>
+
+---
+
+## 🚀 Overview
+
+Center-Deep Pro is an enterprise-grade search intelligence platform that transforms how organizations discover, analyze, and act on information. Built on advanced search aggregation technology with integrated tool servers, user management, and enterprise features.
+
+### 🏢 Enterprise-Ready
+- **Multi-user authentication** with role-based access control
+- **Advanced analytics** and search intelligence dashboards  
+- **Rotating proxy support** for enterprise-scale operations
+- **Content management system** with automated publishing
+- **Newsletter platform** for organizational communication
+
+### 🛠️ Tool Servers
+Revolutionary search enhancement through specialized tool servers:
+- **Academic Research Tool** - Scholarly article discovery and analysis
+- **Deep Search Engine** - Multi-layered information discovery
+- **Report Generator** - Automated report compilation
+- **Search Intelligence** - Enhanced query processing
+
+### 🎯 Key Differentiators
+- **Zero external dependencies** - Self-hosted, private search
+- **Multi-engine aggregation** - Google, Bing, DuckDuckGo, and more
+- **Enterprise security** - No data leaving your infrastructure
+- **Customizable branding** - White-label ready
+- **API-first architecture** - Integrate with existing systems
 
 ![Center Deep Main Page](screenshots/main-page.png)
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Docker & Docker Compose
+- 4GB+ RAM recommended
+- Modern web browser
+
+### Installation
+
 ```bash
 # Clone the repository
-git clone https://github.com/MagicUnicornInc/Center-Deep.git
+git clone https://github.com/Unicorn-Commander/Center-Deep.git
 cd Center-Deep
 
-# Run the installer
-./install.sh
+# Configure environment
+cp .env.example .env
+# Edit .env with your settings
 
-# Access the application
-open http://localhost:8890
+# Start the platform
+docker-compose up -d
+
+# Access at http://localhost:8888
+# Default admin: ucadmin / MagicUnicorn!8-)
 ```
 
-Default credentials: `ucadmin` / `MagicUnicorn!8-)`
+### Enterprise Deployment
 
-## Professional Features
+```bash
+# Production deployment with SSL
+./deploy/production.sh
 
-This is the licensed professional version of our SearXNG fork, available for UC-1-Pro enterprise deployments and licensed individual installations.
+# With external Redis and PostgreSQL
+./deploy/enterprise.sh
+
+# Kubernetes deployment
+kubectl apply -f deploy/k8s/
+```
+
+---
+
+## ✨ Features
+
+### 🔍 Core Search
+- **Universal Search** - Aggregate results from 70+ search engines
+- **Real-time Results** - Sub-second response times
+- **Advanced Filtering** - Time, language, region, content type
+- **Safe Search** - Enterprise content filtering
+- **Mobile Responsive** - Optimized for all devices
+
+### 👥 User Management
+- **Role-Based Access** - Admin, User, Viewer permissions
+- **Single Sign-On** - LDAP/OAuth integration ready
+- **User Analytics** - Search behavior insights
+- **Session Management** - Secure, trackable sessions
+- **API Key Management** - Programmatic access control
+
+### 📊 Analytics & Intelligence
+- **Search Analytics** - Query patterns and trends
+- **Performance Monitoring** - Response time tracking
+- **User Behavior** - Usage patterns and insights
+- **Export Capabilities** - CSV, JSON, PDF reports
+- **Real-time Dashboards** - Live operational metrics
+
+### 🌐 Enterprise Networking
+- **Rotating Proxies** - Scale without rate limiting
+- **Load Balancing** - High-availability deployment
+- **Caching Layer** - Redis-powered performance
+- **API Gateway** - Centralized access management
+- **Health Monitoring** - Automated service checks
+
+### 📝 Content Management
+- **Blog Platform** - Integrated content publishing
+- **Newsletter System** - Automated distribution
+- **Content Agents** - Automated content generation
+- **SEO Optimization** - Built-in search optimization
+- **Template System** - Customizable layouts
+
+### 🔧 Tool Servers
+- **Academic Research** - Scholarly search enhancement
+- **Deep Search** - Multi-layer information discovery  
+- **Report Generation** - Automated document creation
+- **Custom Tools** - Extensible plugin architecture
+
+---
+
+## 🆚 Center-Deep vs Unicorn Search
+
+| Feature | Unicorn Search (Open Source) | Center-Deep Pro (Enterprise) |
+|---------|------------------------------|------------------------------|
+| **Core Search** | ✅ Basic search aggregation | ✅ Advanced search with analytics |
+| **Tool Servers** | ✅ 4 basic tools | ✅ Full tool suite + custom tools |
+| **User Management** | ❌ Single user | ✅ Multi-user with RBAC |
+| **Analytics** | ❌ Basic stats only | ✅ Advanced analytics & reporting |
+| **Proxy Support** | ❌ None | ✅ Enterprise rotating proxies |
+| **Content Management** | ❌ None | ✅ Blog + Newsletter system |
+| **API Access** | ✅ Basic API | ✅ Full API with key management |
+| **Support** | 🌐 Community | 📞 Enterprise support |
+| **Licensing** | 🆓 MIT License | 💼 Commercial license |
+
+**→ Try [Unicorn Search](https://github.com/MagicUnicornInc/Unicorn-Search) for basic needs**
+
+---
 
 ### 🔍 Enhanced Search Platform
 - **Enterprise Admin Dashboard**: Complete control panel for system administrators
@@ -304,34 +427,84 @@ python app.py
 - Minimal container privileges
 - Network isolation between services
 
-## 📄 Licensing
+## 💼 Licensing & Support
 
-Center Deep is a commercial fork of SearXNG, developed by Magic Unicorn Unconventional Technology & Stuff Inc.
+### Commercial License
+Center-Deep Pro is available under a commercial license for enterprise use. Contact us for:
 
-### License Types
-- **Professional License**: Required for UC-1-Pro deployments and enterprise use
-- **Individual License**: Available for personal professional installations
-- **Base SearXNG**: Original SearXNG components maintain their AGPL-3.0 licensing
+- **Volume discounts** for large deployments
+- **Custom development** and feature requests  
+- **Professional services** and implementation support
+- **Training programs** for your team
 
-### What's Included
-- ✅ Full source code access
-- ✅ Admin dashboard and controls
-- ✅ Tool server integration
-- ✅ Priority support (with license)
-- ✅ Commercial use rights (with license)
+### Support Tiers
 
-## 🤝 Support
+| Tier | Response Time | Channels | Included |
+|------|---------------|----------|----------|
+| **Enterprise** | 4 hours | Email, Phone, Slack | Setup, Training, Updates |
+| **Enterprise+** | 1 hour | All + Video Call | Custom Development |
+| **White Glove** | 15 minutes | All + Dedicated Rep | Full Management |
 
-- **Documentation**: See `/docs` folder
-- **Issues**: GitHub Issues for bug reports
-- **Commercial Support**: Available with professional license
-- **Community**: Discussions via GitHub
+### Contact Information
+- **Sales**: sales@unicorncommander.com
+- **Support**: support@unicorncommander.com  
+- **Demo Request**: https://unicorncommander.com/demo
+- **Documentation**: https://docs.unicorncommander.com
 
-## 🙏 Credits
+---
 
-Developed and maintained by **Magic Unicorn Unconventional Technology & Stuff Inc.**
+## 🤝 Contributing
 
-Based on the open-source SearXNG project with significant enhancements for professional use.
+### Enterprise Partners
+We work with select partners for:
+- **System Integration** services
+- **Custom Development** projects
+- **Training and Certification** programs
+- **Reseller Partnerships**
+
+### Community
+- **Feature Requests** - Submit via GitHub Issues
+- **Bug Reports** - Include reproduction steps
+- **Documentation** - Help improve our guides
+- **Feedback** - Share your use cases and suggestions
+
+---
+
+## 📄 License
+
+Center-Deep Pro is proprietary software licensed for commercial use.
+
+**Evaluation License**: 30-day free trial for evaluation purposes  
+**Development License**: For development and testing environments  
+**Production License**: For live enterprise deployments
+
+See [LICENSE](LICENSE) for full terms and conditions.
+
+For open-source alternatives, see [Unicorn Search](https://github.com/MagicUnicornInc/Unicorn-Search).
+
+---
+
+## 🏢 About Unicorn Commander
+
+Center-Deep Pro is developed by **Unicorn Commander**, the enterprise division of **Magic Unicorn Unconventional Technology & Stuff Inc**.
+
+We specialize in enterprise search intelligence, private data discovery, and custom search platform development for organizations that demand the highest levels of security, performance, and customization.
+
+**Learn more**: https://unicorncommander.com
+
+---
+
+<div align="center">
+
+**Ready to transform your organization's search capabilities?**
+
+[**Request Demo**](https://unicorncommander.com/demo) • [**Start Trial**](https://unicorncommander.com/trial) • [**Contact Sales**](mailto:sales@unicorncommander.com)
+
+---
+
+© 2025 Unicorn Commander. All rights reserved.
+
+</div>
 
 ### Technologies Used
 - Flask & FastAPI
