@@ -61,17 +61,31 @@ We love SearXNG! It's an amazing privacy-focused metasearch engine. But we kept 
 
 ## ⚡ **Quick Start**
 
-### 🐳 **Literally One Command**
+### 🎯 **The Truly One-Click Install**
 
 ```bash
-# Clone and run - that's it!
+# Clone and auto-install (handles Docker installation too!)
 git clone https://github.com/Unicorn-Commander/Center-Deep.git && cd Center-Deep
-docker compose -f docker-compose.center-deep.yml up -d
+./install.sh
 
-# Access at http://localhost:8888
+# That's literally it. The installer handles everything.
 ```
 
-**No configuration files. No complex setup. It just works.** ✨
+**Our installer automatically:**
+- ✅ Detects your OS (Linux, macOS, Windows/WSL2)
+- ✅ Checks if Docker is installed (installs it if needed!)
+- ✅ Sets up Docker Compose
+- ✅ Configures Redis with optimized settings
+- ✅ Creates secure keys automatically
+- ✅ Starts all services
+- ✅ Verifies everything is running
+
+### 🐳 **Manual Docker Start** (if you prefer)
+
+```bash
+docker compose -f docker-compose.center-deep.yml up -d
+# Access at http://localhost:8888
+```
 
 > 🔑 **Admin Panel**: `http://localhost:8888/admin` | Username: `ucadmin` | Password: `MagicUnicorn!8-)`
 

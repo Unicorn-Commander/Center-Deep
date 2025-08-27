@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Center Deep Installation Script
-# Magic Unicorn Unconventional Technology & Stuff Inc.
+# Center Deep - Universal Installation Script
+# Detects OS and installs Docker if needed
+# Built by Magic Unicorn Unconventional Technology & Stuff Inc
 
 set -e  # Exit on error
 
@@ -10,21 +11,50 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Banner
-echo -e "${BLUE}"
-echo "═══════════════════════════════════════════════════════════════"
-echo "       Center Deep - Professional Search Platform"
-echo "       Magic Unicorn Unconventional Technology & Stuff Inc."
-echo "═══════════════════════════════════════════════════════════════"
+echo -e "${CYAN}"
+cat << "EOF"
+   ___           _            ___               
+  / __\___ _ __ | |_ ___ _ __ /   \___  ___ _ __
+ / /  / _ \ '_ \| __/ _ \ '__// /\ / _ \/ _ \ '_ \
+/ /__|  __/ | | | ||  __/ | / /_//  __/  __/ |_) |
+\____/\___|_| |_|\__\___|_| /___,' \___|\___| .__/
+                                            |_|
+        🦄 The One-Click Privacy Search Engine 🦄
+        
+    Built by Magic Unicorn Unconventional Technology
+EOF
 echo -e "${NC}"
 
-# Check if running as root
-if [ "$EUID" -eq 0 ]; then 
-   echo -e "${RED}Please do not run this script as root!${NC}"
-   exit 1
-fi
+# Function to detect OS
+detect_os() {
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux
+        if [ -f /etc/os-release ]; then
+            . /etc/os-release
+            OS=$ID
+            VER=$VERSION_ID
+        else
+            OS=$(uname -s)
+            VER=$(uname -r)
+        fi
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        OS="macos"
+        VER=$(sw_vers -productVersion)
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "win32" ]]; then
+        # Windows
+        OS="windows"
+        VER=$(ver)
+    else
+        OS="unknown"
+        VER="unknown"
+    fi
+}
 
 # Function to check if command exists
 command_exists() {
@@ -44,258 +74,299 @@ print_info() {
     echo -e "${BLUE}[i]${NC} $1"
 }
 
-# Check prerequisites
-echo -e "${YELLOW}Checking prerequisites...${NC}"
+print_warning() {
+    echo -e "${YELLOW}[!]${NC} $1"
+}
 
-# Check Docker
+# Function to install Docker on Ubuntu/Debian
+install_docker_debian() {
+    echo -e "${YELLOW}Installing Docker on Debian/Ubuntu...${NC}"
+    
+    # Update package index
+    sudo apt-get update
+    
+    # Install prerequisites
+    sudo apt-get install -y \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release
+    
+    # Add Docker's official GPG key
+    sudo mkdir -m 0755 -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/$OS/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    
+    # Set up repository
+    echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$OS \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
+    # Install Docker Engine
+    sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    
+    # Start and enable Docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    
+    # Add current user to docker group
+    sudo usermod -aG docker $USER
+    
+    print_status "Docker installed successfully on Debian/Ubuntu"
+    print_warning "You may need to log out and back in for group changes to take effect"
+}
+
+# Function to install Docker on RHEL/CentOS/Fedora
+install_docker_rhel() {
+    echo -e "${YELLOW}Installing Docker on RHEL/CentOS/Fedora...${NC}"
+    
+    # Remove old versions
+    sudo dnf remove -y docker \
+                      docker-client \
+                      docker-client-latest \
+                      docker-common \
+                      docker-latest \
+                      docker-latest-logrotate \
+                      docker-logrotate \
+                      docker-engine
+    
+    # Set up repository
+    sudo dnf -y install dnf-plugins-core
+    sudo dnf config-manager --add-repo https://download.docker.com/linux/$OS/docker-ce.repo
+    
+    # Install Docker Engine
+    sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    
+    # Start and enable Docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    
+    # Add current user to docker group
+    sudo usermod -aG docker $USER
+    
+    print_status "Docker installed successfully on RHEL/CentOS/Fedora"
+    print_warning "You may need to log out and back in for group changes to take effect"
+}
+
+# Function to install Docker on macOS
+install_docker_macos() {
+    echo -e "${YELLOW}Installing Docker on macOS...${NC}"
+    
+    # Check if Homebrew is installed
+    if ! command_exists brew; then
+        print_info "Installing Homebrew first..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    
+    # Install Docker Desktop using Homebrew
+    brew install --cask docker
+    
+    print_status "Docker Desktop installed successfully on macOS"
+    print_warning "Please start Docker Desktop from Applications folder"
+    print_info "Waiting for Docker Desktop to start..."
+    
+    # Wait for Docker to start
+    while ! docker system info > /dev/null 2>&1; do
+        sleep 2
+        echo -n "."
+    done
+    echo
+}
+
+# Function to install Docker on Windows (WSL2)
+install_docker_windows() {
+    echo -e "${YELLOW}Docker installation on Windows${NC}"
+    echo
+    print_info "For Windows, please install Docker Desktop manually:"
+    echo "1. Download Docker Desktop from: https://www.docker.com/products/docker-desktop/"
+    echo "2. Run the installer"
+    echo "3. Enable WSL2 integration"
+    echo "4. Start Docker Desktop"
+    echo "5. Re-run this script in WSL2 or Git Bash"
+    echo
+    read -p "Press Enter once Docker Desktop is installed and running..."
+}
+
+# Main installation logic
+echo -e "${MAGENTA}Detecting operating system...${NC}"
+detect_os
+print_info "Detected OS: $OS (Version: $VER)"
+
+# Check if Docker is already installed
 if command_exists docker; then
-    print_status "Docker is installed"
+    print_status "Docker is already installed"
+    docker_version=$(docker --version)
+    print_info "Docker version: $docker_version"
 else
-    print_error "Docker is not installed"
-    echo "Please install Docker from https://docs.docker.com/get-docker/"
-    exit 1
+    print_warning "Docker is not installed"
+    
+    # Ask user if they want to install Docker
+    echo -e "${YELLOW}Would you like to install Docker automatically? (y/n)${NC}"
+    read -p "> " install_docker
+    
+    if [[ "$install_docker" == "y" ]] || [[ "$install_docker" == "Y" ]]; then
+        case "$OS" in
+            ubuntu|debian)
+                install_docker_debian
+                ;;
+            centos|rhel|fedora)
+                install_docker_rhel
+                ;;
+            macos)
+                install_docker_macos
+                ;;
+            windows)
+                install_docker_windows
+                ;;
+            *)
+                print_error "Unsupported OS: $OS"
+                echo "Please install Docker manually from: https://docs.docker.com/get-docker/"
+                exit 1
+                ;;
+        esac
+    else
+        print_error "Docker is required to run Center Deep"
+        echo "Please install Docker from: https://docs.docker.com/get-docker/"
+        exit 1
+    fi
 fi
 
 # Check Docker Compose
+echo -e "\n${MAGENTA}Checking Docker Compose...${NC}"
 if command_exists docker-compose || docker compose version >/dev/null 2>&1; then
     print_status "Docker Compose is installed"
+    if command_exists docker-compose; then
+        DOCKER_COMPOSE="docker-compose"
+    else
+        DOCKER_COMPOSE="docker compose"
+    fi
 else
     print_error "Docker Compose is not installed"
-    echo "Please install Docker Compose from https://docs.docker.com/compose/install/"
-    exit 1
-fi
-
-# Check Python (optional for local development)
-if command_exists python3; then
-    print_status "Python 3 is installed (optional)"
-else
-    print_info "Python 3 not found (only needed for local development)"
+    
+    # Docker Compose should come with Docker Desktop on Mac/Windows
+    # On Linux, it might need separate installation
+    if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]] || [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]] || [[ "$OS" == "fedora" ]]; then
+        print_info "Installing Docker Compose plugin..."
+        sudo apt-get update && sudo apt-get install -y docker-compose-plugin || \
+        sudo dnf install -y docker-compose-plugin
+    fi
 fi
 
 # Check if Docker daemon is running
+echo -e "\n${MAGENTA}Checking Docker daemon...${NC}"
 if docker info >/dev/null 2>&1; then
     print_status "Docker daemon is running"
 else
-    print_error "Docker daemon is not running"
-    echo "Please start Docker and try again"
-    exit 1
+    print_warning "Docker daemon is not running"
+    
+    if [[ "$OS" == "macos" ]] || [[ "$OS" == "windows" ]]; then
+        print_info "Please start Docker Desktop"
+        print_info "Waiting for Docker to start..."
+        while ! docker info >/dev/null 2>&1; do
+            sleep 2
+            echo -n "."
+        done
+        echo
+        print_status "Docker daemon is now running"
+    else
+        print_info "Starting Docker daemon..."
+        sudo systemctl start docker
+        print_status "Docker daemon started"
+    fi
 fi
 
 # Create necessary directories
-echo -e "\n${YELLOW}Creating directories...${NC}"
-mkdir -p instance
-mkdir -p searxng
-mkdir -p logs
+echo -e "\n${MAGENTA}Setting up Center Deep...${NC}"
+mkdir -p instance searxng logs data
 print_status "Directories created"
 
 # Check if .env file exists
 if [ ! -f .env ]; then
-    echo -e "\n${YELLOW}Creating environment file...${NC}"
+    echo -e "\n${YELLOW}Creating environment configuration...${NC}"
     cat > .env << 'EOF'
-# Center Deep Environment Configuration
+# Center Deep Configuration
+# Generated by Magic Unicorn Installer
 
-# Flask Configuration
-SECRET_KEY=change-this-to-a-random-secret-key-in-production
-FLASK_ENV=production
+# Admin Credentials (CHANGE THESE!)
+ADMIN_USERNAME=ucadmin
+ADMIN_PASSWORD=MagicUnicorn!8-)
 
-# SearXNG Configuration
-SEARXNG_SECRET=change-this-to-a-random-secret
+# Redis Configuration (port 6385 to avoid conflicts)
+USE_EXTERNAL_REDIS=false
+REDIS_PORT=6385
 
-# Redis Configuration (optional)
-REDIS_HOST=redis
-REDIS_PORT=6379
-
-# Tool Server LLM Configurations (optional)
-# Add your LLM API keys here if you want to use them
-# SEARCH_LLM_API_BASE=https://api.openai.com/v1
-# SEARCH_LLM_API_KEY=sk-...
-# SEARCH_LLM_MODEL=gpt-3.5-turbo
-
-# DEEP_SEARCH_LLM_API_BASE=https://api.openai.com/v1
-# DEEP_SEARCH_LLM_API_KEY=sk-...
-# DEEP_SEARCH_LLM_MODEL=gpt-4
-
-# REPORT_LLM_API_BASE=https://api.openai.com/v1
-# REPORT_LLM_API_KEY=sk-...
-# REPORT_LLM_MODEL=gpt-4
-
-# ACADEMIC_LLM_API_BASE=https://api.openai.com/v1
-# ACADEMIC_LLM_API_KEY=sk-...
-# ACADEMIC_LLM_MODEL=gpt-4
+# Secret Keys (auto-generated)
 EOF
-    print_status "Environment file created"
-    print_info "Please edit .env file to add your API keys and change secret keys"
-else
-    print_status "Environment file already exists"
-fi
-
-# Create SearXNG settings if not exist
-if [ ! -f searxng/settings.yml ]; then
-    echo -e "\n${YELLOW}Creating SearXNG configuration...${NC}"
-    cat > searxng/settings.yml << 'EOF'
-general:
-  instance_name: "Center Deep Search"
-  contact_url: false
-  enable_metrics: true
-
-server:
-  secret_key: "change-this-secret-key"
-  base_url: "http://localhost:8888/"
-  image_proxy: true
-
-ui:
-  default_theme: simple
-  theme_args:
-    simple_style: dark
-
-search:
-  safe_search: 0
-  autocomplete: "google"
-  default_lang: "en"
-
-engines:
-  - name: google
-    engine: google
-    shortcut: g
-  - name: bing
-    engine: bing
-    shortcut: b
-  - name: duckduckgo
-    engine: duckduckgo
-    shortcut: ddg
-  - name: wikipedia
-    engine: wikipedia
-    shortcut: wp
-  - name: github
-    engine: github
-    shortcut: gh
-  - name: reddit
-    engine: reddit
-    shortcut: re
-  - name: stackoverflow
-    engine: stackoverflow
-    shortcut: st
-EOF
-    print_status "SearXNG configuration created"
-else
-    print_status "SearXNG configuration already exists"
-fi
-
-# Build Docker images
-echo -e "\n${YELLOW}Building Docker images...${NC}"
-
-# Build main application
-echo "Building Center Deep application..."
-docker build -t center-deep:latest . || {
-    print_error "Failed to build Center Deep image"
-    exit 1
-}
-print_status "Center Deep image built"
-
-# Build tool servers
-echo -e "\n${YELLOW}Building tool server images...${NC}"
-
-for tool in search deep-search report academic; do
-    if [ -d "toolserver/$tool" ]; then
-        echo "Building $tool tool server..."
-        docker build -t center-deep-tool-$tool:latest ./toolserver/$tool || {
-            print_error "Failed to build $tool tool server"
-            continue
-        }
-        print_status "$tool tool server built"
+    
+    # Generate secure keys
+    if command_exists openssl; then
+        echo "SECRET_KEY=$(openssl rand -hex 32)" >> .env
+        echo "SEARXNG_SECRET_KEY=$(openssl rand -hex 32)" >> .env
     else
-        print_info "Skipping $tool tool server (directory not found)"
+        echo "SECRET_KEY=$(head -c 32 /dev/urandom | base64)" >> .env
+        echo "SEARXNG_SECRET_KEY=$(head -c 32 /dev/urandom | base64)" >> .env
     fi
-done
+    
+    print_status "Environment configuration created"
+    print_warning "Default admin: ucadmin / MagicUnicorn!8-)"
+else
+    print_status "Environment configuration already exists"
+fi
 
-# Start services
+# Start Center Deep
+echo -e "\n${CYAN}═══════════════════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}           🚀 Starting Center Deep 🚀${NC}"
+echo -e "${CYAN}═══════════════════════════════════════════════════════════════${NC}"
+
+# Pull and start services
 echo -e "\n${YELLOW}Starting services...${NC}"
-
-# Start main services (Redis and SearXNG)
-docker-compose up -d || {
-    print_error "Failed to start main services"
-    exit 1
-}
-print_status "Main services started"
-
-# Optional: Start tool servers
-echo -e "\n${YELLOW}Tool servers can be started from the admin dashboard${NC}"
-echo "Or manually with: docker-compose -f docker-compose.tools.yml up -d"
+$DOCKER_COMPOSE -f docker-compose.center-deep.yml up -d
 
 # Wait for services to be ready
-echo -e "\n${YELLOW}Waiting for services to be ready...${NC}"
+echo -e "\n${YELLOW}Waiting for services to initialize...${NC}"
 sleep 10
 
 # Check service health
-echo -e "\n${YELLOW}Checking service health...${NC}"
+echo -e "\n${MAGENTA}Checking service health...${NC}"
+
+# Check main app
+if curl -s http://localhost:8888 >/dev/null 2>&1; then
+    print_status "Center Deep is running"
+else
+    print_warning "Center Deep is starting up..."
+fi
 
 # Check Redis
-if docker-compose exec -T redis redis-cli ping >/dev/null 2>&1; then
-    print_status "Redis is healthy"
+if docker exec center-deep-redis redis-cli ping >/dev/null 2>&1; then
+    print_status "Redis cache is healthy"
 else
-    print_error "Redis health check failed"
+    print_warning "Redis is initializing..."
 fi
 
-# Check SearXNG
-if curl -s http://localhost:8888 >/dev/null; then
-    print_status "SearXNG is accessible"
-else
-    print_error "SearXNG is not accessible"
-fi
-
-# Run the Center Deep application
-echo -e "\n${YELLOW}Starting Center Deep application...${NC}"
-
-# For development (local Python)
-if command_exists python3 && [ -f "app.py" ]; then
-    echo "Starting in development mode..."
-    
-    # Create virtual environment if not exists
-    if [ ! -d "venv" ]; then
-        python3 -m venv venv
-        print_status "Virtual environment created"
-    fi
-    
-    # Activate and install dependencies
-    source venv/bin/activate
-    pip install -r requirements.txt >/dev/null 2>&1
-    print_status "Python dependencies installed"
-    
-    echo -e "\n${GREEN}Installation complete!${NC}"
-    echo -e "\n${YELLOW}Starting Center Deep...${NC}"
-    echo "Access the application at: http://localhost:8890"
-    echo "Default login: ucadmin / MagicUnicorn!8-)"
-    echo -e "\n${BLUE}Press Ctrl+C to stop${NC}\n"
-    
-    python app.py
-else
-    # For production (Docker only)
-    docker run -d \
-        --name center-deep \
-        --network unicorn-network \
-        -p 8890:8890 \
-        -v $(pwd)/instance:/app/instance \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        --env-file .env \
-        center-deep:latest || {
-        print_error "Failed to start Center Deep container"
-        exit 1
-    }
-    
-    print_status "Center Deep container started"
-    
-    echo -e "\n${GREEN}═══════════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}Installation complete!${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
-    echo
-    echo "Access the application at: http://localhost:8890"
-    echo "Default login: ucadmin / MagicUnicorn!8-)"
-    echo
-    echo "Admin Dashboard: http://localhost:8890/admin"
-    echo "SearXNG: http://localhost:8888"
-    echo
-    echo "To view logs: docker logs center-deep"
-    echo "To stop: docker stop center-deep"
-    echo
-    echo -e "${YELLOW}Tool servers can be managed from the admin dashboard${NC}"
-fi
+# Success message
+echo -e "\n${GREEN}═══════════════════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}       🦄 Center Deep Successfully Installed! 🦄${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
+echo
+echo -e "${CYAN}Access Points:${NC}"
+echo -e "  🔍 Search Engine:  ${BLUE}http://localhost:8888${NC}"
+echo -e "  ⚙️  Admin Panel:    ${BLUE}http://localhost:8888/admin${NC}"
+echo
+echo -e "${CYAN}Default Admin:${NC}"
+echo -e "  Username: ${YELLOW}ucadmin${NC}"
+echo -e "  Password: ${YELLOW}MagicUnicorn!8-)${NC}"
+echo -e "  ${RED}⚠ Please change these after first login!${NC}"
+echo
+echo -e "${CYAN}Tool Servers (Optional):${NC}"
+echo -e "  To enable AI tool servers for OpenWebUI:"
+echo -e "  ${BLUE}$DOCKER_COMPOSE --profile tools -f docker-compose.center-deep.yml up -d${NC}"
+echo
+echo -e "${CYAN}Useful Commands:${NC}"
+echo -e "  View logs:    ${BLUE}$DOCKER_COMPOSE -f docker-compose.center-deep.yml logs -f${NC}"
+echo -e "  Stop all:     ${BLUE}$DOCKER_COMPOSE -f docker-compose.center-deep.yml down${NC}"
+echo -e "  Restart:      ${BLUE}$DOCKER_COMPOSE -f docker-compose.center-deep.yml restart${NC}"
+echo -e "  Update:       ${BLUE}git pull && $DOCKER_COMPOSE -f docker-compose.center-deep.yml up -d --build${NC}"
+echo
+echo -e "${GREEN}Enjoy your privacy-first search experience! 🌊${NC}"
+echo -e "${MAGENTA}Built with ❤️ by Magic Unicorn Unconventional Technology & Stuff Inc${NC}"
+echo -e "${MAGENTA}https://magicunicorn.tech | https://unicorncommander.com${NC}"
