@@ -27,21 +27,31 @@ login_manager.login_view = 'login'
 
 # Initialize Redis for statistics (optional, falls back to in-memory if not available)
 try:
-    # Use environment variable or fallback to localhost
-    redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/2')
-    if redis_url.startswith('redis://'):
-        # Parse redis URL
-        import urllib.parse
-        parsed = urllib.parse.urlparse(redis_url)
-        redis_host = parsed.hostname or 'localhost'
-        redis_port = parsed.port or 6379
-        redis_db = int(parsed.path.lstrip('/')) if parsed.path.lstrip('/') else 0
-    else:
-        redis_host = 'localhost'
-        redis_port = 6379
-        redis_db = 0
+    # Check if using external Redis
+    use_external_redis = os.environ.get('USE_EXTERNAL_REDIS', 'false').lower() == 'true'
     
-    redis_client = redis.Redis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
+    if use_external_redis:
+        # Use external Redis configuration
+        redis_host = os.environ.get('EXTERNAL_REDIS_HOST', 'localhost')
+        redis_port = int(os.environ.get('EXTERNAL_REDIS_PORT', 6379))
+        redis_db = int(os.environ.get('EXTERNAL_REDIS_DB', 0))
+        redis_password = os.environ.get('EXTERNAL_REDIS_PASSWORD', None)
+        print(f"📡 Connecting to external Redis at {redis_host}:{redis_port}/{redis_db}")
+    else:
+        # Use internal Redis (Docker container)
+        redis_host = os.environ.get('REDIS_HOST', 'redis-search')
+        redis_port = int(os.environ.get('REDIS_PORT', 6379))
+        redis_db = 0
+        redis_password = None
+        print(f"📡 Connecting to internal Redis at {redis_host}:{redis_port}")
+    
+    redis_client = redis.Redis(
+        host=redis_host, 
+        port=redis_port, 
+        db=redis_db, 
+        password=redis_password,
+        decode_responses=True
+    )
     redis_client.ping()
     print(f"✅ Redis connected successfully to {redis_host}:{redis_port}/{redis_db}")
 except Exception as e:

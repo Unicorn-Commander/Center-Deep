@@ -4,7 +4,7 @@
 
 # 🌊 Center Deep
 
-## **The Privacy-First Meta-Search Engine That Killed SearXNG**
+## **The One-Click Privacy Search Engine**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE_MIT)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](docker-compose.yml)
@@ -14,42 +14,44 @@
 
 ### 🦄 **Built by [Magic Unicorn Unconventional Technology & Stuff Inc](https://magicunicorn.tech)**
 
-**Center Deep isn't a fork. It's the evolution.** We took everything people loved about SearXNG, threw out what didn't work, and built the search engine that should have existed all along.
+**Center Deep** is a fork of the excellent SearXNG project, reimagined with a focus on simplicity and ease of deployment. We saw many users struggling with SearXNG's setup process, so we created a one-click solution that just works out of the box while adding modern features like AI integration and a beautiful admin panel.
 
-[**🚀 Get Started**](#-quick-start) • [**📸 Screenshots**](#-screenshots) • [**🆚 Compare Editions**](#-center-deep-vs-center-deep-pro) • [**💬 Discord**](#)
+[**🚀 Get Started**](#-quick-start) • [**📸 Screenshots**](#-screenshots) • [**🆚 Compare Editions**](#-center-deep-vs-center-deep-pro) • [**💬 Community**](#-community--support)
 
 </div>
 
 ---
 
-<div align="center">
+## 🎯 **Why Center Deep?**
 
-## 🏆 **Why Developers Choose Center Deep**
+We love SearXNG! It's an amazing privacy-focused metasearch engine. But we kept hearing the same feedback:
+- "The setup is too complicated"
+- "I wish it had a web UI for configuration"
+- "Can it integrate with my AI tools?"
+- "The interface needs modernization"
 
-</div>
+**Center Deep** addresses these concerns while maintaining all the privacy features that make SearXNG great.
 
 <table>
 <tr>
 <td width="50%">
 
-### ❌ **What You're Leaving Behind**
-- 😴 **Dated UI** from 2015
-- 📁 **Config file hell**
-- 🔧 **Manual everything**
-- 🐌 **Slow updates**
-- 🚫 **No AI integration**
-- 💀 **Zero user management**
+### 🤝 **Built on SearXNG's Foundation**
+- Same powerful search aggregation
+- Same privacy-first approach
+- Same open-source spirit
+- Compatible with SearXNG instances
 
 </td>
 <td width="50%">
 
-### ✅ **What You're Getting**
-- 🎨 **Gorgeous modern UI**
-- 🎛️ **Web-based admin panel**
-- 🤖 **AI-powered search tools**
-- ⚡ **One-command deployment**
-- 🔐 **Enterprise-ready auth**
-- 📊 **Real-time analytics**
+### ✨ **What We Added**
+- One-command Docker deployment
+- Beautiful web-based admin panel
+- AI tool server integration
+- Modern, responsive UI
+- Automatic configuration
+- Built-in user management
 
 </td>
 </tr>
@@ -59,22 +61,53 @@
 
 ## ⚡ **Quick Start**
 
-### 🐳 **30 Seconds to Launch**
+### 🐳 **Literally One Command**
 
 ```bash
-# Clone it
+# Clone and run - that's it!
 git clone https://github.com/Unicorn-Commander/Center-Deep.git && cd Center-Deep
-
-# Run it
 docker compose -f docker-compose.center-deep.yml up -d
 
-# Use it
-open http://localhost:8888
+# Access at http://localhost:8888
 ```
 
-**That's it.** No BS. No 47-step configuration. It just works.
+**No configuration files. No complex setup. It just works.** ✨
 
 > 🔑 **Admin Panel**: `http://localhost:8888/admin` | Username: `ucadmin` | Password: `MagicUnicorn!8-)`
+
+---
+
+## 🔧 **Redis Configuration Options**
+
+Center Deep uses Redis for caching and performance optimization. We provide flexible options:
+
+### **Option 1: Use Our Included Redis** (Default)
+```bash
+# Runs Redis on port 6385 (non-standard to avoid conflicts)
+docker compose -f docker-compose.center-deep.yml up -d
+```
+
+### **Option 2: Use Your Existing Redis**
+```bash
+# Set environment variables before starting
+export USE_EXTERNAL_REDIS=true
+export EXTERNAL_REDIS_HOST=localhost
+export EXTERNAL_REDIS_PORT=6379
+export EXTERNAL_REDIS_DB=2  # Optional: specific database number
+
+docker compose -f docker-compose.center-deep.yml up -d
+```
+
+### **Option 3: Configure in .env File**
+```env
+# Edit .env file
+USE_EXTERNAL_REDIS=true
+EXTERNAL_REDIS_HOST=your-redis-server
+EXTERNAL_REDIS_PORT=6379
+EXTERNAL_REDIS_PASSWORD=your-password  # If authentication is required
+```
+
+> 💡 **Note**: We use port 6385 by default to avoid conflicts with existing Redis installations
 
 ---
 
@@ -82,13 +115,13 @@ open http://localhost:8888
 
 <div align="center">
 
-### **🏠 The Cleanest Search Interface Ever Built**
+### **🏠 Clean, Modern Search Interface**
 <img src="screenshots/main-page.png" alt="Main Search Page" width="800" style="border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
 
-### **🔍 Search Results That Actually Make Sense**
+### **🔍 Beautiful Search Results**
 <img src="screenshots/search-results.png" alt="Search Results" width="800" style="border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
 
-### **⚙️ Admin Dashboard That Doesn't Suck**
+### **⚙️ Web-Based Admin Dashboard**
 <img src="screenshots/settings-full.png" alt="Admin Dashboard" width="800" style="border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
 
 </div>
@@ -99,45 +132,20 @@ open http://localhost:8888
 
 <div align="center">
 
-| 🔒 **Privacy First** | 🤖 **AI Integration** | 🎨 **Beautiful UI** | ⚙️ **Admin Heaven** |
+| 🔒 **Privacy First** | 🤖 **AI Integration** | 🎨 **Beautiful UI** | ⚙️ **Easy Admin** |
 |:---:|:---:|:---:|:---:|
 | Zero tracking | 4 OpenWebUI tools | Dark/Light themes | Web-based config |
 | No cookies needed | LLM model discovery | Responsive design | User management |
-| No ads ever | Tool server control | Floating mascot 🦄 | Real-time stats |
-| IP rotation ready | Native integration | Clean results | One-click updates |
+| No ads ever | Tool server control | Unicorn mascot 🦄 | Real-time stats |
+| IP rotation ready | Native integration | Clean results | Auto-configuration |
 
 </div>
-
----
-
-## 🆚 **Center Deep vs Center Deep Pro**
-
-<div align="center">
-
-### **Choose Your Fighter**
-
-| Feature | 🆓 **Center Deep** <br>(Open Source) | 💼 **Center Deep Pro** <br>(Enterprise) |
-|:--------|:----------------------------------:|:----------------------------------------:|
-| **🔍 Core Search** | ✅ 70+ search engines | ✅ 70+ engines + priority results |
-| **🤖 AI Tool Servers** | ✅ 4 basic tools | ✅ Unlimited custom tools |
-| **👥 Users** | ✅ Unlimited local users | ✅ SSO/LDAP/OAuth2 |
-| **📊 Analytics** | ✅ Basic statistics | ✅ Advanced dashboards + exports |
-| **🌐 Proxy Support** | ✅ Basic proxy config | ✅ Rotating proxy pools |
-| **📝 Content System** | ❌ | ✅ Blog + Newsletter platform |
-| **🔗 API Access** | ✅ Basic API | ✅ Full REST API + webhooks |
-| **🎨 Customization** | ✅ Themes | ✅ White-label + custom branding |
-| **📞 Support** | Community | 24/7 Enterprise support |
-| **💰 Price** | **FREE Forever** | **[Contact Sales](mailto:sales@unicorncommander.com)** |
-
-</div>
-
-> 🚀 **Need enterprise features?** [Get Center Deep Pro](mailto:sales@unicorncommander.com)
 
 ---
 
 ## 🛠️ **Tool Servers for OpenWebUI**
 
-### **Turn Your LLM Into a Search Monster**
+### **AI-Powered Search Enhancement**
 
 <table>
 <tr>
@@ -146,7 +154,7 @@ open http://localhost:8888
 ### 🔍 **Search Tool**
 Port: `13050`
 
-Web, GitHub, Reddit, Stack Overflow - all in one
+Web, GitHub, Reddit, Stack Overflow integration
 
 </td>
 <td width="25%">
@@ -176,18 +184,43 @@ Scholarly papers with proper formatting
 </tr>
 </table>
 
-### **Integration is Dead Simple**
+### **Simple Integration**
 
 ```bash
 # Start tool servers
 docker compose --profile tools -f docker-compose.center-deep.yml up -d
 
-# Add to OpenWebUI
-http://localhost:13050  # → Search Tool
-http://localhost:13051  # → Deep Search
-http://localhost:13052  # → Report Generator
-http://localhost:13053  # → Academic Research
+# Add these URLs to OpenWebUI
+http://localhost:13050  # Search Tool
+http://localhost:13051  # Deep Search
+http://localhost:13052  # Report Generator
+http://localhost:13053  # Academic Research
 ```
+
+---
+
+## 🆚 **Center Deep vs Center Deep Pro**
+
+<div align="center">
+
+### **Choose Your Edition**
+
+| Feature | 🆓 **Center Deep** <br>(Open Source) | 💼 **Center Deep Pro** <br>(Enterprise) |
+|:--------|:----------------------------------:|:----------------------------------------:|
+| **🔍 Core Search** | ✅ 70+ search engines | ✅ 70+ engines + priority results |
+| **🤖 AI Tool Servers** | ✅ 4 basic tools | ✅ Unlimited custom tools |
+| **👥 Users** | ✅ Unlimited local users | ✅ SSO/LDAP/OAuth2 |
+| **📊 Analytics** | ✅ Basic statistics | ✅ Advanced dashboards + exports |
+| **🌐 Proxy Support** | ✅ Basic proxy config | ✅ Rotating proxy pools |
+| **📝 Content System** | ❌ | ✅ Blog + Newsletter platform |
+| **🔗 API Access** | ✅ Basic API | ✅ Full REST API + webhooks |
+| **🎨 Customization** | ✅ Themes | ✅ White-label + custom branding |
+| **📞 Support** | Community | 24/7 Enterprise support |
+| **💰 Price** | **FREE Forever** | **[Contact Sales](mailto:sales@unicorncommander.com)** |
+
+</div>
+
+> 🚀 **Need enterprise features?** [Get Center Deep Pro](mailto:sales@unicorncommander.com)
 
 ---
 
@@ -218,13 +251,20 @@ graph LR
 
 ```env
 # Redis Configuration
-USE_EXTERNAL_REDIS=false        # BYO Redis
-EXTERNAL_REDIS_HOST=localhost
-EXTERNAL_REDIS_PORT=6379
+USE_EXTERNAL_REDIS=false        # Use your own Redis instance
+EXTERNAL_REDIS_HOST=localhost   # Redis server address
+EXTERNAL_REDIS_PORT=6379        # Redis port
+EXTERNAL_REDIS_PASSWORD=         # Redis password (if required)
+EXTERNAL_REDIS_DB=0             # Redis database number
 
 # Admin Setup
 ADMIN_USERNAME=ucadmin
 ADMIN_PASSWORD=YourSecurePassword
+
+# Search Engine Settings
+SEARCH_TIMEOUT=10               # Search timeout in seconds
+MAX_RESULTS=20                  # Maximum results per page
+SAFE_SEARCH=moderate            # off, moderate, strict
 
 # LLM Integration (Optional)
 SEARCH_LLM_API_BASE=https://api.openai.com/v1
@@ -238,16 +278,19 @@ SEARCH_LLM_MODEL=gpt-4
 <summary><b>🐳 Docker Compose Variants</b></summary>
 
 ```bash
-# Production with SSL
-docker compose -f docker-compose.prod.yml up -d
+# Standard deployment (includes Redis on port 6385)
+docker compose -f docker-compose.center-deep.yml up -d
 
-# Development mode
+# Use existing Redis
+USE_EXTERNAL_REDIS=true docker compose -f docker-compose.center-deep.yml up -d
+
+# Development mode with hot reload
 docker compose -f docker-compose.dev.yml up
 
-# Custom Redis
-USE_EXTERNAL_REDIS=true docker compose up -d
+# Production with SSL/TLS
+docker compose -f docker-compose.prod.yml up -d
 
-# With monitoring stack
+# With monitoring stack (Prometheus + Grafana)
 docker compose --profile monitoring up -d
 ```
 
@@ -267,10 +310,10 @@ pip install -r requirements.txt
 cp .env.example .env
 nano .env
 
-# Initialize
+# Initialize database
 python init_admin.py
 
-# Launch
+# Run application
 python app.py
 ```
 
@@ -280,26 +323,17 @@ python app.py
 
 ## 🚀 **Roadmap**
 
-### **🔜 Coming Soon™**
-
-<table>
-<tr>
-<td width="50%">
-
-#### **Open Source (Forever Free)**
-- ✅ Core search functionality
-- ✅ Admin dashboard
-- ✅ Tool servers
+### **Open Source (Forever Free)**
+- ✅ Core search functionality from SearXNG
+- ✅ Web-based admin dashboard
+- ✅ AI tool servers
 - ✅ User management
+- ✅ Docker one-click deployment
 - 🔄 Browser extensions
 - 🔄 Mobile apps
 - 🔄 Custom search operators
-- 🔄 Search history (local only)
 
-</td>
-<td width="50%">
-
-#### **Pro Edition (Enterprise)**
+### **Pro Edition (Enterprise)**
 - 🎯 AI Agents & Scrapers
 - 🎯 Advanced analytics
 - 🎯 Full REST API
@@ -309,34 +343,28 @@ python app.py
 - 🎯 Compliance tools
 - 🎯 Audit logging
 
-</td>
-</tr>
-</table>
-
 ---
 
 ## 🤝 **Contributing**
 
-We're building the future of private search, and we want you to be part of it.
+We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation, we'd love your help.
 
 ```bash
-# Fork it
+# Fork and clone
 gh repo fork Unicorn-Commander/Center-Deep
 
-# Branch it
+# Create feature branch
 git checkout -b feature/awesome-feature
 
-# Commit it
-git commit -m "Add awesome feature"
+# Make your changes
+# ...
 
-# Push it
+# Push and create PR
 git push origin feature/awesome-feature
-
-# PR it
 gh pr create
 ```
 
-Check our [Contributing Guide](CONTRIBUTING.md) for the full details.
+See our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ---
 
@@ -346,10 +374,10 @@ Check our [Contributing Guide](CONTRIBUTING.md) for the full details.
 - 🔒 **Session management** with Flask-Login
 - 🛡️ **CSRF protection** on all forms
 - 🚫 **Input sanitization** everywhere
-- 📦 **Isolated containers** for each service
+- 📦 **Isolated containers** for services
 - 🔄 **Regular security updates**
 
-Found a vulnerability? Email `security@unicorncommander.com` (we pay bounties!)
+Found a vulnerability? Email `security@unicorncommander.com`
 
 ---
 
@@ -368,12 +396,10 @@ Found a vulnerability? Email `security@unicorncommander.com` (we pay bounties!)
 
 <div align="center">
 
-### **Join the Revolution**
+### **Join Our Community**
 
-[![Discord](https://img.shields.io/badge/Discord-Join_Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/center-deep)
 [![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-181717?logo=github)](https://github.com/Unicorn-Commander/Center-Deep/issues)
 [![Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?logo=github)](https://github.com/Unicorn-Commander/Center-Deep/discussions)
-[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?logo=twitter&logoColor=white)](https://twitter.com/centerdeep)
 
 </div>
 
@@ -381,18 +407,17 @@ Found a vulnerability? Email `security@unicorncommander.com` (we pay bounties!)
 
 ## 🙏 **Acknowledgments**
 
-- 🦄 **[Magic Unicorn Inc](https://magicunicorn.tech)** - For making this possible
-- 🤿 **The Unicorn Diver** - Best mascot ever
-- 🌍 **The Community** - You're all amazing
-- ☕ **Coffee** - The real MVP
+- 🔍 **[SearXNG Team](https://github.com/searxng/searxng)** - For creating the amazing foundation we built upon
+- 🦄 **[Magic Unicorn Inc](https://magicunicorn.tech)** - For sponsoring development
+- 🤿 **The Unicorn Diver** - Our beloved mascot
+- 🌍 **The Community** - For feedback and contributions
+- ☕ **Coffee** - The real hero
 
 ---
 
 <div align="center">
 
-## ⭐ **Star us if Center Deep made your life better!**
-
-<img src="https://api.star-history.com/svg?repos=Unicorn-Commander/Center-Deep&type=Date" alt="Star History" width="600">
+## ⭐ **Star us if Center Deep makes your search easier!**
 
 ---
 
@@ -400,8 +425,8 @@ Found a vulnerability? Email `security@unicorncommander.com` (we pay bounties!)
 
 **[Unicorn Commander](https://unicorncommander.com)** - Enterprise Division
 
-Made with ❤️ and 🦄 by developers who were tired of ugly search engines
+Built with ❤️ and 🦄 to make privacy-first search accessible to everyone
 
-[**Website**](https://center-deep.com) • [**Blog**](https://blog.center-deep.com) • [**Twitter**](https://twitter.com/centerdeep) • [**Discord**](https://discord.gg/center-deep)
+[**Website**](https://center-deep.com) • [**Pro Version**](mailto:sales@unicorncommander.com) • [**Issues**](https://github.com/Unicorn-Commander/Center-Deep/issues)
 
 </div>

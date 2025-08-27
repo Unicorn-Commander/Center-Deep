@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Center Deep - The Complete Search Engine (Post-SearXNG Era)
+  # Center Deep - The Complete Search Engine (Forked from SearXNG)
   center-deep:
     build: .
     container_name: center-deep
@@ -20,6 +20,7 @@ services:
       - FLASK_ENV=production
       - REDIS_HOST=redis-search
       - REDIS_PORT=6379
+      - SEARXNG_BACKEND_URL=http://searxng-engine:8080
       # Tool server configuration
       - TOOL_SEARCH_PORT=13050
       - TOOL_DEEP_SEARCH_PORT=13051
@@ -27,8 +28,34 @@ services:
       - TOOL_ACADEMIC_PORT=13053
     depends_on:
       - redis-search
+      - searxng-engine
     env_file:
       - .env
+  
+  # SearXNG Engine (Internal component of Center Deep)
+  searxng-engine:
+    image: searxng/searxng:latest
+    container_name: center-deep-searxng-engine
+    restart: unless-stopped
+    networks:
+      - center-deep-network
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - ./searxng/limiter.toml:/etc/searxng/limiter.toml:ro
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY:-ultrasecretkey}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
 
   # Search-optimized Redis for Center Deep
   redis-search:
