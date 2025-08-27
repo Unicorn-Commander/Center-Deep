@@ -53,15 +53,23 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
+    width: 900px;
+    height: 900px;
     background-image: url('../images/center-deep-logo.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.05;
+    opacity: 0.08;
     z-index: 0;
     pointer-events: none;
+    /* Uncomment for subtle floating animation */
+    /* animation: float 8s ease-in-out infinite; */
+}
+
+/* Optional floating animation */
+@keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0px) scale(1); }
+    50% { transform: translate(-50%, -50%) translateY(-15px) scale(1.02); }
 }
 
 /* Logo Container */
@@ -73,19 +81,25 @@ body {
 }
 
 .logo-text {
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: bold;
     background: linear-gradient(45deg, var(--accent-color), #7c4dff);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-top: 1rem;
+    margin-bottom: 0.5rem;
     text-shadow: 0 0 30px rgba(0,188,212,0.5);
+}
+
+.logo-subtitle {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
 }
 
 /* Search Container */
 .search-container-home {
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
     margin: 0 auto;
     position: relative;
@@ -101,7 +115,7 @@ body {
     display: flex;
     background: var(--surface-color);
     border: 2px solid var(--border-color);
-    border-radius: 30px;
+    border-radius: 50px;
     overflow: hidden;
     transition: all 0.3s;
     box-shadow: var(--shadow);
@@ -115,11 +129,11 @@ body {
 }
 
 .search-input-home {
-    flex: 1;
-    padding: 1rem 1.5rem;
+    width: 100%;
+    padding: 1.2rem 1.5rem;
     border: none;
     outline: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
     background: transparent;
     color: var(--text-color);
 }

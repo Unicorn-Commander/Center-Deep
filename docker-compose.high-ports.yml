@@ -1,0 +1,162 @@
+version: '3.8'
+
+services:
+  # Main Center Deep application on port 8888
+  nginx:
+    image: nginx:alpine
+    container_name: center-deep-proxy
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8888:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - center-deep-network
+    depends_on:
+      - center-deep
+      - searxng
+      - redis
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - center-deep-network
+
+  # SearXNG search backend
+  searxng:
+    image: searxng/searxng:latest
+    container_name: center-deep-searxng
+    restart: unless-stopped
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    networks:
+      - center-deep-network
+    environment:
+      - BIND_ADDRESS=0.0.0.0:8080
+      - INSTANCE_NAME=Center Deep
+      - SEARXNG_REDIS_URL=redis://redis:6379/0
+
+  # Center Deep app with admin dashboard
+  center-deep:
+    build: .
+    container_name: center-deep-app
+    restart: unless-stopped
+    volumes:
+      - ./instance:/app/instance
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - center-deep-network
+    environment:
+      - FLASK_ENV=production
+      - REDIS_HOST=redis
+      - SEARXNG_URL=http://searxng:8080
+      - TOOL_SEARCH_PORT=13050
+      - TOOL_DEEP_SEARCH_PORT=13051
+      - TOOL_REPORT_PORT=13052
+      - TOOL_ACADEMIC_PORT=13053
+    env_file:
+      - .env
+
+  # Tool servers on high ports (13050-13053)
+  tool-search:
+    build: ./toolserver/search
+    container_name: center-deep-tool-search
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:13050:8001"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${SEARCH_LLM_MODEL:-gpt-3.5-turbo}
+    env_file:
+      - .env
+    labels:
+      - "center-deep.tool=search"
+      - "center-deep.description=Basic search tool for web, GitHub, Reddit, etc"
+      - "center-deep.port=13050"
+      - "center-deep.enabled=false"  # Start disabled, enable via admin
+
+  tool-deep-search:
+    build: ./toolserver/deep-search
+    container_name: center-deep-tool-deep-search
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:13051:8002"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${DEEP_SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${DEEP_SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${DEEP_SEARCH_LLM_MODEL:-gpt-4}
+    env_file:
+      - .env
+    labels:
+      - "center-deep.tool=deep-search"
+      - "center-deep.description=Deep search with multi-source analysis"
+      - "center-deep.port=13051"
+      - "center-deep.enabled=false"  # Start disabled, enable via admin
+
+  tool-report:
+    build: ./toolserver/report
+    container_name: center-deep-tool-report
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:13052:8003"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${REPORT_LLM_API_BASE:-}
+      - LLM_API_KEY=${REPORT_LLM_API_KEY:-}
+      - LLM_MODEL=${REPORT_LLM_MODEL:-gpt-4}
+    env_file:
+      - .env
+    labels:
+      - "center-deep.tool=report"
+      - "center-deep.description=Professional report generation with citations"
+      - "center-deep.port=13052"
+      - "center-deep.enabled=false"  # Start disabled, enable via admin
+
+  tool-academic:
+    build: ./toolserver/academic
+    container_name: center-deep-tool-academic
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:13053:8004"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - LLM_API_BASE=${ACADEMIC_LLM_API_BASE:-}
+      - LLM_API_KEY=${ACADEMIC_LLM_API_KEY:-}
+      - LLM_MODEL=${ACADEMIC_LLM_MODEL:-gpt-4}
+    env_file:
+      - .env
+    labels:
+      - "center-deep.tool=academic"
+      - "center-deep.description=Academic research reports with formal citations"
+      - "center-deep.port=13053"
+      - "center-deep.enabled=false"  # Start disabled, enable via admin
+
+networks:
+  center-deep-network:
+    driver: bridge
+
+volumes:
+  redis_data:

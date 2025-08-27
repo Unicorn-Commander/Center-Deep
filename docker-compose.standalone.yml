@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  # Center Deep - Complete Search Engine (No separate SearXNG needed!)
+  center-deep:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8888:8888"
+    volumes:
+      - ./instance:/app/instance
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+      - ./searxng:/etc/searxng:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - center-deep-network
+    environment:
+      - PORT=8888
+      - FLASK_ENV=production
+      - REDIS_HOST=${USE_EXTERNAL_REDIS:-redis-internal}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - SEARXNG_INTERNAL=true
+      - SEARXNG_BACKEND_URL=http://127.0.0.1:8080
+      # Tool server configuration
+      - TOOL_SEARCH_PORT=13050
+      - TOOL_DEEP_SEARCH_PORT=13051
+      - TOOL_REPORT_PORT=13052
+      - TOOL_ACADEMIC_PORT=13053
+    env_file:
+      - .env
+    depends_on:
+      - redis-internal
+
+  # Search-optimized Redis Instance
+  redis-internal:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 4gb
+      --maxmemory-policy allkeys-lru
+      --maxmemory-samples 10
+      --save ""
+      --appendonly no
+      --tcp-backlog 511
+      --tcp-keepalive 60
+      --timeout 300
+      --databases 4
+      --loglevel warning
+      --latency-monitor-threshold 100
+      --hash-max-ziplist-entries 512
+      --hash-max-ziplist-value 64
+      --activerehashing yes
+      --hz 10
+      --dynamic-hz yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "0.0.0.0:6381:6379"  # Expose on different port to avoid conflicts
+    networks:
+      - center-deep-network
+
+  # Tool Servers - Managed by Admin Dashboard
+  tool-search:
+    build: ./toolserver/search
+    container_name: center-deep-tool-search
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13050:8001"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-internal
+      - LLM_API_BASE=${SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${SEARCH_LLM_MODEL:-gpt-3.5-turbo}
+    depends_on:
+      - center-deep
+      - redis-internal
+    env_file:
+      - .env
+
+  tool-deep-search:
+    build: ./toolserver/deep-search
+    container_name: center-deep-tool-deep-search
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13051:8002"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-internal
+      - LLM_API_BASE=${DEEP_SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${DEEP_SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${DEEP_SEARCH_LLM_MODEL:-gpt-4}
+    depends_on:
+      - center-deep
+      - redis-internal
+    env_file:
+      - .env
+
+  tool-report:
+    build: ./toolserver/report
+    container_name: center-deep-tool-report
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13052:8003"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-internal
+      - LLM_API_BASE=${REPORT_LLM_API_BASE:-}
+      - LLM_API_KEY=${REPORT_LLM_API_KEY:-}
+      - LLM_MODEL=${REPORT_LLM_MODEL:-gpt-4}
+    depends_on:
+      - center-deep
+      - redis-internal
+    env_file:
+      - .env
+
+  tool-academic:
+    build: ./toolserver/academic
+    container_name: center-deep-tool-academic
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13053:8004"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-internal
+      - LLM_API_BASE=${ACADEMIC_LLM_API_BASE:-}
+      - LLM_API_KEY=${ACADEMIC_LLM_API_KEY:-}
+      - LLM_MODEL=${ACADEMIC_LLM_MODEL:-gpt-4}
+    depends_on:
+      - center-deep
+      - redis-internal
+    env_file:
+      - .env
+
+networks:
+  center-deep-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

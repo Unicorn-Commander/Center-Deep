@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # Main Center Deep Flask Application
+  center-deep:
+    build: .
+    container_name: center-deep-app
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8888:8890"
+    volumes:
+      - ./instance:/app/instance
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - center-deep-network
+    environment:
+      - FLASK_ENV=production
+      - REDIS_HOST=redis-search  # Use our search-optimized Redis
+      - SEARXNG_URL=http://searxng:8080
+      - TOOL_SEARCH_PORT=13050
+      - TOOL_DEEP_SEARCH_PORT=13051
+      - TOOL_REPORT_PORT=13052
+      - TOOL_ACADEMIC_PORT=13053
+    depends_on:
+      - searxng
+      - redis-search
+    env_file:
+      - .env
+
+  # SearXNG search backend
+  searxng:
+    image: searxng/searxng:latest
+    container_name: center-deep-searxng
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8889:8080"  # Available for direct access/debugging
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    networks:
+      - center-deep-network
+    environment:
+      - BIND_ADDRESS=0.0.0.0:8080
+      - INSTANCE_NAME=Center Deep
+      - SEARXNG_REDIS_URL=redis://redis-search:6379/0
+    depends_on:
+      - redis-search
+
+  # Search-Optimized Redis Instance
+  redis-search:
+    image: redis:7-alpine
+    container_name: center-deep-redis-search
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 4gb
+      --maxmemory-policy allkeys-lru
+      --maxmemory-samples 10
+      --save ""
+      --appendonly no
+      --tcp-backlog 511
+      --tcp-keepalive 60
+      --timeout 300
+      --databases 4
+      --loglevel warning
+      --latency-monitor-threshold 100
+      --notify-keyspace-events ""
+      --hash-max-ziplist-entries 512
+      --hash-max-ziplist-value 64
+      --list-max-ziplist-size -2
+      --list-compress-depth 0
+      --set-max-intset-entries 512
+      --zset-max-ziplist-entries 128
+      --zset-max-ziplist-value 64
+      --hll-sparse-max-bytes 3000
+      --stream-node-max-bytes 4096
+      --stream-node-max-entries 100
+      --activerehashing yes
+      --client-output-buffer-limit normal 0 0 0
+      --client-output-buffer-limit replica 256mb 64mb 60
+      --client-output-buffer-limit pubsub 32mb 8mb 60
+      --hz 10
+      --dynamic-hz yes
+      --rdb-save-incremental-fsync yes
+    volumes:
+      - redis_search_data:/data
+    ports:
+      - "0.0.0.0:6381:6379"  # Different port to avoid conflicts
+    networks:
+      - center-deep-network
+    sysctls:
+      - net.core.somaxconn=1024
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+
+  # Tool servers on high ports (13050-13053)
+  tool-search:
+    build: ./toolserver/search
+    container_name: center-deep-tool-search
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13050:8001"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - REDIS_HOST=redis-search
+      - LLM_API_BASE=${SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${SEARCH_LLM_MODEL:-gpt-3.5-turbo}
+    depends_on:
+      - redis-search
+      - searxng
+    env_file:
+      - .env
+
+  tool-deep-search:
+    build: ./toolserver/deep-search
+    container_name: center-deep-tool-deep-search
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13051:8002"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - REDIS_HOST=redis-search
+      - LLM_API_BASE=${DEEP_SEARCH_LLM_API_BASE:-}
+      - LLM_API_KEY=${DEEP_SEARCH_LLM_API_KEY:-}
+      - LLM_MODEL=${DEEP_SEARCH_LLM_MODEL:-gpt-4}
+    depends_on:
+      - redis-search
+      - searxng
+    env_file:
+      - .env
+
+  tool-report:
+    build: ./toolserver/report
+    container_name: center-deep-tool-report
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13052:8003"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - REDIS_HOST=redis-search
+      - LLM_API_BASE=${REPORT_LLM_API_BASE:-}
+      - LLM_API_KEY=${REPORT_LLM_API_KEY:-}
+      - LLM_MODEL=${REPORT_LLM_MODEL:-gpt-4}
+    depends_on:
+      - redis-search
+      - searxng
+    env_file:
+      - .env
+
+  tool-academic:
+    build: ./toolserver/academic
+    container_name: center-deep-tool-academic
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13053:8004"
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CENTER_DEEP_URL=http://center-deep:8890
+      - REDIS_HOST=redis-search
+      - LLM_API_BASE=${ACADEMIC_LLM_API_BASE:-}
+      - LLM_API_KEY=${ACADEMIC_LLM_API_KEY:-}
+      - LLM_MODEL=${ACADEMIC_LLM_MODEL:-gpt-4}
+    depends_on:
+      - redis-search
+      - searxng
+    env_file:
+      - .env
+
+networks:
+  center-deep-network:
+    driver: bridge
+
+volumes:
+  redis_search_data:
+    driver: local

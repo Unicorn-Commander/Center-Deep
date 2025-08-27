@@ -8,18 +8,19 @@
         <div class="container">
             <div class="admin-nav">
                 <a href="/" class="admin-logo">
-                    <img src="{{ url_for('static', filename='images/unicorn-commander-logo.png') }}" alt="Admin" class="admin-logo-img">
+                    <img src="{{ url_for('static', filename='images/center-deep-logo.png') }}" alt="Center Deep" class="admin-logo-img">
                     <span>Center Deep Admin</span>
                 </a>
                 <nav class="admin-menu">
                     <a href="#proxy" class="active">Proxy Settings</a>
                     <a href="#monitoring">Monitoring</a>
-                    <a href="#searxng">SearXNG Config</a>
+                    <a href="#search">Search Engine</a>
                     <a href="#llm">LLM Config</a>
                     <a href="#embedding">Embeddings</a>
                     <a href="#reranker">Rerankers</a>
-                    <a href="#blog">Blog</a>
-                    <a href="#agents">Agents</a>
+                    <!-- Future features:
+                    <a href="#agents">AI Agents (Pro)</a>
+                    -->
                     <a href="#toolservers">Tool Servers</a>
                     <a href="#users">Users</a>
                     <a href="#stats">Statistics</a>
@@ -132,20 +133,27 @@
             </div>
         </section>
         
-        <!-- SearXNG Configuration -->
-        <section id="searxng" class="admin-section">
-            <h2>🔍 SearXNG Configuration</h2>
+        <!-- Search Engine Configuration -->
+        <section id="search" class="admin-section">
+            <h2>🔍 Center Deep Search Engine</h2>
             <div class="admin-card">
-                <form id="searxngForm" class="admin-form">
+                <h3>Search Configuration</h3>
+                <form id="searchForm" class="admin-form">
                     <div class="form-group">
-                        <label for="searxngUrl">SearXNG Instance URL</label>
-                        <input type="url" id="searxngUrl" name="searxngUrl" 
-                               value="http://localhost:8888">
+                        <label for="searchEngines">Active Search Engines</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="engines" value="google" checked> Google</label>
+                            <label><input type="checkbox" name="engines" value="bing" checked> Bing</label>
+                            <label><input type="checkbox" name="engines" value="duckduckgo" checked> DuckDuckGo</label>
+                            <label><input type="checkbox" name="engines" value="brave"> Brave</label>
+                            <label><input type="checkbox" name="engines" value="qwant"> Qwant</label>
+                            <label><input type="checkbox" name="engines" value="startpage"> StartPage</label>
+                        </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="searxngTimeout">Request Timeout (seconds)</label>
-                        <input type="number" id="searxngTimeout" name="searxngTimeout" 
+                        <label for="searchTimeout">Request Timeout (seconds)</label>
+                        <input type="number" id="searchTimeout" name="searchTimeout" 
                                value="10" min="5" max="60">
                     </div>
                     
@@ -156,15 +164,26 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="defaultEngines">Default Search Engines</label>
-                        <textarea id="defaultEngines" name="defaultEngines" rows="4"
-                                  placeholder="google&#10;bing&#10;duckduckgo&#10;qwant">google
-bing
-duckduckgo
-qwant</textarea>
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Privacy Mode (No Tracking)</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="privacyMode" name="privacyMode" checked>
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
                     </div>
                     
-                    <button type="submit" class="btn-primary">Save SearXNG Settings</button>
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Safe Search</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="safeSearch" name="safeSearch">
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Search Settings</button>
                 </form>
             </div>
         </section>
@@ -324,8 +343,16 @@ qwant</textarea>
                         
                         <div class="form-group">
                             <label for="llmModel">Model Name</label>
-                            <input type="text" id="llmModel" name="model_name" required 
-                                   placeholder="gpt-4, claude-3, llama-3">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <select id="llmModelSelect" style="flex: 1;">
+                                    <option value="">Enter API key first</option>
+                                </select>
+                                <input type="text" id="llmModel" name="model_name" required 
+                                       placeholder="Or enter manually" style="flex: 1;">
+                            </div>
+                            <button type="button" onclick="fetchAvailableModels()" class="btn-secondary" style="margin-top: 0.5rem;">
+                                🔍 Fetch Available Models
+                            </button>
                         </div>
                         
                         <div class="form-group">
@@ -497,123 +524,52 @@ qwant</textarea>
             </div>
         </section>
         
-        <!-- Blog Management Section -->
-        <section id="blog" class="admin-section">
-            <h2>📝 Blog Management</h2>
+        
+        <!-- Roadmap Section -->
+        <section id="roadmap" class="admin-section">
+            <h2>🚀 Center Deep Roadmap</h2>
             
-            <!-- Blog Overview -->
             <div class="admin-card">
-                <h3>Blog Overview</h3>
-                <div class="blog-stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number" id="totalPosts">0</span>
-                        <span class="stat-label">Total Posts</span>
+                <h3>Coming Soon - Pro Features</h3>
+                <div class="roadmap-items" style="display: grid; gap: 1rem;">
+                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
+                        <h4>🤖 AI Agents & Data Scrapers</h4>
+                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Automated content generation and data collection from RSS feeds, GitHub, Reddit, and custom URLs.</p>
+                        <span style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">PRO VERSION</span>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="publishedPosts">0</span>
-                        <span class="stat-label">Published</span>
+                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
+                        <h4>📊 Advanced Analytics</h4>
+                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Deep insights into search patterns, user behavior, and performance metrics.</p>
+                        <span style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">PRO VERSION</span>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="draftPosts">0</span>
-                        <span class="stat-label">Drafts</span>
+                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
+                        <h4>🔗 Full REST API</h4>
+                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Complete API for integrating Center Deep search into your applications.</p>
+                        <span style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">PRO VERSION</span>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="pendingPosts">0</span>
-                        <span class="stat-label">Pending</span>
+                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
+                        <h4>🎨 Custom Themes</h4>
+                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Create and customize your own search interface themes.</p>
+                        <span style="background: var(--accent-color); color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">COMING SOON</span>
                     </div>
-                </div>
-                
-                <div class="blog-actions">
-                    <button id="newPostBtn" class="btn-primary">+ New Post</button>
-                    <button id="manageCategoriesBtn" class="btn-secondary">Manage Categories</button>
-                    <button id="blogSettingsBtn" class="btn-secondary">Blog Settings</button>
-                    <a href="/blog" target="_blank" class="btn-secondary">View Blog</a>
                 </div>
             </div>
             
-            <!-- Recent Posts -->
             <div class="admin-card">
-                <h3>Recent Posts</h3>
-                <div class="posts-table-container">
-                    <table class="posts-table" id="postsTable">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Category</th>
-                                <th>Author</th>
-                                <th>Date</th>
-                                <th>Views</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="postsTableBody">
-                            <!-- Posts will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="table-pagination" id="postsPagination">
-                    <!-- Pagination will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Pending Agent Content -->
-            <div class="admin-card">
-                <h3>Pending AI-Generated Content</h3>
-                <div id="pendingContentList">
-                    <!-- Pending content will be loaded here -->
-                </div>
+                <h3>Current Version Features</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;">✅ Privacy-first metasearch engine (replacement for SearXNG)</li>
+                    <li style="padding: 0.5rem 0;">✅ Multiple search engine sources</li>
+                    <li style="padding: 0.5rem 0;">✅ Tool servers for OpenWebUI integration</li>
+                    <li style="padding: 0.5rem 0;">✅ LLM configuration with model discovery</li>
+                    <li style="padding: 0.5rem 0;">✅ Search-optimized Redis caching</li>
+                    <li style="padding: 0.5rem 0;">✅ User management system</li>
+                    <li style="padding: 0.5rem 0;">✅ Customizable search settings</li>
+                    <li style="padding: 0.5rem 0;">✅ Privacy mode and safe search</li>
+                </ul>
             </div>
         </section>
         
-        <!-- Agent Management Section -->
-        <section id="agents" class="admin-section">
-            <h2>🤖 Agent Management</h2>
-            
-            <!-- Data Scrapers -->
-            <div class="admin-card">
-                <h3>Data Scrapers</h3>
-                <p class="section-description">
-                    Configure automated scrapers to collect data from RSS feeds, GitHub, Reddit, and custom URLs.
-                </p>
-                <div style="margin-bottom: 1rem;">
-                    <button id="addScraperBtn" class="btn-primary">+ Add Scraper</button>
-                </div>
-                <div id="scrapersList">
-                    <!-- Scrapers will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Content Agents -->
-            <div class="admin-card">
-                <h3>Content Generation Agents</h3>
-                <p class="section-description">
-                    AI agents that automatically create blog posts, social media content, and newsletters from scraped data.
-                </p>
-                <div style="margin-bottom: 1rem;">
-                    <button id="addAgentBtn" class="btn-primary">+ Add Agent</button>
-                </div>
-                <div id="agentsList">
-                    <!-- Agents will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Agent Triggers -->
-            <div class="admin-card">
-                <h3>Intelligent Triggers</h3>
-                <p class="section-description">
-                    Set up triggers that automatically activate content generation based on data volume, keywords, or other conditions.
-                </p>
-                <div style="margin-bottom: 1rem;">
-                    <button id="addTriggerBtn" class="btn-primary">+ Add Trigger</button>
-                </div>
-                <div id="triggersList">
-                    <!-- Triggers will be loaded here -->
-                </div>
-            </div>
-        </section>
-
         <!-- Tool Servers Section -->
         <section id="toolservers" class="admin-section">
             <h2>🛠️ Tool Servers Management</h2>
@@ -787,9 +743,11 @@ async function loadSettings() {
         document.getElementById('grafanaEnabled').checked = settings.monitoring.grafana_enabled;
         document.getElementById('grafanaUrl').value = settings.monitoring.grafana_url;
         
-        document.getElementById('searxngUrl').value = settings.searxng.url;
-        document.getElementById('searxngTimeout').value = settings.searxng.timeout;
-        document.getElementById('maxResults').value = settings.searxng.max_results;
+        // Search engine settings
+        if (document.getElementById('searchTimeout')) {
+            document.getElementById('searchTimeout').value = settings.search?.timeout || 10;
+            document.getElementById('maxResults').value = settings.search?.max_results || 20;
+        }
     } catch (error) {
         console.error('Failed to load settings:', error);
     }
@@ -1241,6 +1199,53 @@ async function deleteLLMProvider(providerId) {
 function closeLLMModal() {
     document.getElementById('addLLMModal').style.display = 'none';
     document.getElementById('addLLMForm').reset();
+    document.getElementById('llmModelSelect').innerHTML = '<option value="">Enter API key first</option>';
+}
+
+// Fetch available models from the API
+async function fetchAvailableModels() {
+    const apiBase = document.getElementById('llmApiBase').value;
+    const apiKey = document.getElementById('llmApiKey').value;
+    
+    if (!apiBase || !apiKey) {
+        showNotification('Please enter API base URL and API key first', 'error');
+        return;
+    }
+    
+    showNotification('Fetching available models...', 'info');
+    
+    try {
+        const models = await LLMModelDiscovery.discoverModels(apiBase, apiKey);
+        const llmModels = models.filter(m => m.type === 'llm');
+        
+        const selectElement = document.getElementById('llmModelSelect');
+        const inputElement = document.getElementById('llmModel');
+        
+        if (llmModels.length > 0) {
+            selectElement.innerHTML = '<option value="">Select a model</option>';
+            llmModels.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.id;
+                option.textContent = `${model.name || model.id} (${model.provider})`;
+                selectElement.appendChild(option);
+            });
+            
+            // Auto-fill input when model is selected
+            selectElement.onchange = function() {
+                if (this.value) {
+                    inputElement.value = this.value;
+                }
+            };
+            
+            showNotification(`Found ${llmModels.length} models`, 'success');
+        } else {
+            selectElement.innerHTML = '<option value="">No models found</option>';
+            showNotification('No models found. You can enter the model name manually.', 'warning');
+        }
+    } catch (error) {
+        console.error('Failed to fetch models:', error);
+        showNotification('Failed to fetch models. Enter manually.', 'error');
+    }
 }
 
 // Embedding Configuration Functions
@@ -1687,4 +1692,5 @@ document.querySelectorAll('.admin-menu a').forEach(link => {
     });
 });
 </script>
+<script src="{{ url_for('static', filename='js/llm-model-discovery.js') }}"></script>
 {% endblock %}

@@ -23,11 +23,13 @@ COPY static/ ./static/
 RUN mkdir -p instance
 
 # Expose port
-EXPOSE 8890
+EXPOSE 8888
 
 # Environment variables
 ENV FLASK_APP=app.py
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8888
+ENV SEARXNG_BACKEND_URL=http://localhost:8080
 
 # Run the application
 CMD ["python", "app.py"]

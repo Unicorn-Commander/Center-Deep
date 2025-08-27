@@ -1,0 +1,78 @@
+FROM searxng/searxng:latest as searxng-base
+
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    curl \
+    git \
+    docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy SearXNG from base image
+COPY --from=searxng-base /usr/local/searxng /usr/local/searxng
+
+# Set up working directory
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir uwsgi
+
+# Copy Center Deep application files
+COPY app_opensource.py app.py
+COPY toolserver/ ./toolserver/
+COPY templates/ ./templates/
+COPY static/ ./static/
+COPY searxng/ /etc/searxng/
+COPY blog/ ./blog/
+COPY newsletter/ ./newsletter/
+COPY agents/ ./agents/
+
+# Create instance directory for database
+RUN mkdir -p instance
+
+# Copy startup script
+COPY <<'EOF' /start.sh
+#!/bin/bash
+# Start SearXNG in the background
+cd /usr/local/searxng
+export SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml
+uwsgi --http 127.0.0.1:8080 \
+      --master \
+      --processes 4 \
+      --threads 2 \
+      --module searx.webapp \
+      --callable application \
+      --disable-logging \
+      --log-5xx \
+      --log-4xx \
+      --log-slow 3000 \
+      --log-date \
+      --logto /var/log/searxng.log &
+
+# Wait for SearXNG to start
+sleep 5
+
+# Start Center Deep Flask app
+export FLASK_APP=app.py
+export SEARXNG_BACKEND_URL=http://127.0.0.1:8080
+python app.py
+EOF
+
+RUN chmod +x /start.sh
+
+# Expose port
+EXPOSE 8888
+
+# Environment variables
+ENV FLASK_APP=app.py
+ENV PYTHONUNBUFFERED=1
+ENV SEARXNG_BACKEND_URL=http://127.0.0.1:8080
+ENV PORT=8888
+
+# Run both services
+CMD ["/start.sh"]

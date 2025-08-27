@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # All-in-one Center Deep on port 8888
+  center-deep:
+    build: .
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "8888:8888"  # Everything on 8888
+    volumes:
+      - ./instance:/app/instance
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+      - ./searxng:/etc/searxng:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - center-deep-network
+    environment:
+      - PORT=8888
+      - FLASK_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SEARXNG_INTERNAL=true  # Use internal SearXNG
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - center-deep-network
+
+  # Optional: Tool servers exposed on subpaths
+  toolserver:
+    build: ./toolserver
+    container_name: center-deep-tools
+    restart: unless-stopped
+    ports:
+      - "8001-8004:8001-8004"  # Keep separate for OpenWebUI
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+    env_file:
+      - .env
+    profiles:
+      - tools
+
+networks:
+  center-deep-network:
+    driver: bridge
+
+volumes:
+  redis_data:

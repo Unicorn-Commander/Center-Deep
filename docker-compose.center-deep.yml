@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  # Center Deep - The Complete Search Engine (Post-SearXNG Era)
+  center-deep:
+    build: .
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8888:8888"
+    volumes:
+      - ./instance:/app/instance
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - center-deep-network
+    environment:
+      - PORT=8888
+      - FLASK_ENV=production
+      - REDIS_HOST=redis-search
+      - REDIS_PORT=6379
+      # Tool server configuration
+      - TOOL_SEARCH_PORT=13050
+      - TOOL_DEEP_SEARCH_PORT=13051
+      - TOOL_REPORT_PORT=13052
+      - TOOL_ACADEMIC_PORT=13053
+    depends_on:
+      - redis-search
+    env_file:
+      - .env
+
+  # Search-optimized Redis for Center Deep
+  redis-search:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 4gb
+      --maxmemory-policy allkeys-lru
+      --maxmemory-samples 10
+      --save ""
+      --appendonly no
+      --tcp-backlog 511
+      --tcp-keepalive 60
+      --timeout 300
+      --loglevel warning
+      --hz 10
+      --dynamic-hz yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "0.0.0.0:6385:6379"
+    networks:
+      - center-deep-network
+
+  # Tool Servers for OpenWebUI Integration (Optional)
+  tool-search:
+    build: ./toolserver/search
+    container_name: center-deep-tool-search
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13050:8001"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-search
+    depends_on:
+      - center-deep
+      - redis-search
+    env_file:
+      - .env
+
+  tool-deep-search:
+    build: ./toolserver/deep-search
+    container_name: center-deep-tool-deep-search
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13051:8002"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-search
+    depends_on:
+      - center-deep
+      - redis-search
+    env_file:
+      - .env
+
+  tool-report:
+    build: ./toolserver/report
+    container_name: center-deep-tool-report
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13052:8003"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-search
+    depends_on:
+      - center-deep
+      - redis-search
+    env_file:
+      - .env
+
+  tool-academic:
+    build: ./toolserver/academic
+    container_name: center-deep-tool-academic
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "0.0.0.0:13053:8004"
+    networks:
+      - center-deep-network
+    environment:
+      - CENTER_DEEP_URL=http://center-deep:8888
+      - REDIS_HOST=redis-search
+    depends_on:
+      - center-deep
+      - redis-search
+    env_file:
+      - .env
+
+networks:
+  center-deep-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
