@@ -422,10 +422,9 @@ Found a vulnerability? Email `security@unicorncommander.com`
 ## 🙏 **Acknowledgments**
 
 - 🔍 **[SearXNG Team](https://github.com/searxng/searxng)** - For creating the amazing foundation we built upon
-- 🦄 **[Magic Unicorn Inc](https://magicunicorn.tech)** - For sponsoring development
-- 🤿 **The Unicorn Diver** - Our beloved mascot
-- 🌍 **The Community** - For feedback and contributions
-- ☕ **Coffee** - The real hero
+- 👥 **The Community** - For feedback, contributions, and making this project better
+- 🦄 **[Unicorn Commander](https://unicorncommander.com)** - For making this project possible
+- ⚓ **The Commodore** - Our mascot guiding us through the deep web
 
 ---
 

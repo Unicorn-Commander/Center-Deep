@@ -112,10 +112,21 @@
                 <div class="pref-item">
                     <label for="theme">Theme</label>
                     <select id="theme" name="theme">
-                        <option value="light" selected>Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="auto">Auto (follow system)</option>
+                        <option value="magic-unicorn" selected>🦄 Magic Unicorn</option>
+                        <option value="dark">🌙 Dark</option>
+                        <option value="light">☀️ Light</option>
                     </select>
+                </div>
+                
+                <div class="pref-item">
+                    <div class="pref-item-with-info">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="infiniteScroll" name="infiniteScroll" checked>
+                            <span class="toggle-switch"></span>
+                            <span>Infinite Scroll</span>
+                        </label>
+                        <small>Automatically load more results as you scroll</small>
+                    </div>
                 </div>
                 
                 <div class="pref-item">
@@ -225,6 +236,14 @@ function loadPreferences() {
     const language = localStorage.getItem('centerDeepLanguage') || 'en';
     document.getElementById('language').value = language;
     
+    // Load theme preference
+    const theme = localStorage.getItem('theme') || 'magic-unicorn';
+    document.getElementById('theme').value = theme;
+    
+    // Load infinite scroll preference (default to true)
+    const infiniteScroll = localStorage.getItem('centerDeepInfiniteScroll') !== 'false';
+    document.getElementById('infiniteScroll').checked = infiniteScroll;
+    
     // Load enabled engines
     const enabledEngines = JSON.parse(localStorage.getItem('centerDeepEngines') || '["google", "bing", "duckduckgo", "qwant"]');
     document.querySelectorAll('input[name="engines"]').forEach(checkbox => {
@@ -238,6 +257,16 @@ function savePreferences() {
     localStorage.setItem('centerDeepResultsPerPage', document.getElementById('results_per_page').value);
     localStorage.setItem('centerDeepOpenLinks', document.getElementById('open_links').value);
     localStorage.setItem('centerDeepLanguage', document.getElementById('language').value);
+    localStorage.setItem('theme', document.getElementById('theme').value);
+    localStorage.setItem('centerDeepInfiniteScroll', document.getElementById('infiniteScroll').checked.toString());
+    
+    // Apply theme immediately
+    const selectedTheme = document.getElementById('theme').value;
+    const themeSwitcher = window.parent.document.getElementById('theme-switcher');
+    if (themeSwitcher) {
+        themeSwitcher.value = selectedTheme;
+        themeSwitcher.dispatchEvent(new Event('change'));
+    }
     
     // Save enabled engines
     const enabledEngines = [];

@@ -1,0 +1,230 @@
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "Center Deep"
+  privacypolicy_url: false
+  donation_url: false
+  contact_url: "https://unicorncommander.com/contact"
+  enable_metrics: false
+
+brand:
+  new_issue_url: https://github.com/Unicorn-Commander/Center-Deep/issues
+  docs_url: https://github.com/Unicorn-Commander/Center-Deep
+  public_instances: false
+  wiki_url: https://github.com/Unicorn-Commander/Center-Deep/wiki
+  issue_url: https://github.com/Unicorn-Commander/Center-Deep/issues
+
+search:
+  safe_search: 0
+  autocomplete: "google"
+  default_lang: ""
+  ban_time_on_fail: 5
+  max_ban_time_on_fail: 120
+  formats:
+    - html
+    - json
+
+server:
+  port: 8888
+  bind_address: "0.0.0.0"
+  base_url: /
+  secret_key: "center-deep-unicorn-commander-secret-2024"
+  image_proxy: true
+  http_protocol_version: "1.1"
+  method: "GET"
+  limiter: false
+  public_instance: false
+
+ui:
+  default_theme: simple
+  theme_args:
+    simple_style: dark
+  center_alignment: false
+  infinite_scroll: true
+  default_locale: ""
+  query_in_title: true
+  results_on_new_tab: false
+
+# Comprehensive free search engines for best results
+engines:
+  # Primary Search Engines
+  - name: brave
+    engine: brave
+    shortcut: br
+    disabled: false
+    
+  - name: google
+    engine: google
+    shortcut: g
+    disabled: false
+
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: dd
+    disabled: false
+
+  - name: bing
+    engine: bing
+    shortcut: bi
+    disabled: false
+    
+  - name: qwant
+    engine: qwant
+    shortcut: qw
+    disabled: false
+    
+  - name: startpage
+    engine: startpage
+    shortcut: sp
+    disabled: false
+    
+  - name: searx
+    engine: searx_engine
+    shortcut: se
+    disabled: false
+    
+  - name: yahoo
+    engine: yahoo
+    shortcut: yh
+    disabled: false
+
+  # Knowledge & Reference
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
+    disabled: false
+    
+  - name: wikidata
+    engine: wikidata
+    shortcut: wd
+    disabled: false
+    
+  - name: wolfram alpha
+    engine: wolframalpha_noapi
+    shortcut: wa
+    disabled: false
+    
+  - name: duckduckgo definitions
+    engine: duckduckgo_definitions
+    shortcut: ddd
+    disabled: false
+
+  # Development & Code
+  - name: github
+    engine: github
+    shortcut: gh
+    disabled: false
+    
+  - name: stackoverflow
+    engine: stackoverflow
+    shortcut: st
+    disabled: false
+    
+  - name: npm
+    engine: npm
+    shortcut: npm
+    disabled: false
+    
+  - name: pypi
+    engine: pypi
+    shortcut: pypi
+    disabled: false
+
+  # Images & Media
+  - name: google images
+    engine: google_images
+    shortcut: gi
+    disabled: false
+    
+  - name: bing images
+    engine: bing_images
+    shortcut: bii
+    disabled: false
+    
+  - name: duckduckgo images
+    engine: duckduckgo_images
+    shortcut: ddi
+    disabled: false
+    
+  - name: qwant images
+    engine: qwant_images
+    shortcut: qwi
+    disabled: false
+    
+  - name: unsplash
+    engine: unsplash
+    shortcut: us
+    disabled: false
+
+  # Video
+  - name: youtube
+    engine: youtube_noapi
+    shortcut: yt
+    disabled: false
+    
+  - name: dailymotion
+    engine: dailymotion
+    shortcut: dm
+    disabled: false
+    
+  - name: vimeo
+    engine: vimeo
+    shortcut: vm
+    disabled: false
+
+  # Maps & Location
+  - name: openstreetmap
+    engine: openstreetmap
+    shortcut: osm
+    disabled: false
+    
+  - name: photon
+    engine: photon
+    shortcut: ph
+    disabled: false
+
+  # News
+  - name: google news
+    engine: google_news
+    shortcut: gn
+    disabled: false
+    
+  - name: bing news
+    engine: bing_news
+    shortcut: bin
+    disabled: false
+    
+  - name: qwant news
+    engine: qwant_news
+    shortcut: qwn
+    disabled: false
+
+  # Academic & Research
+  - name: arxiv
+    engine: arxiv
+    shortcut: arx
+    disabled: false
+    
+  - name: pubmed
+    engine: pubmed
+    shortcut: pub
+    disabled: false
+    
+  - name: semantic scholar
+    engine: semantic_scholar
+    shortcut: ses
+    disabled: false
+
+  # Shopping
+  - name: ebay
+    engine: ebay
+    shortcut: eb
+    disabled: false
+
+outgoing:
+  request_timeout: 10.0
+  max_request_timeout: 15.0
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, g, request, jsonify, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -197,10 +197,116 @@ def get_statistics():
         'recent_searches': recent_searches
     }
 
+# Check if setup is complete
+def is_setup_complete():
+    """Check if initial setup has been completed"""
+    setup_file = os.path.join(os.path.dirname(__file__), '.setup_complete')
+    return os.path.exists(setup_file) or os.environ.get('SETUP_COMPLETE', '').lower() == 'true'
+
+def save_configuration(config_data):
+    """Save configuration from setup wizard"""
+    env_file = os.path.join(os.path.dirname(__file__), '.env')
+    
+    # Read existing .env if it exists
+    env_vars = {}
+    if os.path.exists(env_file):
+        with open(env_file, 'r') as f:
+            for line in f:
+                if '=' in line and not line.startswith('#'):
+                    key, value = line.strip().split('=', 1)
+                    env_vars[key] = value
+    
+    # Update with new configuration
+    env_vars.update({
+        'ADMIN_USERNAME': config_data.get('admin_username', 'admin'),
+        'ADMIN_PASSWORD': config_data.get('admin_password', ''),
+        'SECRET_KEY': config_data.get('secret_key', os.urandom(24).hex()),
+        'INSTANCE_NAME': config_data.get('instance_name', 'Center Deep'),
+        'DEFAULT_THEME': config_data.get('default_theme', 'magic-unicorn'),
+        'INFINITE_SCROLL': str(config_data.get('infinite_scroll', True)),
+        'IMAGE_PROXY': str(config_data.get('image_proxy', True)),
+        'AUTOCOMPLETE': str(config_data.get('autocomplete', True)),
+        'SAFESEARCH': config_data.get('safesearch', '0'),
+        'USE_EXTERNAL_REDIS': 'false',
+        'REDIS_HOST': config_data.get('redis_host', 'center-deep-redis'),
+        'REDIS_PORT': config_data.get('redis_port', '6385'),
+        'SETUP_COMPLETE': 'true'
+    })
+    
+    # Write updated configuration
+    with open(env_file, 'w') as f:
+        for key, value in env_vars.items():
+            f.write(f'{key}={value}\n')
+    
+    # Mark setup as complete
+    setup_file = os.path.join(os.path.dirname(__file__), '.setup_complete')
+    with open(setup_file, 'w') as f:
+        f.write(datetime.utcnow().isoformat())
+    
+    # Update SearXNG configuration with selected engines
+    update_searxng_engines(config_data.get('engines', []))
+
+def update_searxng_engines(selected_engines):
+    """Update SearXNG settings with selected engines"""
+    # This would update the searxng/settings.yml file
+    # For now, we'll just log the selection
+    print(f"Selected engines: {selected_engines}")
+
 # Routes
 @app.route('/')
 def index():
+    # Check if setup is complete
+    if not is_setup_complete():
+        return redirect(url_for('setup'))
     return render_template('index.html')
+
+@app.route('/setup', methods=['GET', 'POST'])
+def setup():
+    """Initial setup wizard"""
+    # If setup is already complete, redirect to home
+    if is_setup_complete():
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        # Process setup form
+        config_data = {
+            'admin_username': request.form.get('admin_username'),
+            'admin_password': generate_password_hash(request.form.get('admin_password')),
+            'admin_email': request.form.get('admin_email'),
+            'instance_name': request.form.get('instance_name', 'Center Deep'),
+            'engines': request.form.getlist('engines'),
+            'safesearch': request.form.get('safesearch', '0'),
+            'default_theme': request.form.get('default_theme', 'magic-unicorn'),
+            'infinite_scroll': request.form.get('infinite_scroll') == 'on',
+            'image_proxy': request.form.get('image_proxy') == 'on',
+            'autocomplete': request.form.get('autocomplete') == 'on',
+            'secret_key': request.form.get('secret_key', os.urandom(24).hex()),
+            'redis_host': request.form.get('redis_host', 'center-deep-redis'),
+            'redis_port': request.form.get('redis_port', '6385')
+        }
+        
+        # Save configuration
+        save_configuration(config_data)
+        
+        # Create admin user in database
+        admin_user = User.query.filter_by(username=config_data['admin_username']).first()
+        if not admin_user:
+            admin_user = User(
+                username=config_data['admin_username'],
+                email=config_data.get('admin_email'),
+                password_hash=config_data['admin_password'],
+                is_admin=True
+            )
+            db.session.add(admin_user)
+            db.session.commit()
+        
+        flash('🎉 Setup complete! Your private search engine is ready.', 'success')
+        # Go directly to the main search page after setup
+        return redirect(url_for('index'))
+    
+    # Generate a secret key for the session
+    secret_key = os.urandom(24).hex()
+    return render_template('setup.html', secret_key=secret_key)
 
 @app.route('/search')
 def search():
@@ -928,77 +1034,8 @@ def get_tool_server_logs(server_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Initialize blog system
-try:
-    from blog.routes import register_blog_routes
-    register_blog_routes(app)
-    
-    # Initialize database tables for blog
-    with app.app_context():
-        # Import blog models to create tables
-        from blog.models import BlogSettings, BlogCategory, BlogPost, BlogComment, AgentTrigger, BlogAnalytics
-        from agents.models import DataScraper, ScrapedData, ContentAgent, GeneratedContent, AgentSchedule
-        db.create_all()
-        
-        # Create default blog settings if none exist
-        if not BlogSettings.query.first():
-            default_settings = BlogSettings(
-                blog_enabled=True,
-                blog_title="Center Deep Blog",
-                blog_subtitle="Insights on Search, AI, and Technology",
-                blog_description="Stay updated with the latest developments in search technology, artificial intelligence, and web innovation.",
-                hero_content="# Welcome to Center Deep Blog\n\nDiscover insights, tutorials, and the latest developments in search technology and AI.",
-                about_section="Center Deep Blog brings you expert insights on search technology, artificial intelligence, and web development. Our team of experts and AI agents curate and create content to keep you at the forefront of technology trends.",
-                meta_description="Expert insights on search technology, AI, and web development from the Center Deep team.",
-                meta_keywords="search technology, artificial intelligence, web development, SEO, machine learning"
-            )
-            db.session.add(default_settings)
-            
-        # Create default categories if none exist
-        if not BlogCategory.query.first():
-            categories = [
-                BlogCategory(name="AI & Machine Learning", slug="ai-ml", 
-                           description="Articles about artificial intelligence and machine learning", 
-                           color="#FF6B35", sort_order=1),
-                BlogCategory(name="Search Technology", slug="search-tech", 
-                           description="Updates on search engines and discovery tools", 
-                           color="#00BCD4", sort_order=2),
-                BlogCategory(name="Open Source", slug="open-source", 
-                           description="Open source projects and community updates", 
-                           color="#4CAF50", sort_order=3),
-                BlogCategory(name="Web Development", slug="web-dev", 
-                           description="Web development trends and tutorials", 
-                           color="#9C27B0", sort_order=4),
-                BlogCategory(name="Industry News", slug="industry-news", 
-                           description="Latest news and trends in technology", 
-                           color="#FF9800", sort_order=5)
-            ]
-            for category in categories:
-                db.session.add(category)
-                
-        db.session.commit()
-        print("✅ Blog system initialized successfully")
-        
-except ImportError as e:
-    print(f"⚠️ Blog system not available: {e}")
-except Exception as e:
-    print(f"❌ Error initializing blog system: {e}")
-
-# Initialize newsletter system
-try:
-    from newsletter.routes import register_newsletter_routes
-    register_newsletter_routes(app)
-    
-    with app.app_context():
-        # Import newsletter models to create tables
-        from newsletter.models import NewsletterSubscriber, NewsletterCampaign, NewsletterSend, NewsletterTemplate
-        db.create_all()
-        print("✅ Newsletter system initialized successfully")
-        
-except ImportError as e:
-    print(f"⚠️ Newsletter system not available: {e}")
-except Exception as e:
-    print(f"❌ Error initializing newsletter system: {e}")
+# Blog and Newsletter systems removed (out of scope for Center Deep)
+# These features are available in Center Deep Pro
 
 # Add markdown filter for templates
 @app.template_filter('markdown')

@@ -5,10 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Center Deep - Private Search Engine{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/center-deep-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/center-deep-icon.png') }}">
+    <meta name="theme-color" content="#b66eff">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-dark.css') }}" id="theme-css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-magic-unicorn.css') }}" id="theme-css">
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                        <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
     {% block content %}{% endblock %}
     
     <footer class="footer">
@@ -16,7 +32,11 @@
             <p>
                 Center Deep - Private Search | 
                 <a href="/preferences">Preferences</a>
-                | <button id="theme-toggle" class="theme-toggle" title="Switch theme">🌙</button>
+                | <select id="theme-switcher" class="theme-switcher" title="Choose theme">
+                    <option value="magic-unicorn">🦄 Magic Unicorn</option>
+                    <option value="dark">🌙 Dark</option>
+                    <option value="light">☀️ Light</option>
+                </select>
                 {% if current_user.is_authenticated %}
                     {% if current_user.is_admin %}
                     | <a href="/admin">Admin</a>

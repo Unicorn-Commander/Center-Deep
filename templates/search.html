@@ -329,12 +329,16 @@
                 {% endif %}
                 
                 {% if results.results|length >= 10 %}
-                <div class="pagination">
+                <div class="pagination" id="pagination">
                     {% if page > 1 %}
                     <a href="/search?q={{ query|urlencode }}&page={{ page - 1 }}" class="page-link">← Previous</a>
                     {% endif %}
                     <span class="page-info">Page {{ page }}</span>
-                    <a href="/search?q={{ query|urlencode }}&page={{ page + 1 }}" class="page-link">Next →</a>
+                    <a href="/search?q={{ query|urlencode }}&page={{ page + 1 }}" class="page-link" id="next-page-link">Next →</a>
+                </div>
+                <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
+                    <div class="spinner"></div>
+                    <p>Loading more results...</p>
                 </div>
                 {% endif %}
                 
@@ -387,5 +391,91 @@ function updateSafeSearch(value) {
     currentUrl.searchParams.set('safesearch', value);
     window.location.href = currentUrl.toString();
 }
+
+// Infinite Scroll Implementation
+(function() {
+    const infiniteScrollEnabled = localStorage.getItem('centerDeepInfiniteScroll') !== 'false';
+    
+    if (!infiniteScrollEnabled) {
+        return; // Exit if infinite scroll is disabled
+    }
+    
+    const nextPageLink = document.getElementById('next-page-link');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const pagination = document.getElementById('pagination');
+    let isLoading = false;
+    let currentPage = {{ page }};
+    
+    if (!nextPageLink) return;
+    
+    // Hide pagination if infinite scroll is enabled
+    if (pagination && infiniteScrollEnabled) {
+        pagination.style.display = 'none';
+    }
+    
+    function loadMoreResults() {
+        if (isLoading || !nextPageLink.href) return;
+        
+        isLoading = true;
+        if (loadingIndicator) loadingIndicator.style.display = 'block';
+        
+        fetch(nextPageLink.href + '&ajax=1')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newResults = doc.querySelectorAll('.result');
+                const resultsContainer = document.querySelector('.results-main');
+                const lastResult = resultsContainer.querySelector('.pagination');
+                
+                newResults.forEach(result => {
+                    resultsContainer.insertBefore(result, lastResult);
+                });
+                
+                // Update next page link
+                const newNextLink = doc.getElementById('next-page-link');
+                if (newNextLink) {
+                    nextPageLink.href = newNextLink.href;
+                    currentPage++;
+                } else {
+                    // No more pages
+                    nextPageLink.href = '';
+                    if (loadingIndicator) loadingIndicator.innerHTML = '<p>No more results</p>';
+                }
+                
+                isLoading = false;
+                if (loadingIndicator && nextPageLink.href) {
+                    loadingIndicator.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading more results:', error);
+                isLoading = false;
+                if (loadingIndicator) {
+                    loadingIndicator.innerHTML = '<p>Error loading results. <a href="#" onclick="loadMoreResults(); return false;">Try again</a></p>';
+                }
+            });
+    }
+    
+    // Check scroll position
+    function checkScroll() {
+        if (!infiniteScrollEnabled || isLoading || !nextPageLink.href) return;
+        
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        
+        // Load more when user is 300px from bottom
+        if (scrollTop + windowHeight >= documentHeight - 300) {
+            loadMoreResults();
+        }
+    }
+    
+    // Add scroll listener if infinite scroll is enabled
+    if (infiniteScrollEnabled) {
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('resize', checkScroll);
+    }
+})();
 </script>
 {% endblock %}

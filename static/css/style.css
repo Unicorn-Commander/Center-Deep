@@ -1,3 +1,77 @@
+/* Flash Messages */
+.flash-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
+}
+
+.flash-message {
+    padding: 15px 40px 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    position: relative;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-weight: 500;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.flash-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.flash-error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.flash-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.flash-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.flash-close {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+
+.flash-close:hover {
+    opacity: 1;
+}
+
 :root {
     --primary-color: #0a0e27;
     --secondary-color: #1a237e;
@@ -55,7 +129,7 @@ body {
     transform: translate(-50%, -50%);
     width: 900px;
     height: 900px;
-    background-image: url('../images/center-deep-logo.png');
+    background-image: url('../images/center-deep-logo-bg.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

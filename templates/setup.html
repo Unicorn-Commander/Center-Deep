@@ -1,0 +1,1314 @@
+{% extends "base.html" %}
+
+{% block title %}Setup - Center Deep{% endblock %}
+
+{% block content %}
+<div class="setup-wizard">
+    <canvas id="neural-network" class="neural-background"></canvas>
+    <div class="container">
+        <div class="setup-header">
+            <img src="{{ url_for('static', filename='images/center-deep-icon.png') }}" alt="Center Deep" class="setup-logo">
+            <h1 class="logo-text">Center Deep</h1>
+            <p class="setup-subtitle">🌊 Welcome! Let's configure your private search engine</p>
+        </div>
+        
+        <div class="setup-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+            </div>
+            <div class="progress-steps">
+                <span class="step active" data-step="1">Welcome</span>
+                <span class="step" data-step="2">Admin Account</span>
+                <span class="step" data-step="3">Search Engines</span>
+                <span class="step" data-step="4">Privacy Settings</span>
+                <span class="step" data-step="5">Complete</span>
+            </div>
+        </div>
+        
+        <form id="setupForm" class="setup-form" method="POST" action="/setup">
+            <!-- Step 1: Welcome -->
+            <div class="setup-step active" id="step1">
+                <h2>Welcome to Center Deep</h2>
+                <div class="welcome-content">
+                    <p>Center Deep is your private, self-hosted search engine that respects your privacy.</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M17.13,17C15.92,18.85 14.11,20.24 12,20.92C9.89,20.24 8.08,18.85 6.87,17C6.53,16.5 6.24,16 6,15.47C6,13.82 8.71,12.47 12,12.47C15.29,12.47 18,13.79 18,15.47C17.76,16 17.47,16.5 17.13,17Z"/>
+                            </svg>
+                            <div>
+                                <h3>Private & Secure</h3>
+                                <p>No tracking, no logs, no ads</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M3,4H21V8H21L14,15V22H10V15L3,8V4M5,6V7L10,12L11,13V20H13V13L14,12L19,7V6H5Z"/>
+                            </svg>
+                            <div>
+                                <h3>Meta-Search Engine</h3>
+                                <p>Combines results from multiple search engines</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12,18.17L8.83,15L7.42,16.41L12,21L16.59,16.41L15.17,15M12,5.83L15.17,9L16.58,7.59L12,3L7.41,7.59L8.83,9L12,5.83Z"/>
+                            </svg>
+                            <div>
+                                <h3>Self-Hosted</h3>
+                                <p>Complete control over your search experience</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setup-info">
+                        <p><strong>This setup wizard will help you:</strong></p>
+                        <ul>
+                            <li>Create your admin account</li>
+                            <li>Configure search engines</li>
+                            <li>Set privacy preferences</li>
+                            <li>Customize your interface</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2: Admin Account -->
+            <div class="setup-step" id="step2">
+                <h2>Create Admin Account</h2>
+                <div class="step-content">
+                    <div class="form-group">
+                        <label for="adminUsername">Admin Username</label>
+                        <input type="text" id="adminUsername" name="admin_username" required 
+                               placeholder="e.g., admin" value="admin"
+                               pattern="[a-zA-Z0-9_-]{3,20}"
+                               title="3-20 characters, letters, numbers, dash, underscore">
+                        <small>You'll use this to access the admin panel</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPassword">Admin Password</label>
+                        <input type="password" id="adminPassword" name="admin_password" required
+                               placeholder="Choose a strong password"
+                               minlength="8">
+                        <small>Minimum 8 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPasswordConfirm">Confirm Password</label>
+                        <input type="password" id="adminPasswordConfirm" name="admin_password_confirm" required
+                               placeholder="Re-enter password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminEmail">Admin Email (Optional)</label>
+                        <input type="email" id="adminEmail" name="admin_email"
+                               placeholder="admin@example.com">
+                        <small>For password recovery (stored locally only)</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3: Search Engines -->
+            <div class="setup-step" id="step3">
+                <h2>Configure Search Engines</h2>
+                <div class="step-content">
+                    <p>Select which search engines to use. More engines = better results!</p>
+                    
+                    <div class="engines-selection">
+                        <h3>Recommended Engines (No API Key Required)</h3>
+                        <div class="engines-grid">
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="brave" checked>
+                                <span class="engine-label">
+                                    <strong>Brave</strong>
+                                    <small>Privacy-focused, excellent results</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="google" checked>
+                                <span class="engine-label">
+                                    <strong>Google</strong>
+                                    <small>Most comprehensive results</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="duckduckgo" checked>
+                                <span class="engine-label">
+                                    <strong>DuckDuckGo</strong>
+                                    <small>Privacy-first search</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="bing" checked>
+                                <span class="engine-label">
+                                    <strong>Bing</strong>
+                                    <small>Microsoft's search engine</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="qwant" checked>
+                                <span class="engine-label">
+                                    <strong>Qwant</strong>
+                                    <small>European privacy-focused</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="startpage" checked>
+                                <span class="engine-label">
+                                    <strong>Startpage</strong>
+                                    <small>Google results, privacy protection</small>
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <h3>Additional Engines</h3>
+                        <div class="engines-grid">
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="searx">
+                                <span class="engine-label">
+                                    <strong>Searx</strong>
+                                    <small>Other Searx instances</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="yahoo">
+                                <span class="engine-label">
+                                    <strong>Yahoo</strong>
+                                    <small>Classic search engine</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="wikipedia" checked>
+                                <span class="engine-label">
+                                    <strong>Wikipedia</strong>
+                                    <small>Encyclopedia results</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="github" checked>
+                                <span class="engine-label">
+                                    <strong>GitHub</strong>
+                                    <small>Code repositories</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setup-tip">
+                        <strong>💡 Tip:</strong> You can always change these settings later in Preferences
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 4: Privacy Settings -->
+            <div class="setup-step" id="step4">
+                <h2>Privacy & Interface Settings</h2>
+                <div class="step-content">
+                    <div class="form-group">
+                        <label for="instanceName">Instance Name</label>
+                        <input type="text" id="instanceName" name="instance_name" 
+                               value="Center Deep" placeholder="Center Deep">
+                        <small>The name displayed in the header</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="safesearch">Safe Search Default</label>
+                        <select id="safesearch" name="safesearch">
+                            <option value="0" selected>Off (Show all results)</option>
+                            <option value="1">Moderate (Filter explicit content)</option>
+                            <option value="2">Strict (Maximum filtering)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="defaultTheme">Default Theme</label>
+                        <select id="defaultTheme" name="default_theme">
+                            <option value="magic-unicorn" selected>🦄 Magic Unicorn (Vibrant & Fun)</option>
+                            <option value="dark">🌙 Dark (Easy on the eyes)</option>
+                            <option value="light">☀️ Light (Clean & Professional)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="toggle-container">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="infiniteScroll" name="infinite_scroll" checked>
+                                <span class="toggle-switch"></span>
+                                <span class="toggle-text">Enable Infinite Scroll</span>
+                            </label>
+                            <small>Automatically load more results as you scroll</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="toggle-container">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="imageProxy" name="image_proxy" checked>
+                                <span class="toggle-switch"></span>
+                                <span class="toggle-text">Enable Image Proxy</span>
+                            </label>
+                            <small>Route images through Center Deep for privacy</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="toggle-container">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="autocomplete" name="autocomplete" checked>
+                                <span class="toggle-switch"></span>
+                                <span class="toggle-text">Enable Search Suggestions</span>
+                            </label>
+                            <small>Show search suggestions as you type</small>
+                        </div>
+                    </div>
+                    
+                    <div class="advanced-toggle">
+                        <button type="button" class="btn-link" onclick="toggleAdvanced()">
+                            Advanced Settings ▼
+                        </button>
+                    </div>
+                    
+                    <div class="advanced-settings" id="advancedSettings" style="display: none;">
+                        <div class="form-group">
+                            <label for="secretKey">Secret Key</label>
+                            <input type="text" id="secretKey" name="secret_key" 
+                                   value="{{ secret_key }}" readonly>
+                            <small>Auto-generated. Used for secure sessions</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="redisHost">Redis Host (Optional)</label>
+                            <input type="text" id="redisHost" name="redis_host" 
+                                   placeholder="localhost" value="center-deep-redis">
+                            <small>Leave default for internal Redis</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="redisPort">Redis Port</label>
+                            <input type="number" id="redisPort" name="redis_port" 
+                                   value="6385" placeholder="6385">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 5: Complete -->
+            <div class="setup-step" id="step5">
+                <h2>Setup Complete!</h2>
+                <div class="complete-content">
+                    <div class="success-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24">
+                            <path fill="#4CAF50" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"/>
+                        </svg>
+                    </div>
+                    
+                    <p class="success-message">Your Center Deep instance is ready to use!</p>
+                    
+                    <div class="config-summary">
+                        <h3>Configuration Summary</h3>
+                        <ul id="configSummary">
+                            <!-- Will be populated by JavaScript -->
+                        </ul>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h3>Next Steps</h3>
+                        <ul>
+                            <li>✅ Your settings have been saved</li>
+                            <li>🔐 Log in with your admin credentials</li>
+                            <li>🎨 Customize your theme in Preferences</li>
+                            <li>🔍 Start searching privately!</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="acknowledgments">
+                        <h3>Acknowledgments</h3>
+                        <p>Center Deep is built on top of amazing open-source projects:</p>
+                        <ul>
+                            <li>🔍 <strong>SearXNG</strong> - The privacy-respecting metasearch engine</li>
+                            <li>👥 <strong>The Community</strong> - For contributions and feedback</li>
+                            <li>🦄 <strong>Unicorn Commander</strong> - For making this project possible</li>
+                            <li>⚓ <strong>The Commodore</strong> - Our mascot guiding us through the deep</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setup-navigation">
+                <button type="button" class="btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
+                    ← Previous
+                </button>
+                <button type="button" class="btn-primary" id="nextBtn" onclick="changeStep(1)">
+                    Next →
+                </button>
+                <button type="submit" class="btn-success" id="finishBtn" style="display: none;">
+                    🚀 Launch Center Deep
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+:root {
+    --unicorn-purple: #b66eff;
+    --unicorn-blue: #00d4ff;
+    --unicorn-pink: #ff6ec7;
+    --gradient-magic: linear-gradient(135deg, var(--unicorn-purple) 0%, var(--unicorn-blue) 100%);
+    --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --dark-bg: #0a0a0f;
+    --card-bg: rgba(255, 255, 255, 0.98);
+    --text-primary: #0a0a0f;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --border-radius: 16px;
+    --border-radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.setup-wizard {
+    min-height: 100vh;
+    background: var(--dark-bg);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.setup-wizard::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-magic);
+    opacity: 0.1;
+    z-index: -1;
+}
+
+.neural-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.8;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+    33% { transform: translate(30px, -30px) rotate(120deg); }
+    66% { transform: translate(-20px, 20px) rotate(240deg); }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.setup-header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.setup-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 30px rgba(182, 110, 255, 0.5));
+    animation: float-logo 6s ease-in-out infinite;
+}
+
+@keyframes float-logo {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
+}
+
+.logo-text {
+    font-size: 4rem;
+    font-weight: 800;
+    background: var(--gradient-magic);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0 0 1rem 0;
+    text-shadow: 0 0 30px rgba(182, 110, 255, 0.5);
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% 100%;
+    letter-spacing: -0.02em;
+}
+
+@keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.setup-subtitle {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+.setup-progress {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar {
+    height: 6px;
+    background: rgba(182, 110, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-magic);
+    transition: var(--transition);
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: progressShine 1.5s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+    0% { left: -50%; }
+    100% { left: 100%; }
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.step {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: var(--transition);
+}
+
+.step.active {
+    color: var(--unicorn-purple);
+    font-weight: 600;
+    transform: translateY(-2px);
+}
+
+.step.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--gradient-magic);
+    border-radius: 1px;
+}
+
+.setup-form {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    padding: 3rem;
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.setup-form::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--gradient-magic);
+    border-radius: var(--border-radius-lg);
+    z-index: -1;
+    opacity: 0.1;
+}
+
+.setup-step {
+    display: none;
+    min-height: 400px;
+}
+
+.setup-step.active {
+    display: block;
+    animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateX(20px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateX(0);
+    }
+}
+
+.setup-step h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 2rem 0;
+    background: var(--gradient-magic);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    animation: shimmer 4s ease-in-out infinite;
+}
+
+.feature-list {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.feature-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: rgba(182, 110, 255, 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(182, 110, 255, 0.1);
+    transition: var(--transition);
+}
+
+.feature-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(182, 110, 255, 0.15);
+    border-color: rgba(182, 110, 255, 0.3);
+}
+
+.feature-item svg {
+    color: var(--unicorn-purple);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.feature-item h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.feature-item p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.step-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid rgba(182, 110, 255, 0.1);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--unicorn-purple);
+    box-shadow: 0 0 0 3px rgba(182, 110, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.engines-selection {
+    margin: 2rem 0;
+}
+
+.engines-selection h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 2rem 0 1rem 0;
+}
+
+.engines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.engine-option {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(182, 110, 255, 0.1);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.engine-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(182, 110, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.engine-option:hover::before {
+    left: 100%;
+}
+
+.engine-option:hover {
+    border-color: var(--unicorn-purple);
+    background: rgba(182, 110, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(182, 110, 255, 0.15);
+}
+
+.engine-option input[type="checkbox"] {
+    display: block !important;
+    margin-right: 0.75rem;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--unicorn-purple);
+    cursor: pointer;
+}
+
+.engine-label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.engine-label strong {
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.engine-label small {
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background: rgba(182, 110, 255, 0.2);
+    border-radius: 12px;
+    margin: 0 0.75rem;
+    transition: var(--transition);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+input[type="checkbox"]:checked + .toggle-switch {
+    background: var(--gradient-magic);
+    box-shadow: 0 0 10px rgba(182, 110, 255, 0.3);
+}
+
+input[type="checkbox"]:checked + .toggle-switch::after {
+    transform: translateX(24px);
+}
+
+.toggle-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.toggle-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toggle-container small {
+    margin-left: 0;
+    color: var(--text-secondary);
+}
+
+.toggle-text {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.setup-info,
+.setup-tip {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border: 2px solid rgba(182, 110, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(182, 110, 255, 0.1);
+}
+
+.setup-info strong,
+.setup-tip strong {
+    color: var(--unicorn-purple);
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+.setup-info p,
+.setup-tip p {
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.setup-info ul {
+    margin: 1rem 0 0 0;
+    padding-left: 1.25rem;
+}
+
+.setup-info li {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.setup-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(182, 110, 255, 0.1);
+}
+
+.btn-primary, .btn-secondary, .btn-success {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--gradient-magic);
+    color: white;
+    box-shadow: 0 4px 15px rgba(182, 110, 255, 0.3);
+    border: 2px solid transparent;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(182, 110, 255, 0.4);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
+    border: 2px solid rgba(182, 110, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(182, 110, 255, 0.1);
+    border-color: var(--unicorn-purple);
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 1.125rem;
+    padding: 1rem 2.5rem;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.complete-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.success-icon {
+    margin: 2rem 0;
+}
+
+.success-icon svg {
+    filter: drop-shadow(0 4px 8px rgba(76, 175, 80, 0.3));
+}
+
+.success-message {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 1.5rem 0;
+    background: linear-gradient(135deg, #10b981, var(--unicorn-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.config-summary,
+.next-steps,
+.acknowledgments {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border: 1px solid rgba(182, 110, 255, 0.1);
+    text-align: left;
+}
+
+.config-summary h3,
+.next-steps h3,
+.acknowledgments h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+}
+
+.config-summary ul,
+.next-steps ul,
+.acknowledgments ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.config-summary li,
+.next-steps li,
+.acknowledgments li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.advanced-toggle {
+    margin: 1.5rem 0;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--unicorn-purple);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.btn-link:hover {
+    color: var(--unicorn-blue);
+    text-decoration: underline;
+}
+
+.advanced-settings {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: rgba(182, 110, 255, 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(182, 110, 255, 0.1);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .logo-text {
+        font-size: 2.5rem;
+    }
+    
+    .setup-form {
+        padding: 2rem;
+    }
+    
+    .setup-step h2 {
+        font-size: 2rem;
+    }
+    
+    .engines-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .setup-navigation {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-success {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+let currentStep = 1;
+const totalSteps = 5;
+
+function changeStep(direction) {
+    const steps = document.querySelectorAll('.setup-step');
+    const progressSteps = document.querySelectorAll('.step');
+    
+    // Validate current step before moving
+    if (direction === 1 && !validateStep(currentStep)) {
+        return;
+    }
+    
+    // Update current step
+    currentStep += direction;
+    
+    // Ensure step is within bounds
+    if (currentStep < 1) currentStep = 1;
+    if (currentStep > totalSteps) currentStep = totalSteps;
+    
+    // Update UI
+    steps.forEach((step, index) => {
+        step.classList.toggle('active', index === currentStep - 1);
+    });
+    
+    progressSteps.forEach((step, index) => {
+        step.classList.toggle('active', index < currentStep);
+    });
+    
+    // Update progress bar
+    const progress = (currentStep / totalSteps) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    
+    // Update navigation buttons
+    document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+    document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'block';
+    document.getElementById('finishBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+    
+    // Generate summary on last step
+    if (currentStep === totalSteps) {
+        generateSummary();
+    }
+}
+
+function validateStep(step) {
+    if (step === 2) {
+        // Validate admin account
+        const username = document.getElementById('adminUsername').value;
+        const password = document.getElementById('adminPassword').value;
+        const confirm = document.getElementById('adminPasswordConfirm').value;
+        
+        if (!username || username.length < 3) {
+            alert('Username must be at least 3 characters');
+            return false;
+        }
+        
+        if (!password || password.length < 8) {
+            alert('Password must be at least 8 characters');
+            return false;
+        }
+        
+        if (password !== confirm) {
+            alert('Passwords do not match');
+            return false;
+        }
+    }
+    
+    if (step === 3) {
+        // Ensure at least one engine is selected
+        const engines = document.querySelectorAll('input[name="engines"]:checked');
+        if (engines.length === 0) {
+            alert('Please select at least one search engine');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function generateSummary() {
+    const summary = document.getElementById('configSummary');
+    const username = document.getElementById('adminUsername').value;
+    const engines = document.querySelectorAll('input[name="engines"]:checked');
+    const theme = document.getElementById('defaultTheme').selectedOptions[0].text;
+    const instanceName = document.getElementById('instanceName').value;
+    
+    summary.innerHTML = `
+        <li><strong>Instance Name:</strong> ${instanceName}</li>
+        <li><strong>Admin Username:</strong> ${username}</li>
+        <li><strong>Search Engines:</strong> ${engines.length} enabled</li>
+        <li><strong>Default Theme:</strong> ${theme}</li>
+        <li><strong>Infinite Scroll:</strong> ${document.getElementById('infiniteScroll').checked ? 'Enabled' : 'Disabled'}</li>
+    `;
+}
+
+function toggleAdvanced() {
+    const advanced = document.getElementById('advancedSettings');
+    advanced.style.display = advanced.style.display === 'none' ? 'block' : 'none';
+}
+
+// Generate a random secret key if needed
+document.addEventListener('DOMContentLoaded', function() {
+    const secretKey = document.getElementById('secretKey');
+    if (secretKey && !secretKey.value) {
+        const key = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+        secretKey.value = key;
+    }
+    
+    // Initialize neural network animation
+    initNeuralNetwork();
+});
+
+// Neural Network Galaxy Animation
+function initNeuralNetwork() {
+    const canvas = document.getElementById('neural-network');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    // Set canvas size
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Neural network nodes
+    const nodes = [];
+    const connections = [];
+    const nodeCount = 50;
+    const connectionDistance = 200;
+    
+    // Create nodes
+    for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2 + 1,
+            pulsePhase: Math.random() * Math.PI * 2
+        });
+    }
+    
+    // Animation loop
+    function animate() {
+        ctx.fillStyle = 'rgba(3, 3, 8, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw nodes
+        nodes.forEach((node, i) => {
+            // Update position
+            node.x += node.vx;
+            node.y += node.vy;
+            node.pulsePhase += 0.02;
+            
+            // Bounce off edges
+            if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+            if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+            
+            // Keep in bounds
+            node.x = Math.max(0, Math.min(canvas.width, node.x));
+            node.y = Math.max(0, Math.min(canvas.height, node.y));
+            
+            // Draw connections
+            nodes.forEach((otherNode, j) => {
+                if (i < j) {
+                    const distance = Math.sqrt(
+                        Math.pow(node.x - otherNode.x, 2) + 
+                        Math.pow(node.y - otherNode.y, 2)
+                    );
+                    
+                    if (distance < connectionDistance) {
+                        const opacity = (1 - distance / connectionDistance) * 0.3;
+                        
+                        // Draw connection line
+                        ctx.beginPath();
+                        ctx.moveTo(node.x, node.y);
+                        ctx.lineTo(otherNode.x, otherNode.y);
+                        
+                        // Create gradient for the line
+                        const gradient = ctx.createLinearGradient(
+                            node.x, node.y, otherNode.x, otherNode.y
+                        );
+                        gradient.addColorStop(0, `rgba(182, 110, 255, ${opacity})`);
+                        gradient.addColorStop(0.5, `rgba(0, 212, 255, ${opacity})`);
+                        gradient.addColorStop(1, `rgba(182, 110, 255, ${opacity})`);
+                        
+                        ctx.strokeStyle = gradient;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            });
+            
+            // Draw node with pulsing effect
+            const pulseSize = Math.sin(node.pulsePhase) * 0.5 + 1.5;
+            
+            // Outer glow
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius * pulseSize + 5, 0, Math.PI * 2);
+            const glowGradient = ctx.createRadialGradient(
+                node.x, node.y, 0,
+                node.x, node.y, node.radius * pulseSize + 5
+            );
+            glowGradient.addColorStop(0, 'rgba(182, 110, 255, 0.3)');
+            glowGradient.addColorStop(0.5, 'rgba(0, 212, 255, 0.2)');
+            glowGradient.addColorStop(1, 'rgba(182, 110, 255, 0)');
+            ctx.fillStyle = glowGradient;
+            ctx.fill();
+            
+            // Inner node
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius * pulseSize, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fill();
+        });
+        
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Clean up on page change
+    window.addEventListener('beforeunload', () => {
+        cancelAnimationFrame(animationId);
+    });
+}
+</script>
+{% endblock %}
