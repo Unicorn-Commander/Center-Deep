@@ -226,7 +226,7 @@ http://localhost:13053  # Academic Research
 | **👥 Users** | ✅ Unlimited local users | ✅ SSO/LDAP/OAuth2 |
 | **📊 Analytics** | ✅ Basic statistics | ✅ Advanced dashboards + exports |
 | **🌐 Proxy Support** | ✅ Basic proxy config | ✅ Rotating proxy pools |
-| **📝 Content System** | ❌ | ✅ Blog + Newsletter platform |
+| **📦 Data Export** | ✅ JSON/CSV | ✅ Advanced formats + automation |
 | **🔗 API Access** | ✅ Basic API | ✅ Full REST API + webhooks |
 | **🎨 Customization** | ✅ Themes | ✅ White-label + custom branding |
 | **📞 Support** | Community | 24/7 Enterprise support |
