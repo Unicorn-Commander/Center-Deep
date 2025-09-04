@@ -25,7 +25,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# Initialize Redis for statistics (optional, falls back to in-memory if not available)
+# Redis connection for search caching only (analytics disabled in free version)
 try:
     # Check if using external Redis
     use_external_redis = os.environ.get('USE_EXTERNAL_REDIS', 'false').lower() == 'true'
@@ -56,15 +56,7 @@ try:
     print(f"✅ Redis connected successfully to {redis_host}:{redis_port}/{redis_db}")
 except Exception as e:
     redis_client = None
-    print(f"❌ Redis not available ({e}), using in-memory statistics")
-
-# In-memory statistics fallback
-stats_memory = {
-    'total_searches': 0,
-    'search_history': [],
-    'active_users': set(),
-    'response_times': []
-}
+    print(f"❌ Redis not available ({e}), search caching disabled")
 
 # Settings storage
 app_settings = {
@@ -74,12 +66,6 @@ app_settings = {
         'brightdata_username': '',
         'brightdata_password': '',
         'rotation_interval': 300
-    },
-    'monitoring': {
-        'prometheus_enabled': False,
-        'prometheus_url': 'http://localhost:9090',
-        'grafana_enabled': False,
-        'grafana_url': 'http://localhost:3000'
     },
     'searxng': {
         'url': os.environ.get('SEARXNG_BACKEND_URL', 'http://localhost:8080'),
@@ -151,51 +137,6 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Statistics tracking functions
-def track_search(query, response_time, results_count):
-    """Track search statistics"""
-    if redis_client:
-        redis_client.incr('total_searches')
-        redis_client.lpush('recent_searches', json.dumps({
-            'query': query,
-            'timestamp': datetime.utcnow().isoformat(),
-            'response_time': response_time,
-            'user_id': current_user.id if current_user.is_authenticated else None
-        }))
-        redis_client.ltrim('recent_searches', 0, 999)  # Keep last 1000
-        redis_client.zadd('active_users', {str(request.remote_addr): datetime.utcnow().timestamp()})
-    else:
-        stats_memory['total_searches'] += 1
-        stats_memory['search_history'].append({
-            'query': query,
-            'timestamp': datetime.utcnow(),
-            'response_time': response_time
-        })
-        stats_memory['active_users'].add(request.remote_addr)
-        stats_memory['response_times'].append(response_time)
-
-def get_statistics():
-    """Get current statistics"""
-    if redis_client:
-        total_searches = redis_client.get('total_searches') or 0
-        active_users = redis_client.zcount('active_users', 
-                                         datetime.utcnow().timestamp() - 86400,
-                                         datetime.utcnow().timestamp())
-        recent_searches = redis_client.lrange('recent_searches', 0, 10)
-    else:
-        total_searches = stats_memory['total_searches']
-        active_users = len(stats_memory['active_users'])
-        recent_searches = stats_memory['search_history'][-10:]
-    
-    # Calculate average response time from database
-    avg_response = db.session.query(db.func.avg(SearchLog.response_time)).scalar() or 0
-    
-    return {
-        'total_searches': int(total_searches),
-        'active_users': active_users,
-        'avg_response_time': round(avg_response, 2),
-        'recent_searches': recent_searches
-    }
 
 # Check if setup is complete
 def is_setup_complete():
@@ -253,6 +194,11 @@ def update_searxng_engines(selected_engines):
     print(f"Selected engines: {selected_engines}")
 
 # Routes
+@app.route('/health')
+def health():
+    """Health check endpoint for Docker"""
+    return jsonify({'status': 'healthy', 'service': 'Center Deep'}), 200
+
 @app.route('/')
 def index():
     # Check if setup is complete
@@ -320,45 +266,19 @@ def search():
     if query:
         start_time = datetime.utcnow()
         
-        # Make search request to SearXNG
+        # Use internal search engine (no external SearXNG dependency)
         try:
-            searx_url = app_settings['searxng']['url']
-            params = {
-                'q': query,
-                'format': 'json',
-                'pageno': page,
-                'safesearch': safesearch
-            }
+            from search_engine import perform_search
             
-            # Add category filter
-            if categories:
-                params['categories'] = categories
-            
-            # Add time range filter    
-            if time_range:
-                params['time_range'] = time_range
-                
-            # Add language filter
-            if language:
-                params['language'] = language
-            
-            # Use proxy if enabled
-            proxies = None
-            if app_settings['proxy']['enabled'] and app_settings['proxy']['brightdata_url']:
-                proxies = {
-                    'http': app_settings['proxy']['brightdata_url'],
-                    'https': app_settings['proxy']['brightdata_url']
-                }
-                auth = (app_settings['proxy']['brightdata_username'], 
-                       app_settings['proxy']['brightdata_password'])
-                response = requests.get(searx_url + '/search', params=params, 
-                                      proxies=proxies, auth=auth,
-                                      timeout=app_settings['searxng']['timeout'])
-            else:
-                response = requests.get(searx_url + '/search', params=params, 
-                                      timeout=app_settings['searxng']['timeout'])
-            
-            results = response.json() if response.status_code == 200 else {'results': []}
+            # Perform search using our integrated engine
+            results = perform_search(
+                query=query,
+                categories=categories,
+                page=page,
+                safesearch=safesearch,
+                time_range=time_range,
+                language=language
+            )
             
             # Calculate response time
             response_time = (datetime.utcnow() - start_time).total_seconds()
@@ -374,8 +294,6 @@ def search():
             db.session.add(search_log)
             db.session.commit()
             
-            # Track statistics
-            track_search(query, response_time, len(results.get('results', [])))
             
         except Exception as e:
             print(f"Search error: {e}")
@@ -463,8 +381,7 @@ def preferences():
 @app.route('/admin')
 @admin_required
 def admin():
-    stats = get_statistics()
-    return render_template('admin.html', stats=stats)
+    return render_template('admin.html')
 
 @app.route('/api/admin/settings', methods=['GET', 'POST'])
 @admin_required
@@ -491,35 +408,6 @@ def admin_settings():
     
     return jsonify(app_settings)
 
-@app.route('/api/admin/stats')
-@admin_required
-def admin_stats():
-    """Get real-time statistics"""
-    stats = get_statistics()
-    
-    # Get recent activity
-    recent_logs = SearchLog.query.order_by(SearchLog.timestamp.desc()).limit(10).all()
-    recent_activity = []
-    for log in recent_logs:
-        recent_activity.append({
-            'time': log.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            'query': log.query,
-            'user': log.user.username if log.user else 'Anonymous',
-            'response_time': log.response_time
-        })
-    
-    # Get proxy status
-    proxy_status = 'inactive'
-    if app_settings['proxy']['enabled']:
-        proxy_status = 'active'
-    
-    return jsonify({
-        'total_searches': stats['total_searches'],
-        'active_users': stats['active_users'],
-        'avg_response_time': stats['avg_response_time'],
-        'proxy_status': proxy_status,
-        'recent_activity': recent_activity
-    })
 
 @app.route('/api/admin/change-password', methods=['POST'])
 @admin_required

@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Center Deep - Complete Search Engine
+  center-deep:
+    build: .
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./instance:/app/instance
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+      - ./searxng:/app/searxng:ro
+    networks:
+      - center-deep-network
+    environment:
+      - PORT=8888
+      - FLASK_ENV=production
+      # Disable Redis entirely - app will work without it
+      - USE_EXTERNAL_REDIS=false
+      # SearXNG runs internally on port 8080
+      - SEARXNG_BACKEND_URL=http://searxng-engine:8080
+    depends_on:
+      - searxng-engine
+    env_file:
+      - .env
+  
+  # SearXNG Engine - REQUIRED (Internal search backend)
+  # This is the actual search engine that Center Deep uses
+  searxng-engine:
+    image: searxng/searxng:latest
+    container_name: center-deep-searxng
+    restart: unless-stopped
+    # No external ports - only accessible internally
+    volumes:
+      - ./searxng:/etc/searxng:ro
+    networks:
+      - center-deep-network
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY:-ultrasecretkey}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+
+networks:
+  center-deep-network:
+    name: center-deep-net
+    driver: bridge

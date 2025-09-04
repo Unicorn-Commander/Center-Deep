@@ -24,34 +24,35 @@
 
 ## 🎯 **Why Center Deep?**
 
-We love SearXNG! It's an amazing privacy-focused metasearch engine. But we kept hearing the same feedback:
-- "The setup is too complicated"
-- "I wish it had a web UI for configuration"
-- "Can it integrate with my AI tools?"
-- "The interface needs modernization"
+**Center Deep** is a powerful, privacy-focused metasearch engine that aggregates results from multiple search providers while never tracking you. Built as a modern, user-friendly alternative to complex search solutions, it offers:
 
-**Center Deep** addresses these concerns while maintaining all the privacy features that make SearXNG great.
+- 🔒 **Complete Privacy**: No tracking, no logs, no ads
+- 🚀 **One-Click Setup**: Install and run in under 60 seconds
+- 🎨 **Beautiful Interface**: Modern, responsive design with dark mode
+- 🔧 **Web Admin Panel**: Configure everything through an intuitive UI
+- 🤖 **AI-Ready**: Optional integration with OpenWebUI and AI tools
+- ⚡ **Fast & Reliable**: Redis caching for blazing-fast results
 
 <table>
 <tr>
 <td width="50%">
 
-### 🤝 **Built on SearXNG's Foundation**
-- Same powerful search aggregation
-- Same privacy-first approach
-- Same open-source spirit
-- Compatible with SearXNG instances
+### 🛡️ **Privacy First**
+- Zero tracking or user profiling
+- No cookies or fingerprinting
+- All searches are anonymous
+- Self-hosted on your infrastructure
 
 </td>
 <td width="50%">
 
-### ✨ **What We Added**
-- One-command Docker deployment
-- Beautiful web-based admin panel
-- AI tool server integration
-- Modern, responsive UI
-- Automatic configuration
-- Built-in user management
+### ✨ **Key Features**
+- Aggregates 90+ search engines
+- Beautiful setup wizard
+- Professional blue theme
+- Smart result ranking
+- Image proxy for privacy
+- Mobile-responsive design
 
 </td>
 </tr>
@@ -87,17 +88,37 @@ docker compose -f docker-compose.center-deep.yml up -d
 # Access at http://localhost:8888
 ```
 
-> 🔑 **Admin Panel**: `http://localhost:8888/admin` | Username: `ucadmin` | Password: `MagicUnicorn!8-)`
+> 🔑 **First Run**: Visit `http://localhost:8888/setup` to configure your instance with our beautiful setup wizard!
 
 ---
 
-## 🔧 **Redis Configuration Options**
+## 🌟 **What's New in Latest Release**
 
-Center Deep uses Redis for caching and performance optimization. We provide flexible options:
+### **v2.0 - Professional Edition**
+- ✅ **Removed Background Images**: Cleaner dark theme without distracting gradients
+- ✅ **Professional Setup Wizard**: Beautiful blue-themed configuration interface
+- ✅ **Improved Search Quality**: Google and Brave prioritized, DuckDuckGo moved to optional
+- ✅ **Fixed UI Issues**: Resolved toggle switch overlapping in settings
+- ✅ **Docker Optimizations**: Updated to latest Docker Compose spec
+- ✅ **Standalone Mode**: No external dependencies required
 
-### **Option 1: Use Our Included Redis** (Default)
+## 🔧 **Configuration**
+
+### **Included Search Engines**
+Center Deep aggregates results from multiple sources, with smart prioritization:
+
+**Premium Engines** (Enabled by default):
+- 🔍 **Google** - Highest priority for best results
+- 🦁 **Brave** - Privacy-focused with quality results
+- 🔷 **Bing** - Microsoft's search engine
+
+**Additional Engines** (Optional):
+- DuckDuckGo, Yahoo, Qwant, Startpage, and 80+ more
+
+### **Redis Caching** (Recommended)
+Center Deep includes Redis for performance optimization:
 ```bash
-# Runs Redis on port 6385 (non-standard to avoid conflicts)
+# Runs automatically on port 6385 (non-standard to avoid conflicts)
 docker compose -f docker-compose.center-deep.yml up -d
 ```
 
@@ -148,10 +169,10 @@ EXTERNAL_REDIS_PASSWORD=your-password  # If authentication is required
 
 | 🔒 **Privacy First** | 🤖 **AI Integration** | 🎨 **Beautiful UI** | ⚙️ **Easy Admin** |
 |:---:|:---:|:---:|:---:|
-| Zero tracking | 4 OpenWebUI tools | Dark/Light themes | Web-based config |
-| No cookies needed | LLM model discovery | Responsive design | User management |
-| No ads ever | Tool server control | Unicorn mascot 🦄 | Real-time stats |
-| IP rotation ready | Native integration | Clean results | Auto-configuration |
+| Zero tracking | OpenWebUI ready | Professional themes | Setup wizard |
+| No cookies needed | Tool servers | Dark mode | Web-based config |
+| No ads ever | AI-powered search | Clean results | User management |
+| Anonymous searching | Native integration | Mobile responsive | Auto-configuration |
 
 </div>
 
@@ -201,12 +222,12 @@ Scholarly papers with proper formatting
 ### **Simple Integration**
 
 ```bash
-# Start tool servers
-docker compose --profile tools -f docker-compose.center-deep.yml up -d
+# Only if you want AI tool servers:
+docker compose --profile tools up -d
 
-# Add these URLs to OpenWebUI
+# Add to OpenWebUI:
 http://localhost:13050  # Search Tool
-http://localhost:13051  # Deep Search
+http://localhost:13051  # Deep Search  
 http://localhost:13052  # Report Generator
 http://localhost:13053  # Academic Research
 ```
@@ -245,13 +266,13 @@ http://localhost:13053  # Academic Research
 ```mermaid
 graph LR
     A[👤 User] --> B[Center Deep<br/>:8888]
-    C[🤖 OpenWebUI] --> B
-    B --> D[Search Engines<br/>70+ sources]
-    B --> E[Redis Cache<br/>:6385]
-    B --> F[Tool Servers<br/>:13050-13053]
+    B --> C[Search Aggregation<br/>90+ engines]
+    B --> D[Redis Cache<br/>:6385]
+    B --> E[Privacy Proxy]
     
-    style B fill:#6366f1,stroke:#4f46e5,stroke-width:3px,color:#fff
-    style F fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    style B fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style D fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    style E fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
 ```
 
 </div>

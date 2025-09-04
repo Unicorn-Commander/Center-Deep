@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Main Center Deep Application
+  center-deep:
+    build: .
+    image: center-deep:latest
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-supersecretkey}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-changeme}
+      # Redis is optional - app works without it
+      - USE_EXTERNAL_REDIS=false
+      - SEARCH_TIMEOUT=${SEARCH_TIMEOUT:-10}
+      - MAX_RESULTS=${MAX_RESULTS:-20}
+    volumes:
+      - ./instance:/app/instance
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - center-deep-network
+
+  # Redis Cache (Optional but Recommended)
+  # Comment out this entire service if you don't want Redis
+  redis-cache:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    ports:
+      - "6385:6379"  # Using 6385 to avoid conflicts
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy lru
+      --save ""
+      --appendonly no
+    volumes:
+      - redis_data:/data
+    networks:
+      - center-deep-network
+
+networks:
+  center-deep-network:
+    name: center-deep-net
+    driver: bridge
+
+volumes:
+  redis_data:
+    name: center-deep-redis-data

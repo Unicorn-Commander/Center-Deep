@@ -2,7 +2,7 @@ use_default_settings: true
 
 general:
   debug: false
-  instance_name: "Center Deep"
+  instance_name: "Center Deep Search Engine"
   privacypolicy_url: false
   donation_url: false
   contact_url: "https://unicorncommander.com/contact"
@@ -17,18 +17,18 @@ brand:
 
 search:
   safe_search: 0
-  autocomplete: "google"
-  default_lang: ""
-  ban_time_on_fail: 5
-  max_ban_time_on_fail: 120
+  autocomplete: "google"  # Changed to Google for better suggestions
+  default_lang: "auto"
+  ban_time_on_fail: 3
+  max_ban_time_on_fail: 60
   formats:
     - html
     - json
 
 server:
-  port: 8888
+  port: 8080
   bind_address: "0.0.0.0"
-  base_url: /
+  base_url: false
   secret_key: "center-deep-unicorn-commander-secret-2024"
   image_proxy: true
   http_protocol_version: "1.1"
@@ -42,52 +42,83 @@ ui:
     simple_style: dark
   center_alignment: false
   infinite_scroll: true
-  default_locale: ""
-  query_in_title: true
+  default_locale: "auto"
+  query_in_title: false
   results_on_new_tab: false
+  search_on_category_select: true
+  hotkeys: default
 
 # Comprehensive free search engines for best results
 engines:
-  # Primary Search Engines
-  - name: brave
-    engine: brave
-    shortcut: br
-    disabled: false
-    
+  # Primary Search Engines - Google and Brave prioritized
   - name: google
     engine: google
     shortcut: g
     disabled: false
-
-  - name: duckduckgo
-    engine: duckduckgo
-    shortcut: dd
+    paging: true
+    categories: [general, web]
+    weight: 2.0  # Highest priority for best results
+    
+  - name: brave
+    engine: brave
+    shortcut: br
     disabled: false
+    time_range_support: true
+    paging: true
+    categories: [general, web]
+    brave_category: search
+    weight: 1.9  # Second priority - privacy-focused with good results
 
   - name: bing
     engine: bing
     shortcut: bi
     disabled: false
+    paging: true
+    categories: [general, web]
+    weight: 1.5  # Third priority
+
+  # DuckDuckGo - Disabled due to poor results
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: dd
+    disabled: true  # Disabled to improve result quality
+    paging: true
+    categories: [general, web]
     
   - name: qwant
     engine: qwant
     shortcut: qw
     disabled: false
+    weight: 1.2  # Lower priority
     
   - name: startpage
     engine: startpage
     shortcut: sp
     disabled: false
+    startpage_categ: web
+    categories: [general, web]
+    weight: 1.4  # Good privacy-focused Google results
     
-  - name: searx
-    engine: searx_engine
-    shortcut: se
+  # Additional quality search engines
+  - name: mojeek
+    engine: mojeek
+    shortcut: mjk
+    categories: [general, web]
+    disabled: false
+    
+  - name: yandex
+    engine: yandex
+    shortcut: yd
+    categories: [general, web]
+    search_type: web
     disabled: false
     
   - name: yahoo
     engine: yahoo
     shortcut: yh
     disabled: false
+    paging: true
+    categories: [general, web]
 
   # Knowledge & Reference
   - name: wikipedia
@@ -105,10 +136,11 @@ engines:
     shortcut: wa
     disabled: false
     
+  # DuckDuckGo definitions - Disabled
   - name: duckduckgo definitions
     engine: duckduckgo_definitions
     shortcut: ddd
-    disabled: false
+    disabled: true  # Disabled along with main DDG
 
   # Development & Code
   - name: github
@@ -131,21 +163,28 @@ engines:
     shortcut: pypi
     disabled: false
 
-  # Images & Media
+  # Images & Media - Enhanced for better results
   - name: google images
     engine: google_images
     shortcut: gi
     disabled: false
+    categories: [images]
+    paging: true
     
   - name: bing images
     engine: bing_images
     shortcut: bii
     disabled: false
+    categories: [images]
+    paging: true
     
+  # DuckDuckGo images - Disabled
   - name: duckduckgo images
-    engine: duckduckgo_images
+    engine: duckduckgo_extra
     shortcut: ddi
-    disabled: false
+    disabled: true  # Disabled, using Google/Bing images instead
+    categories: [images, web]
+    ddg_category: images
     
   - name: qwant images
     engine: qwant_images
@@ -156,21 +195,44 @@ engines:
     engine: unsplash
     shortcut: us
     disabled: false
+    categories: [images]
+    
+  - name: brave images
+    engine: brave
+    network: brave
+    shortcut: brimg
+    categories: [images, web]
+    brave_category: images
+    disabled: false
 
-  # Video
+  # Video - Multiple sources for comprehensive results
   - name: youtube
     engine: youtube_noapi
     shortcut: yt
     disabled: false
+    categories: [videos]
+    paging: true
     
   - name: dailymotion
     engine: dailymotion
     shortcut: dm
     disabled: false
+    categories: [videos]
+    paging: true
     
   - name: vimeo
     engine: vimeo
     shortcut: vm
+    disabled: false
+    categories: [videos]
+    paging: true
+    
+  - name: brave videos
+    engine: brave
+    network: brave
+    shortcut: brvid
+    categories: [videos, web]
+    brave_category: videos
     disabled: false
 
   # Maps & Location
@@ -184,20 +246,34 @@ engines:
     shortcut: ph
     disabled: false
 
-  # News
+  # News - Multiple news sources enabled
   - name: google news
     engine: google_news
     shortcut: gn
     disabled: false
+    categories: [news]
+    paging: true
     
   - name: bing news
     engine: bing_news
     shortcut: bin
     disabled: false
+    categories: [news]
+    paging: true
     
   - name: qwant news
     engine: qwant_news
     shortcut: qwn
+    disabled: false
+    categories: [news]
+    paging: true
+    
+  - name: brave news
+    engine: brave
+    network: brave
+    shortcut: brnews
+    categories: [news]
+    brave_category: news
     disabled: false
 
   # Academic & Research
@@ -223,8 +299,9 @@ engines:
     disabled: false
 
 outgoing:
-  request_timeout: 10.0
-  max_request_timeout: 15.0
-  pool_connections: 100
-  pool_maxsize: 20
+  request_timeout: 8.0
+  max_request_timeout: 12.0
+  pool_connections: 200
+  pool_maxsize: 50
   enable_http2: true
+  useragent_suffix: "Center-Deep/1.0"

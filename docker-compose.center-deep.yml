@@ -7,11 +7,12 @@ services:
     container_name: center-deep
     restart: unless-stopped
     ports:
-      - "0.0.0.0:8888:8888"
+      - "8888:8888"
     volumes:
       - ./instance:/app/instance
       - ./static:/app/static:ro
       - ./templates:/app/templates:ro
+      - ./searxng:/app/searxng:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - center-deep-network
@@ -27,7 +28,6 @@ services:
       - TOOL_REPORT_PORT=13052
       - TOOL_ACADEMIC_PORT=13053
     depends_on:
-      - redis-search
       - searxng-engine
     env_file:
       - .env
@@ -42,8 +42,10 @@ services:
     volumes:
       - ./searxng:/etc/searxng:rw
     environment:
-      - SEARXNG_BASE_URL=http://localhost:8888/
+      - SEARXNG_BASE_URL=http://center-deep:8888/
       - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY:-ultrasecretkey}
+      - SEARXNG_PORT=8080
+      - SEARXNG_BIND_ADDRESS=0.0.0.0
     cap_drop:
       - ALL
     cap_add:
@@ -57,7 +59,8 @@ services:
         max-size: "1m"
         max-file: "1"
 
-  # Search-optimized Redis for Center Deep
+  # Search-optimized Redis for Center Deep (OPTIONAL - Improves performance)
+  # Comment out this entire service if you don't need caching
   redis-search:
     image: redis:7-alpine
     container_name: center-deep-redis
@@ -78,7 +81,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "0.0.0.0:6385:6379"
+      - "6385:6379"
     networks:
       - center-deep-network
 

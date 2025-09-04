@@ -96,9 +96,7 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background: var(--bg-color);
-    background-image: 
-        radial-gradient(circle at 20% 80%, rgba(0,188,212,0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(26,35,126,0.1) 0%, transparent 50%);
+    /* Background gradients removed for cleaner look */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -129,10 +127,7 @@ body {
     transform: translate(-50%, -50%);
     width: 900px;
     height: 900px;
-    background-image: url('../images/center-deep-logo-bg.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    /* Logo background removed for cleaner look */
     opacity: 0.08;
     z-index: 0;
     pointer-events: none;
@@ -1392,75 +1387,6 @@ body {
     box-shadow: var(--glow);
 }
 
-/* Statistics Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: var(--surface-color);
-    padding: 1.5rem;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    text-align: center;
-}
-
-.stat-card h4 {
-    color: #6b7280;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-}
-
-.stat-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--text-color);
-    margin-bottom: 0.5rem;
-}
-
-.stat-change {
-    font-size: 0.85rem;
-    color: #6b7280;
-}
-
-.stat-change.positive {
-    color: #10b981;
-}
-
-.status-active {
-    color: #10b981;
-}
-
-/* Activity Log */
-.activity-log {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.log-entry {
-    display: flex;
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.log-entry:last-child {
-    border-bottom: none;
-}
-
-.log-time {
-    color: #6b7280;
-    font-size: 0.85rem;
-    min-width: 80px;
-}
-
-.log-message {
-    color: var(--text-color);
-    font-size: 0.9rem;
-}
 
 /* Notifications */
 .notification {

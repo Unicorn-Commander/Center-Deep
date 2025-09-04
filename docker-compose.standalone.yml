@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Center Deep - Complete Standalone Search Engine
+  # No SearXNG dependency - we ARE the search engine now!
+  center-deep:
+    build: .
+    image: center-deep:standalone
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./instance:/app/instance
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+    environment:
+      - PORT=8888
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-supersecretkey}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-changeme}
+      # Redis is optional - set to true to disable completely
+      - DISABLE_REDIS=${DISABLE_REDIS:-false}
+      # Search settings
+      - SEARCH_TIMEOUT=${SEARCH_TIMEOUT:-10}
+      - MAX_RESULTS=${MAX_RESULTS:-20}
+      # Privacy settings
+      - SAFESEARCH_DEFAULT=${SAFESEARCH_DEFAULT:-0}
+      - LOG_SEARCHES=${LOG_SEARCHES:-false}
+    networks:
+      - center-deep-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # OPTIONAL: Redis for caching (improves performance)
+  # Uncomment if you want caching enabled
+  # redis-cache:
+  #   image: redis:7-alpine
+  #   container_name: center-deep-redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6385:6379"
+  #   command: >
+  #     redis-server
+  #     --maxmemory 256mb
+  #     --maxmemory-policy allkeys-lru
+  #     --save ""
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - center-deep-network
+
+networks:
+  center-deep-network:
+    name: center-deep-net
+    driver: bridge
+
+volumes:
+  # redis_data:
+  #   name: center-deep-redis-data

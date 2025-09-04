@@ -1,78 +1,65 @@
 services:
-  # --- Database Services ---
-  redis:
-    image: redis:7.4.5-alpine
-    container_name: unicorn-redis
+  # Center Deep - Standalone Search Engine (No SearXNG dependency)
+  center-deep:
+    build: .
+    image: center-deep:latest
+    container_name: center-deep
     restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./instance:/app/instance
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+    networks:
+      - center-deep-network
+    environment:
+      - PORT=8888
+      - FLASK_ENV=production
+      # Redis configuration - optional but recommended
+      - USE_REDIS=${USE_REDIS:-true}
+      - REDIS_HOST=redis-cache
+      - REDIS_PORT=6379
+    depends_on:
+      - redis-cache
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  # Redis Cache (Optional but Recommended - improves performance)
+  redis-cache:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    ports:
+      - "6385:6379"  # Using 6385 to avoid conflicts
     command: >
       redis-server
-      --maxmemory 16gb
+      --maxmemory 256mb
       --maxmemory-policy allkeys-lru
-      --maxmemory-samples 5
-      --save 900 1
-      --save 300 10
-      --save 60 10000
-      --client-output-buffer-limit normal 0 0 0
-      --client-output-buffer-limit replica 256mb 64mb 60
-      --client-output-buffer-limit pubsub 512mb 256mb 360
-      --appendonly yes
-      --appendfsync everysec
+      --save ""
+      --appendonly no
     volumes:
       - redis_data:/data
-      - redis_backups:/backups
-    ports:
-      - "6379:6379"
     networks:
-      unicorn-network:
-        aliases:
-          - redis
+      - center-deep-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # --- Self-hosted Search: SearXNG ---
-  unicorn-searxng:
-    build: ./searxng
-    container_name: unicorn-searxng
-    restart: unless-stopped
-    volumes:
-      - ./searxng:/etc/searxng:rw
-    ports:
-      - "8888:8080"
-    networks:
-      unicorn-network:
-        aliases:
-          - searxng
-          - search
-    environment:
-      - BIND_ADDRESS=0.0.0.0:8080
-      - INSTANCE_NAME=CenterDeep
-      - SEARXNG_BASE_URL=http://localhost:8888/
-      - UWSGI_WORKERS=4
-      - UWSGI_THREADS=2
-      - SEARXNG_SECRET=${SEARXNG_SECRET}
-      - SEARXNG_REDIS_URL=redis://unicorn-redis:6379/2
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-    depends_on:
-      redis:
-        condition: service_healthy
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
-  unicorn-network:
+  center-deep-network:
+    name: center-deep-net
     driver: bridge
-    name: unicorn-network
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.21.0.0/16
 
 volumes:
   redis_data:
-  redis_backups:
+    name: center-deep-redis-data

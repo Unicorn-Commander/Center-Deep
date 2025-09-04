@@ -2,6 +2,10 @@
 
 {% block title %}Setup - Center Deep{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/setup-magic.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="setup-wizard">
     <canvas id="neural-network" class="neural-background"></canvas>
@@ -81,7 +85,10 @@
                 <h2>Create Admin Account</h2>
                 <div class="step-content">
                     <div class="form-group">
-                        <label for="adminUsername">Admin Username</label>
+                        <label for="adminUsername">
+                            Admin Username
+                            <span class="tooltip" data-tooltip="Your administrator login name"></span>
+                        </label>
                         <input type="text" id="adminUsername" name="admin_username" required 
                                placeholder="e.g., admin" value="admin"
                                pattern="[a-zA-Z0-9_-]{3,20}"
@@ -90,17 +97,24 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="adminPassword">Admin Password</label>
+                        <label for="adminPassword">
+                            Admin Password
+                            <span class="tooltip" data-tooltip="Choose a strong password to protect your admin access"></span>
+                        </label>
                         <input type="password" id="adminPassword" name="admin_password" required
                                placeholder="Choose a strong password"
                                minlength="8">
-                        <small>Minimum 8 characters</small>
+                        <small>Minimum 8 characters - make it strong!</small>
                     </div>
                     
                     <div class="form-group">
-                        <label for="adminPasswordConfirm">Confirm Password</label>
+                        <label for="adminPasswordConfirm">
+                            Confirm Password
+                            <span class="tooltip" data-tooltip="Re-enter your password to confirm"></span>
+                        </label>
                         <input type="password" id="adminPasswordConfirm" name="admin_password_confirm" required
                                placeholder="Re-enter password">
+                        <small>Must match the password above</small>
                     </div>
                     
                     <div class="form-group">
@@ -119,95 +133,140 @@
                     <p>Select which search engines to use. More engines = better results!</p>
                     
                     <div class="engines-selection">
-                        <h3>Recommended Engines (No API Key Required)</h3>
-                        <div class="engines-grid">
-                            <label class="engine-option">
-                                <input type="checkbox" name="engines" value="brave" checked>
-                                <span class="engine-label">
-                                    <strong>Brave</strong>
-                                    <small>Privacy-focused, excellent results</small>
-                                </span>
-                            </label>
-                            
-                            <label class="engine-option">
+                        <h3 class="engines-section-title">
+                            <span class="section-icon">⭐</span>
+                            Premium Search Engines
+                            <span class="section-subtitle">Highest quality results</span>
+                        </h3>
+                        <div class="engines-grid premium">
+                            <label class="engine-option premium-engine">
                                 <input type="checkbox" name="engines" value="google" checked>
                                 <span class="engine-label">
-                                    <strong>Google</strong>
-                                    <small>Most comprehensive results</small>
+                                    <div class="engine-header">
+                                        <strong>Google</strong>
+                                        <span class="badge badge-recommended">Recommended</span>
+                                    </div>
+                                    <small>Industry-leading comprehensive results</small>
                                 </span>
                             </label>
                             
-                            <label class="engine-option">
-                                <input type="checkbox" name="engines" value="duckduckgo" checked>
+                            <label class="engine-option premium-engine">
+                                <input type="checkbox" name="engines" value="brave" checked>
                                 <span class="engine-label">
-                                    <strong>DuckDuckGo</strong>
-                                    <small>Privacy-first search</small>
+                                    <div class="engine-header">
+                                        <strong>Brave</strong>
+                                        <span class="badge badge-privacy">Privacy</span>
+                                    </div>
+                                    <small>Independent search with privacy protection</small>
                                 </span>
                             </label>
                             
-                            <label class="engine-option">
+                            <label class="engine-option premium-engine">
                                 <input type="checkbox" name="engines" value="bing" checked>
                                 <span class="engine-label">
-                                    <strong>Bing</strong>
-                                    <small>Microsoft's search engine</small>
-                                </span>
-                            </label>
-                            
-                            <label class="engine-option">
-                                <input type="checkbox" name="engines" value="qwant" checked>
-                                <span class="engine-label">
-                                    <strong>Qwant</strong>
-                                    <small>European privacy-focused</small>
-                                </span>
-                            </label>
-                            
-                            <label class="engine-option">
-                                <input type="checkbox" name="engines" value="startpage" checked>
-                                <span class="engine-label">
-                                    <strong>Startpage</strong>
-                                    <small>Google results, privacy protection</small>
+                                    <div class="engine-header">
+                                        <strong>Bing</strong>
+                                        <span class="badge badge-trusted">Trusted</span>
+                                    </div>
+                                    <small>Microsoft's comprehensive search</small>
                                 </span>
                             </label>
                         </div>
                         
-                        <h3>Additional Engines</h3>
-                        <div class="engines-grid">
+                        <h3 class="engines-section-title">
+                            <span class="section-icon">🔒</span>
+                            Privacy-Focused Engines
+                            <span class="section-subtitle">Enhanced privacy protection</span>
+                        </h3>
+                        <div class="engines-grid privacy">
                             <label class="engine-option">
-                                <input type="checkbox" name="engines" value="searx">
+                                <input type="checkbox" name="engines" value="startpage" checked>
                                 <span class="engine-label">
-                                    <strong>Searx</strong>
-                                    <small>Other Searx instances</small>
+                                    <div class="engine-header">
+                                        <strong>Startpage</strong>
+                                    </div>
+                                    <small>Google results with privacy shield</small>
+                                </span>
+                            </label>
+                            
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="qwant">
+                                <span class="engine-label">
+                                    <div class="engine-header">
+                                        <strong>Qwant</strong>
+                                    </div>
+                                    <small>European privacy-compliant search</small>
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <h3 class="engines-section-title">
+                            <span class="section-icon">➕</span>
+                            Additional Engines
+                            <span class="section-subtitle">Optional specialized sources</span>
+                        </h3>
+                        <div class="engines-grid additional">
+                            <label class="engine-option">
+                                <input type="checkbox" name="engines" value="duckduckgo">
+                                <span class="engine-label">
+                                    <div class="engine-header">
+                                        <strong>DuckDuckGo</strong>
+                                    </div>
+                                    <small>Alternative privacy search</small>
                                 </span>
                             </label>
                             
                             <label class="engine-option">
                                 <input type="checkbox" name="engines" value="yahoo">
                                 <span class="engine-label">
-                                    <strong>Yahoo</strong>
+                                    <div class="engine-header">
+                                        <strong>Yahoo</strong>
+                                    </div>
                                     <small>Classic search engine</small>
                                 </span>
                             </label>
                             
                             <label class="engine-option">
+                                <input type="checkbox" name="engines" value="searx">
+                                <span class="engine-label">
+                                    <div class="engine-header">
+                                        <strong>Searx</strong>
+                                    </div>
+                                    <small>Meta-search aggregator</small>
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <h3 class="engines-section-title">
+                            <span class="section-icon">📚</span>
+                            Specialized Sources
+                            <span class="section-subtitle">Domain-specific results</span>
+                        </h3>
+                        <div class="engines-grid specialized">
+                            <label class="engine-option">
                                 <input type="checkbox" name="engines" value="wikipedia" checked>
                                 <span class="engine-label">
-                                    <strong>Wikipedia</strong>
-                                    <small>Encyclopedia results</small>
+                                    <div class="engine-header">
+                                        <strong>Wikipedia</strong>
+                                    </div>
+                                    <small>Encyclopedia & knowledge base</small>
                                 </span>
                             </label>
                             
                             <label class="engine-option">
                                 <input type="checkbox" name="engines" value="github" checked>
                                 <span class="engine-label">
-                                    <strong>GitHub</strong>
-                                    <small>Code repositories</small>
+                                    <div class="engine-header">
+                                        <strong>GitHub</strong>
+                                    </div>
+                                    <small>Code repositories & projects</small>
                                 </span>
                             </label>
                         </div>
                     </div>
                     
                     <div class="setup-tip">
-                        <strong>💡 Tip:</strong> You can always change these settings later in Preferences
+                        <strong>Tip:</strong> You can always change these settings later in Preferences
                     </div>
                 </div>
             </div>
@@ -217,14 +276,20 @@
                 <h2>Privacy & Interface Settings</h2>
                 <div class="step-content">
                     <div class="form-group">
-                        <label for="instanceName">Instance Name</label>
+                        <label for="instanceName">
+                            Instance Name
+                            <span class="tooltip" data-tooltip="The name that appears in your browser tab and header"></span>
+                        </label>
                         <input type="text" id="instanceName" name="instance_name" 
                                value="Center Deep" placeholder="Center Deep">
                         <small>The name displayed in the header</small>
                     </div>
                     
                     <div class="form-group">
-                        <label for="safesearch">Safe Search Default</label>
+                        <label for="safesearch">
+                            Safe Search Default
+                            <span class="tooltip" data-tooltip="Filter adult content from search results"></span>
+                        </label>
                         <select id="safesearch" name="safesearch">
                             <option value="0" selected>Off (Show all results)</option>
                             <option value="1">Moderate (Filter explicit content)</option>
@@ -233,11 +298,13 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="defaultTheme">Default Theme</label>
+                        <label for="defaultTheme">
+                            Default Theme
+                            <span class="tooltip" data-tooltip="Choose the visual style for your search interface"></span>
+                        </label>
                         <select id="defaultTheme" name="default_theme">
-                            <option value="magic-unicorn" selected>🦄 Magic Unicorn (Vibrant & Fun)</option>
-                            <option value="dark">🌙 Dark (Easy on the eyes)</option>
-                            <option value="light">☀️ Light (Clean & Professional)</option>
+                            <option value="magic-unicorn" selected>🦄 Magic Unicorn (Dark & Vibrant)</option>
+                            <option value="dark">🌙 Dark (Classic dark mode)</option>
                         </select>
                     </div>
                     
@@ -246,7 +313,10 @@
                             <label class="toggle-label">
                                 <input type="checkbox" id="infiniteScroll" name="infinite_scroll" checked>
                                 <span class="toggle-switch"></span>
-                                <span class="toggle-text">Enable Infinite Scroll</span>
+                                <span class="toggle-text">
+                                    Enable Infinite Scroll
+                                    <span class="tooltip" data-tooltip="Automatically load more results as you scroll down"></span>
+                                </span>
                             </label>
                             <small>Automatically load more results as you scroll</small>
                         </div>
@@ -257,7 +327,10 @@
                             <label class="toggle-label">
                                 <input type="checkbox" id="imageProxy" name="image_proxy" checked>
                                 <span class="toggle-switch"></span>
-                                <span class="toggle-text">Enable Image Proxy</span>
+                                <span class="toggle-text">
+                                    Enable Image Proxy
+                                    <span class="tooltip" data-tooltip="Hide your IP from image servers for better privacy"></span>
+                                </span>
                             </label>
                             <small>Route images through Center Deep for privacy</small>
                         </div>
@@ -268,9 +341,26 @@
                             <label class="toggle-label">
                                 <input type="checkbox" id="autocomplete" name="autocomplete" checked>
                                 <span class="toggle-switch"></span>
-                                <span class="toggle-text">Enable Search Suggestions</span>
+                                <span class="toggle-text">
+                                    Enable Search Suggestions
+                                    <span class="tooltip" data-tooltip="Get helpful search suggestions based on your typing"></span>
+                                </span>
                             </label>
                             <small>Show search suggestions as you type</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="toggle-container">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="enableRedis" name="enable_redis" checked>
+                                <span class="toggle-switch"></span>
+                                <span class="toggle-text">
+                                    Enable Redis Cache
+                                    <span class="tooltip" data-tooltip="Improves performance by caching search results"></span>
+                                </span>
+                            </label>
+                            <small>Recommended for better performance (requires Redis container)</small>
                         </div>
                     </div>
                     
@@ -363,26 +453,34 @@
 
 <style>
 :root {
-    --unicorn-purple: #b66eff;
-    --unicorn-blue: #00d4ff;
-    --unicorn-pink: #ff6ec7;
-    --gradient-magic: linear-gradient(135deg, var(--unicorn-purple) 0%, var(--unicorn-blue) 100%);
-    --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --dark-bg: #0a0a0f;
-    --card-bg: rgba(255, 255, 255, 0.98);
-    --text-primary: #0a0a0f;
-    --text-secondary: #4a5568;
-    --text-muted: #718096;
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
-    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
-    --border-radius: 16px;
-    --border-radius-lg: 24px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1d4ed8;
+    --primary-green: #10b981;
+    --primary-purple: #7c3aed;
+    --accent-blue: #06b6d4;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gradient-primary: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    --gradient-subtle: linear-gradient(135deg, #f0f9ff 0%, #f5f3ff 100%);
+    --dark-bg: #0f172a;
+    --card-bg: rgba(255, 255, 255, 1);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05);
+    --border-radius: 12px;
+    --border-radius-lg: 16px;
+    --transition: all 0.2s ease;
 }
 
 .setup-wizard {
     min-height: 100vh;
-    background: var(--dark-bg);
+    background: linear-gradient(180deg, #f8fafc 0%, #e0e7ff 100%);
     position: relative;
     overflow-x: hidden;
 }
@@ -394,8 +492,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--gradient-magic);
-    opacity: 0.1;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(124, 58, 237, 0.03) 100%);
     z-index: -1;
 }
 
@@ -442,16 +539,13 @@
 }
 
 .logo-text {
-    font-size: 4rem;
-    font-weight: 800;
-    background: var(--gradient-magic);
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin: 0 0 1rem 0;
-    text-shadow: 0 0 30px rgba(182, 110, 255, 0.5);
-    animation: shimmer 3s ease-in-out infinite;
-    background-size: 200% 100%;
+    margin: 0 0 0.75rem 0;
     letter-spacing: -0.02em;
 }
 
@@ -461,21 +555,19 @@
 }
 
 .setup-subtitle {
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+    color: var(--text-secondary);
     margin: 0;
-    font-weight: 300;
-    letter-spacing: 0.02em;
+    font-weight: 400;
 }
 
 .setup-progress {
-    background: var(--card-bg);
+    background: white;
     border-radius: var(--border-radius-lg);
-    padding: 2rem;
+    padding: 1.5rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .progress-bar {
@@ -500,7 +592,7 @@
 
 .progress-fill {
     height: 100%;
-    background: var(--gradient-magic);
+    background: var(--gradient-primary);
     transition: var(--transition);
     border-radius: 3px;
     position: relative;
@@ -539,9 +631,8 @@
 }
 
 .step.active {
-    color: var(--unicorn-purple);
+    color: var(--primary-blue);
     font-weight: 600;
-    transform: translateY(-2px);
 }
 
 .step.active::after {
@@ -550,34 +641,20 @@
     bottom: -4px;
     left: 50%;
     transform: translateX(-50%);
-    width: 20px;
+    width: 30px;
     height: 2px;
-    background: var(--gradient-magic);
+    background: var(--primary-blue);
     border-radius: 1px;
 }
 
 .setup-form {
-    background: var(--card-bg);
+    background: white;
     border-radius: var(--border-radius-lg);
-    padding: 3rem;
-    box-shadow: var(--shadow-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     position: relative;
     overflow: hidden;
-}
-
-.setup-form::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: var(--gradient-magic);
-    border-radius: var(--border-radius-lg);
-    z-index: -1;
-    opacity: 0.1;
 }
 
 .setup-step {
@@ -602,16 +679,10 @@
 }
 
 .setup-step h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 600;
     color: var(--text-primary);
-    margin: 0 0 2rem 0;
-    background: var(--gradient-magic);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% 100%;
-    animation: shimmer 4s ease-in-out infinite;
+    margin: 0 0 1.5rem 0;
 }
 
 .feature-list {
@@ -624,21 +695,21 @@
     display: flex;
     gap: 1rem;
     align-items: flex-start;
-    padding: 1.5rem;
-    background: rgba(182, 110, 255, 0.05);
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(182, 110, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     transition: var(--transition);
 }
 
 .feature-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(182, 110, 255, 0.15);
-    border-color: rgba(182, 110, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .feature-item svg {
-    color: var(--unicorn-purple);
+    color: var(--primary-blue);
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -663,6 +734,7 @@
 
 .form-group {
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
 .form-group label {
@@ -677,11 +749,11 @@
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 0.875rem 1rem;
-    border: 2px solid rgba(182, 110, 255, 0.1);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.9);
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: white;
     transition: var(--transition);
     font-family: inherit;
 }
@@ -689,9 +761,8 @@
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--unicorn-purple);
-    box-shadow: 0 0 0 3px rgba(182, 110, 255, 0.1);
-    transform: translateY(-1px);
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .form-group small {
@@ -705,11 +776,33 @@
     margin: 2rem 0;
 }
 
-.engines-selection h3 {
-    font-size: 1.25rem;
+.engines-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin: 2rem 0 1rem 0;
+    margin: 2.5rem 0 1.25rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.engines-section-title:first-child {
+    margin-top: 0;
+}
+
+.section-icon {
+    font-size: 1.25rem;
+    filter: grayscale(20%);
+}
+
+.section-subtitle {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-left: auto;
 }
 
 .engines-grid {
@@ -722,9 +815,9 @@
 .engine-option {
     display: flex;
     align-items: flex-start;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.8);
-    border: 2px solid rgba(182, 110, 255, 0.1);
+    padding: 1rem 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: var(--transition);
@@ -732,35 +825,70 @@
     overflow: hidden;
 }
 
-.engine-option::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(182, 110, 255, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.engine-option:hover::before {
-    left: 100%;
-}
-
 .engine-option:hover {
-    border-color: var(--unicorn-purple);
-    background: rgba(182, 110, 255, 0.05);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(182, 110, 255, 0.15);
+    border-color: var(--primary-blue);
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.engine-option.premium-engine {
+    background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+    border: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+.engine-option.premium-engine:hover {
+    background: linear-gradient(135deg, #fffef5 0%, #fef3c7 100%);
+    border-color: #fbbf24;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+}
+
+.engine-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.badge {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    letter-spacing: 0.025em;
+}
+
+.badge-recommended {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+}
+
+.badge-privacy {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+}
+
+.badge-trusted {
+    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+    color: white;
 }
 
 .engine-option input[type="checkbox"] {
     display: block !important;
-    margin-right: 0.75rem;
-    width: 20px;
-    height: 20px;
-    accent-color: var(--unicorn-purple);
+    margin-right: 1rem;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-blue);
     cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
 .engine-label {
@@ -786,35 +914,42 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
+    position: relative;
+    z-index: 1;
 }
 
 .toggle-switch {
     position: relative;
     width: 48px;
-    height: 24px;
-    background: rgba(182, 110, 255, 0.2);
-    border-radius: 12px;
+    height: 26px;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    border-radius: 26px;
     margin: 0 0.75rem;
     transition: var(--transition);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .toggle-switch::after {
     content: '';
     position: absolute;
-    width: 18px;
-    height: 18px;
-    background: white;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 50%;
-    top: 3px;
-    left: 3px;
+    top: 2px;
+    left: 2px;
     transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input[type="checkbox"]:checked + .toggle-switch {
-    background: var(--gradient-magic);
-    box-shadow: 0 0 10px rgba(182, 110, 255, 0.3);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-hover) 100%);
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+input[type="checkbox"]:checked + .toggle-switch::after {
+    transform: translateX(20px);
 }
 
 input[type="checkbox"]:checked + .toggle-switch::after {
@@ -831,6 +966,12 @@ input[type="checkbox"]:checked + .toggle-switch::after {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    position: relative;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
 }
 
 .toggle-container small {
@@ -841,23 +982,58 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 .toggle-text {
     color: var(--text-primary);
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
 }
 
-.setup-info,
-.setup-tip {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 1.5rem;
+.setup-info {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 1.5rem 1.25rem;
     border-radius: var(--border-radius);
     margin: 1.5rem 0;
-    border: 2px solid rgba(182, 110, 255, 0.3);
-    box-shadow: 0 4px 12px rgba(182, 110, 255, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    font-size: 0.9rem;
+    position: relative;
 }
 
-.setup-info strong,
+.setup-tip {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    padding: 1rem 1.25rem 1rem 3rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.setup-tip::before {
+    content: '✓';
+    position: absolute;
+    left: 1rem;
+    top: 1.1rem;
+    width: 20px;
+    height: 20px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.setup-info strong {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
 .setup-tip strong {
-    color: var(--unicorn-purple);
-    font-weight: 700;
-    font-size: 1.05em;
+    color: #14532d;
+    font-weight: 600;
 }
 
 .setup-info p,
@@ -883,7 +1059,7 @@ input[type="checkbox"]:checked + .toggle-switch::after {
     align-items: center;
     margin-top: 2rem;
     padding-top: 2rem;
-    border-top: 1px solid rgba(182, 110, 255, 0.1);
+    border-top: 1px solid rgba(37, 99, 235, 0.1);
 }
 
 .btn-primary, .btn-secondary, .btn-success {
@@ -904,15 +1080,16 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 }
 
 .btn-primary {
-    background: var(--gradient-magic);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #1e40af 100%);
     color: white;
-    box-shadow: 0 4px 15px rgba(182, 110, 255, 0.3);
-    border: 2px solid transparent;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    border: 1px solid transparent;
 }
 
 .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-blue-hover) 0%, #1e3a8a 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(182, 110, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
 }
 
 .btn-primary::before {
@@ -931,15 +1108,17 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--text-primary);
-    border: 2px solid rgba(182, 110, 255, 0.2);
+    background: white;
+    color: var(--primary-blue);
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
-    background: rgba(182, 110, 255, 0.1);
-    border-color: var(--unicorn-purple);
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-color: var(--primary-blue);
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
 .btn-success {
@@ -974,7 +1153,7 @@ input[type="checkbox"]:checked + .toggle-switch::after {
     font-weight: 600;
     color: var(--text-primary);
     margin: 1.5rem 0;
-    background: linear-gradient(135deg, #10b981, var(--unicorn-purple));
+    background: linear-gradient(135deg, #10b981 0%, var(--primary-blue) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1021,7 +1200,7 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 .btn-link {
     background: none;
     border: none;
-    color: var(--unicorn-purple);
+    color: var(--primary-blue);
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
@@ -1030,16 +1209,16 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 }
 
 .btn-link:hover {
-    color: var(--unicorn-blue);
+    color: var(--primary-blue-hover);
     text-decoration: underline;
 }
 
 .advanced-settings {
     margin-top: 1rem;
     padding: 1.5rem;
-    background: rgba(182, 110, 255, 0.05);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(182, 110, 255, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.1);
 }
 
 /* Mobile responsiveness */

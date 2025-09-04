@@ -318,8 +318,8 @@ echo -e "${CYAN}           🚀 Starting Center Deep 🚀${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════════${NC}"
 
 # Pull and start services
-echo -e "\n${YELLOW}Starting services...${NC}"
-$DOCKER_COMPOSE -f docker-compose.center-deep.yml up -d
+echo -e "\n${YELLOW}Starting Center Deep (standalone - no external dependencies)...${NC}"
+$DOCKER_COMPOSE up -d
 
 # Wait for services to be ready
 echo -e "\n${YELLOW}Waiting for services to initialize...${NC}"
@@ -374,13 +374,14 @@ fi
 echo
 echo -e "${CYAN}Tool Servers (Optional):${NC}"
 echo -e "  To enable AI tool servers for OpenWebUI:"
-echo -e "  ${BLUE}$DOCKER_COMPOSE --profile tools -f docker-compose.center-deep.yml up -d${NC}"
+echo -e "  ${BLUE}./start-toolservers.sh${NC}"
+echo -e "  Or manually: ${BLUE}$DOCKER_COMPOSE -f docker-compose.tools.yml up -d${NC}"
 echo
 echo -e "${CYAN}Useful Commands:${NC}"
-echo -e "  View logs:    ${BLUE}$DOCKER_COMPOSE -f docker-compose.center-deep.yml logs -f${NC}"
-echo -e "  Stop all:     ${BLUE}$DOCKER_COMPOSE -f docker-compose.center-deep.yml down${NC}"
-echo -e "  Restart:      ${BLUE}$DOCKER_COMPOSE -f docker-compose.center-deep.yml restart${NC}"
-echo -e "  Update:       ${BLUE}git pull && $DOCKER_COMPOSE -f docker-compose.center-deep.yml up -d --build${NC}"
+echo -e "  View logs:    ${BLUE}$DOCKER_COMPOSE logs -f${NC}"
+echo -e "  Stop all:     ${BLUE}$DOCKER_COMPOSE down${NC}"
+echo -e "  Restart:      ${BLUE}$DOCKER_COMPOSE restart${NC}"
+echo -e "  Update:       ${BLUE}git pull && $DOCKER_COMPOSE up -d --build${NC}"
 echo
 echo -e "${GREEN}Enjoy your privacy-first search experience! 🌊${NC}"
 echo -e "${MAGENTA}Built with ❤️ by Magic Unicorn Unconventional Technology & Stuff Inc${NC}"

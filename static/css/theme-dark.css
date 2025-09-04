@@ -1,39 +1,43 @@
-/* Dark Theme - Professional and Modern */
+/* Dark Theme - Subdued Gray with Unicorn Character */
 :root {
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --primary-light: #1e3a8a;
-    --secondary: #64748b;
-    --accent: #06b6d4;
-    --success: #10b981;
-    --warning: #f59e0b;
+    --primary: #60a5fa;
+    --primary-hover: #3b82f6;
+    --primary-light: #93c5fd;
+    --secondary: #94a3b8;
+    --accent: #22d3ee;
+    --success: #34d399;
+    --warning: #fbbf24;
     --danger: #f87171;
     
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --bg-tertiary: #334155;
-    --bg-card: #1e293b;
-    --bg-hover: #334155;
+    --bg-primary: #1e293b;
+    --bg-secondary: rgba(30, 41, 59, 0.95);
+    --bg-tertiary: rgba(51, 65, 85, 0.9);
+    --bg-card: rgba(30, 41, 59, 0.95);
+    --bg-hover: rgba(96, 165, 250, 0.1);
+    --bg-input: rgba(51, 65, 85, 0.9);
     
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --text-tertiary: #94a3b8;
-    --text-muted: #64748b;
-    --text-link: #60a5fa;
+    --text-primary: #e8f0ff;
+    --text-secondary: #b8c5d6;
+    --text-tertiary: #8a9aae;
+    --text-muted: #5a6a7e;
+    --text-link: #00d4ff;
     
-    --border-primary: #334155;
-    --border-secondary: #475569;
-    --border-focus: #3b82f6;
+    --border-primary: rgba(0, 212, 255, 0.2);
+    --border-secondary: rgba(0, 212, 255, 0.3);
+    --border-focus: #00d4ff;
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
 }
 
 body {
-    background: var(--bg-primary);
+    background-color: #1e293b;
     color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
 }
 
 /* Search Header */
@@ -191,11 +195,6 @@ body {
     border: 1px solid var(--border-primary);
 }
 
-/* Stats */
-.stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-primary);
-}
 
 /* Footer */
 .footer {

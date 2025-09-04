@@ -13,7 +13,6 @@
                 </a>
                 <nav class="admin-menu">
                     <a href="#proxy" class="active">Proxy Settings</a>
-                    <a href="#monitoring">Monitoring</a>
                     <a href="#search">Search Engine</a>
                     <a href="#llm">LLM Config</a>
                     <a href="#embedding">Embeddings</a>
@@ -23,7 +22,6 @@
                     -->
                     <a href="#toolservers">Tool Servers</a>
                     <a href="#users">Users</a>
-                    <a href="#stats">Statistics</a>
                 </nav>
             </div>
         </div>
@@ -75,63 +73,6 @@
             </div>
         </section>
         
-        <!-- Monitoring Section -->
-        <section id="monitoring" class="admin-section">
-            <h2>📊 Monitoring & Analytics</h2>
-            <div class="admin-card">
-                <h3>Prometheus Configuration</h3>
-                <form id="prometheusForm" class="admin-form">
-                    <div class="form-group">
-                        <label class="toggle-label">
-                            <span class="toggle-text">Enable Prometheus Metrics</span>
-                            <div class="toggle-container">
-                                <input type="checkbox" id="prometheusEnabled" name="prometheusEnabled">
-                                <span class="toggle-switch"></span>
-                            </div>
-                        </label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="prometheusUrl">Prometheus Server URL</label>
-                        <input type="url" id="prometheusUrl" name="prometheusUrl" 
-                               value="http://localhost:9090">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="metricsPort">Metrics Export Port</label>
-                        <input type="number" id="metricsPort" name="metricsPort" 
-                               value="9091" min="1024" max="65535">
-                    </div>
-                </form>
-                
-                <h3>Grafana Dashboard</h3>
-                <form id="grafanaForm" class="admin-form">
-                    <div class="form-group">
-                        <label class="toggle-label">
-                            <span class="toggle-text">Enable Grafana Integration</span>
-                            <div class="toggle-container">
-                                <input type="checkbox" id="grafanaEnabled" name="grafanaEnabled">
-                                <span class="toggle-switch"></span>
-                            </div>
-                        </label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="grafanaUrl">Grafana Server URL</label>
-                        <input type="url" id="grafanaUrl" name="grafanaUrl" 
-                               value="http://localhost:3000">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="grafanaApiKey">Grafana API Key</label>
-                        <input type="password" id="grafanaApiKey" name="grafanaApiKey" 
-                               placeholder="••••••••">
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">Save Monitoring Settings</button>
-                </form>
-            </div>
-        </section>
         
         <!-- Search Engine Configuration -->
         <section id="search" class="admin-section">
@@ -525,50 +466,6 @@
         </section>
         
         
-        <!-- Roadmap Section -->
-        <section id="roadmap" class="admin-section">
-            <h2>🚀 Center Deep Roadmap</h2>
-            
-            <div class="admin-card">
-                <h3>Coming Soon - Pro Features</h3>
-                <div class="roadmap-items" style="display: grid; gap: 1rem;">
-                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
-                        <h4>🤖 AI Agents & Data Scrapers</h4>
-                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Automated content generation and data collection from RSS feeds, GitHub, Reddit, and custom URLs.</p>
-                        <span style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">PRO VERSION</span>
-                    </div>
-                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
-                        <h4>📊 Advanced Analytics</h4>
-                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Deep insights into search patterns, user behavior, and performance metrics.</p>
-                        <span style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">PRO VERSION</span>
-                    </div>
-                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
-                        <h4>🔗 Full REST API</h4>
-                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Complete API for integrating Center Deep search into your applications.</p>
-                        <span style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">PRO VERSION</span>
-                    </div>
-                    <div class="roadmap-item" style="padding: 1rem; background: var(--surface-color); border-radius: 8px;">
-                        <h4>🎨 Custom Themes</h4>
-                        <p style="color: var(--text-muted); margin: 0.5rem 0;">Create and customize your own search interface themes.</p>
-                        <span style="background: var(--accent-color); color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">COMING SOON</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="admin-card">
-                <h3>Current Version Features</h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="padding: 0.5rem 0;">✅ Privacy-first metasearch engine (replacement for SearXNG)</li>
-                    <li style="padding: 0.5rem 0;">✅ Multiple search engine sources</li>
-                    <li style="padding: 0.5rem 0;">✅ Tool servers for OpenWebUI integration</li>
-                    <li style="padding: 0.5rem 0;">✅ LLM configuration with model discovery</li>
-                    <li style="padding: 0.5rem 0;">✅ Search-optimized Redis caching</li>
-                    <li style="padding: 0.5rem 0;">✅ User management system</li>
-                    <li style="padding: 0.5rem 0;">✅ Customizable search settings</li>
-                    <li style="padding: 0.5rem 0;">✅ Privacy mode and safe search</li>
-                </ul>
-            </div>
-        </section>
         
         <!-- Tool Servers Section -->
         <section id="toolservers" class="admin-section">
@@ -687,41 +584,6 @@
             </div>
         </section>
         
-        <!-- Statistics Section -->
-        <section id="stats" class="admin-section">
-            <h2>📈 Live Statistics</h2>
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card">
-                    <h4>Total Searches</h4>
-                    <div class="stat-value" id="totalSearches">{{ stats.total_searches }}</div>
-                    <div class="stat-change">All time</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Active Users</h4>
-                    <div class="stat-value" id="activeUsers">{{ stats.active_users }}</div>
-                    <div class="stat-change">Last 24h</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Proxy Status</h4>
-                    <div class="stat-value" id="proxyStatus">-</div>
-                    <div class="stat-change" id="proxyRotations">-</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Avg Response Time</h4>
-                    <div class="stat-value" id="avgResponseTime">{{ stats.avg_response_time }}s</div>
-                    <div class="stat-change">Average</div>
-                </div>
-            </div>
-            
-            <div class="admin-card">
-                <h3>Recent Activity</h3>
-                <div class="activity-log" id="activityLog">
-                    <div class="log-entry">
-                        <span class="log-message">Loading recent activity...</span>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 </div>
 
@@ -738,10 +600,6 @@ async function loadSettings() {
         document.getElementById('brightdataUsername').value = settings.proxy.brightdata_username;
         document.getElementById('rotationInterval').value = settings.proxy.rotation_interval;
         
-        document.getElementById('prometheusEnabled').checked = settings.monitoring.prometheus_enabled;
-        document.getElementById('prometheusUrl').value = settings.monitoring.prometheus_url;
-        document.getElementById('grafanaEnabled').checked = settings.monitoring.grafana_enabled;
-        document.getElementById('grafanaUrl').value = settings.monitoring.grafana_url;
         
         // Search engine settings
         if (document.getElementById('searchTimeout')) {
@@ -792,48 +650,7 @@ document.getElementById('proxyForm').addEventListener('submit', (e) => {
 
 // Initialize
 loadSettings();
-loadStats();
 
-// Auto-refresh statistics every 5 seconds
-setInterval(loadStats, 5000);
-
-// Load real-time statistics
-async function loadStats() {
-    try {
-        const response = await fetch('/api/admin/stats');
-        const data = await response.json();
-        
-        // Update stats
-        document.getElementById('totalSearches').textContent = data.total_searches;
-        document.getElementById('activeUsers').textContent = data.active_users;
-        document.getElementById('avgResponseTime').textContent = data.avg_response_time + 's';
-        
-        // Update proxy status
-        const proxyStatus = document.getElementById('proxyStatus');
-        proxyStatus.textContent = data.proxy_status === 'active' ? 'Active' : 'Inactive';
-        proxyStatus.className = 'stat-value ' + (data.proxy_status === 'active' ? 'status-active' : '');
-        
-        // Update activity log
-        const activityLog = document.getElementById('activityLog');
-        activityLog.innerHTML = '';
-        
-        if (data.recent_activity && data.recent_activity.length > 0) {
-            data.recent_activity.forEach(activity => {
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-                entry.innerHTML = `
-                    <span class="log-time">${activity.time}</span>
-                    <span class="log-message">Search: "${activity.query}" by ${activity.user} (${activity.response_time}s)</span>
-                `;
-                activityLog.appendChild(entry);
-            });
-        } else {
-            activityLog.innerHTML = '<div class="log-entry"><span class="log-message">No recent activity</span></div>';
-        }
-    } catch (error) {
-        console.error('Failed to load stats:', error);
-    }
-}
 
 // Password change functionality
 document.getElementById('passwordForm').addEventListener('submit', async (e) => {

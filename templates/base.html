@@ -10,6 +10,7 @@
     <meta name="theme-color" content="#b66eff">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-magic-unicorn.css') }}" id="theme-css">
+    {% block head %}{% endblock %}
 </head>
 <body>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -33,9 +34,8 @@
                 Center Deep - Private Search | 
                 <a href="/preferences">Preferences</a>
                 | <select id="theme-switcher" class="theme-switcher" title="Choose theme">
-                    <option value="magic-unicorn">🦄 Magic Unicorn</option>
                     <option value="dark">🌙 Dark</option>
-                    <option value="light">☀️ Light</option>
+                    <option value="magic-unicorn">🦄 Magic Unicorn</option>
                 </select>
                 {% if current_user.is_authenticated %}
                     {% if current_user.is_admin %}
@@ -50,5 +50,6 @@
     </footer>
     
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
 </body>
 </html>

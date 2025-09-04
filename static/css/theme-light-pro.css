@@ -1,0 +1,280 @@
+/* 
+ * Light Professional Theme - Clean, Modern, Readable
+ * Designed for long-term comfortable use
+ */
+
+:root {
+    /* Professional Blue-Gray Palette */
+    --primary: #2563eb;        /* Professional blue */
+    --primary-hover: #1d4ed8;
+    --primary-light: #60a5fa;
+    --secondary: #64748b;       /* Slate gray */
+    --accent: #0891b2;         /* Cyan accent */
+    --success: #16a34a;
+    --warning: #ea580c;
+    --danger: #dc2626;
+    
+    /* Clean White Backgrounds */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;   /* Very light gray */
+    --bg-tertiary: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-hover: #f8fafc;
+    --bg-input: #ffffff;
+    
+    /* High Contrast Text Colors */
+    --text-primary: #0f172a;   /* Almost black for excellent readability */
+    --text-secondary: #334155;  /* Dark gray */
+    --text-tertiary: #475569;
+    --text-muted: #64748b;
+    --text-link: #2563eb;
+    --text-on-primary: #ffffff;
+    
+    /* Subtle Borders */
+    --border-primary: #e2e8f0;
+    --border-secondary: #cbd5e1;
+    --border-focus: #2563eb;
+    --border-input: #cbd5e1;
+    
+    /* Professional Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Clean Gradients */
+    --gradient-primary: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+    --gradient-light: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+/* Base Styles */
+body {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+/* Search Page Specific */
+.search-home {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    min-height: 100vh;
+}
+
+.logo-text {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Search Box */
+.search-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    padding: 3px;
+}
+
+.search-input {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: none;
+    padding: 14px 20px;
+    font-size: 16px;
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-input:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+    border-radius: 8px;
+}
+
+.search-button {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.search-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Search Results */
+.search-results {
+    background: transparent;
+}
+
+.result-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+}
+
+.result-item:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.result-title {
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.result-title:hover {
+    text-decoration: underline;
+}
+
+.result-url {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.result-snippet {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Navigation */
+.nav-bar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-primary);
+    padding: 12px 0;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.nav-link.active {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* Forms */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-input);
+    border-radius: 6px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-secondary);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-primary);
+}
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Footer */
+.footer {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+/* Theme Switcher */
+.theme-switcher {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Accessibility */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* High contrast for important elements */
+.important {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
