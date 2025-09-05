@@ -1,0 +1,21 @@
+FROM python:3.11-alpine
+
+# Install minimal dependencies
+RUN apk add --no-cache gcc musl-dev
+
+WORKDIR /app
+
+# Install Python requirements
+COPY requirements-centerdeep.txt /app/
+RUN pip install --no-cache-dir -r requirements-centerdeep.txt
+
+# Copy the API server
+COPY api_server.py /app/
+
+# Copy frontend files
+RUN mkdir -p /app/static
+COPY frontend/ /app/static/
+
+EXPOSE 8888
+
+CMD ["python", "api_server.py"]

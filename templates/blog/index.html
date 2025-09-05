@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ settings.blog_title }} - {{ settings.blog_subtitle }}</title>
+    <meta name="description" content="{{ settings.meta_description or settings.blog_description }}">
+    <meta name="keywords" content="{{ settings.meta_keywords }}">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ settings.blog_title }}">
+    <meta property="og:description" content="{{ settings.blog_description }}">
+    <meta property="og:image" content="{{ settings.social_image_url }}">
+    <meta property="og:type" content="website">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/blog.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-logo">
+                Center Deep
+            </a>
+            
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}">Search</a>
+                <a href="{{ url_for('blog.index') }}" class="active">Blog</a>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <a href="{{ url_for('blog.admin_dashboard') }}">Blog Admin</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    {% if settings.hero_content %}
+    <section class="blog-hero">
+        <div class="container">
+            <div class="hero-content">
+                {{ settings.hero_content | markdown | safe }}
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <section class="blog-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>{{ settings.blog_title }}</h1>
+                <p class="hero-subtitle">{{ settings.blog_subtitle }}</p>
+                {% if settings.blog_description %}
+                    <p class="hero-description">{{ settings.blog_description }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Featured Posts -->
+    {% if featured_posts %}
+    <section class="featured-posts">
+        <div class="container">
+            <h2 class="section-title">Featured Posts</h2>
+            <div class="featured-grid">
+                {% for post in featured_posts[:3] %}
+                <article class="featured-card">
+                    {% if post.featured_image_url %}
+                        <div class="featured-image">
+                            <img src="{{ post.featured_image_url }}" alt="{{ post.title }}">
+                        </div>
+                    {% endif %}
+                    <div class="featured-content">
+                        {% if post.category and settings.show_categories %}
+                            <span class="post-category" style="background-color: {{ post.category.color }}">
+                                {{ post.category.name }}
+                            </span>
+                        {% endif %}
+                        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+                        <p class="post-excerpt">{{ post.excerpt }}</p>
+                        <div class="post-meta">
+                            {% if settings.show_author and post.author %}
+                                <span class="post-author">{{ post.author.username }}</span>
+                            {% endif %}
+                            {% if settings.show_date %}
+                                <span class="post-date">{{ post.published_at.strftime('%B %d, %Y') }}</span>
+                            {% endif %}
+                            <span class="post-reading-time">{{ post.reading_time }} min read</span>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="blog-main">
+        <div class="container">
+            <div class="blog-layout">
+                <!-- Blog Posts -->
+                <div class="blog-content">
+                    {% if posts.items %}
+                        <div class="posts-grid">
+                            {% for post in posts.items %}
+                            <article class="post-card">
+                                {% if post.featured_image_url %}
+                                    <div class="post-image">
+                                        <img src="{{ post.featured_image_url }}" alt="{{ post.title }}">
+                                    </div>
+                                {% endif %}
+                                <div class="post-content">
+                                    {% if post.category and settings.show_categories %}
+                                        <span class="post-category" style="background-color: {{ post.category.color }}">
+                                            {{ post.category.name }}
+                                        </span>
+                                    {% endif %}
+                                    <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+                                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                                    
+                                    <div class="post-meta">
+                                        {% if settings.show_author and post.author %}
+                                            <span class="post-author">
+                                                {% if post.agent %}
+                                                    <i class="agent-icon">🤖</i> {{ post.agent.name }}
+                                                {% else %}
+                                                    {{ post.author.username }}
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                        {% if settings.show_date %}
+                                            <span class="post-date">{{ post.published_at.strftime('%B %d, %Y') }}</span>
+                                        {% endif %}
+                                        <span class="post-reading-time">{{ post.reading_time }} min read</span>
+                                        <span class="post-views">{{ post.view_count }} views</span>
+                                    </div>
+                                    
+                                    {% if settings.show_tags and post.tags %}
+                                        <div class="post-tags">
+                                            {% for tag in post.tags[:5] %}
+                                                <span class="tag">{{ tag }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </article>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% if posts.pages > 1 %}
+                        <nav class="pagination">
+                            {% if posts.has_prev %}
+                                <a href="{{ url_for('blog.index', page=posts.prev_num) }}" class="page-link">← Previous</a>
+                            {% endif %}
+                            
+                            {% for page_num in posts.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != posts.page %}
+                                        <a href="{{ url_for('blog.index', page=page_num) }}" class="page-link">{{ page_num }}</a>
+                                    {% else %}
+                                        <span class="page-link active">{{ page_num }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="page-ellipsis">…</span>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if posts.has_next %}
+                                <a href="{{ url_for('blog.index', page=posts.next_num) }}" class="page-link">Next →</a>
+                            {% endif %}
+                        </nav>
+                        {% endif %}
+                        
+                    {% else %}
+                        <div class="no-posts">
+                            <h2>No posts yet</h2>
+                            <p>Check back soon for new content!</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="blog-sidebar">
+                    <!-- About Section -->
+                    {% if settings.about_section %}
+                    <div class="sidebar-widget">
+                        <h3>About</h3>
+                        <div class="widget-content">
+                            {{ settings.about_section | markdown | safe }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Categories -->
+                    {% if categories and settings.show_categories %}
+                    <div class="sidebar-widget">
+                        <h3>Categories</h3>
+                        <div class="widget-content">
+                            <ul class="category-list">
+                                {% for category in categories %}
+                                <li>
+                                    <a href="{{ url_for('blog.category', slug=category.slug) }}" class="category-link">
+                                        <span class="category-color" style="background-color: {{ category.color }}"></span>
+                                        {{ category.name }}
+                                        <span class="post-count">{{ category.posts | length }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Newsletter Signup -->
+                    <div class="sidebar-widget">
+                        <h3>Subscribe to Newsletter</h3>
+                        <div class="widget-content">
+                            <p>Get the latest insights on search technology and AI delivered to your inbox.</p>
+                            <form id="newsletterSignup" class="newsletter-form">
+                                <div class="form-group">
+                                    <input type="email" id="newsletter-email" name="email" placeholder="Your email address" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="newsletter-name" name="name" placeholder="Your name (optional)">
+                                </div>
+                                <button type="submit" class="btn-newsletter">Subscribe</button>
+                            </form>
+                            <div id="newsletter-message" class="newsletter-message" style="display: none;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Posts -->
+                    <div class="sidebar-widget">
+                        <h3>Recent Posts</h3>
+                        <div class="widget-content">
+                            <ul class="recent-posts">
+                                {% for post in posts.items[:5] %}
+                                <li>
+                                    <a href="{{ post.url }}" class="recent-post-link">
+                                        <h4>{{ post.title }}</h4>
+                                        <span class="recent-post-date">{{ post.published_at.strftime('%B %d, %Y') }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="blog-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>{{ settings.blog_title }}</h4>
+                    <p>{{ settings.blog_subtitle }}</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Search</a></li>
+                        <li><a href="{{ url_for('blog.index') }}">Blog</a></li>
+                        {% for category in categories[:5] %}
+                            <li><a href="{{ url_for('blog.category', slug=category.slug) }}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Center Deep</h4>
+                    <p>Professional search platform with AI-powered tools.</p>
+                    <p><a href="{{ url_for('index') }}">Try our search →</a></p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; {{ current_year }} Magic Unicorn Unconventional Technology & Stuff Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add current year to footer
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearElement = document.querySelector('.footer-bottom p');
+            if (yearElement) {
+                yearElement.innerHTML = yearElement.innerHTML.replace('{{ current_year }}', new Date().getFullYear());
+            }
+            
+            // Newsletter signup functionality
+            const newsletterForm = document.getElementById('newsletterSignup');
+            const messageDiv = document.getElementById('newsletter-message');
+            
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const email = formData.get('email');
+                    const name = formData.get('name');
+                    
+                    if (!email) {
+                        showMessage('Please enter your email address', 'error');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('/newsletter/subscribe', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                                name: name,
+                                source: 'blog'
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            showMessage(data.message, 'success');
+                            newsletterForm.reset();
+                        } else {
+                            showMessage(data.error || 'Failed to subscribe', 'error');
+                        }
+                    } catch (error) {
+                        showMessage('Failed to subscribe. Please try again.', 'error');
+                    }
+                });
+            }
+            
+            function showMessage(text, type) {
+                messageDiv.textContent = text;
+                messageDiv.className = `newsletter-message ${type}`;
+                messageDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

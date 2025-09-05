@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="endpoint" content="{{ endpoint }}">
-  <meta name="description" content="SearXNG — a privacy-respecting, open metasearch engine">
-  <meta name="keywords" content="SearXNG, search, search engine, metasearch, meta search">
+  <meta name="description" content="Center Deep — Dive deep into the web with privacy and magic">
+  <meta name="keywords" content="Center Deep, search, search engine, metasearch, meta search, unicorn, privacy">
   <meta name="generator" content="searxng/{{ searx_version }}">
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noarchive">
@@ -12,6 +12,9 @@
   <title>{% block title %}{% endblock %}{{ instance_name }}</title>
   <script type="module" src="{{ url_for('static', filename='js/searxng.core.min.js') }}" client_settings="{{ client_settings }}"></script>
   {% block meta %}{% endblock %}
+  <!-- Center Deep Theme Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" media="screen">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-magic-unicorn.css') }}" type="text/css" media="screen">
   {% if rtl %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/searxng-rtl.min.css') }}" type="text/css" media="screen">
   {% else %}
@@ -24,10 +27,10 @@
   <link title="{{ instance_name }}" type="application/opensearchdescription+xml" rel="search" href="{{ opensearch_url }}">
   {% endblock %}
   <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}" sizes="any">
-  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/magic-unicorn-logo.png') }}" type="image/png">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/magic-unicorn-logo.png') }}">
 </head>
-<body class="{{ endpoint }}_endpoint" >
+<body class="{{ endpoint }}_endpoint theme-magic-unicorn" data-theme="magic-unicorn">
   <main id="main_{{  self._TemplateReference__context.name|replace("simple/", "")|replace(".html", "") }}" class="{{body_class}}">
     {% if errors %}
         <div class="dialog-error" role="alert">
@@ -53,6 +56,9 @@
       {%- block linkto_preferences -%}
         <a href="{{ url_for('preferences') }}" class="link_on_top_preferences">{{ icon_big('settings') }}<span>{{ _('Preferences') }}</span></a>
       {%- endblock -%}
+      {%- if is_center_deep_admin -%}
+        <a href="/center_deep/admin" class="link_on_top_admin">{{ icon_big('shield') }}<span>Admin</span></a>
+      {%- endif -%}
     </nav>
     {% block header %}
     {% endblock %}
@@ -61,7 +67,7 @@
   </main>
   <footer>
     <p>
-    {{ _('Powered by') }} <a href="{{ url_for('info', pagename='about') }}">SearXNG</a> - {{ searx_version }} — {{ _('a privacy-respecting, open metasearch engine') }}<br>
+    {{ _('Powered by') }} <a href="{{ url_for('info', pagename='about') }}">Center Deep</a> - {{ searx_version }} — {{ _('a privacy-respecting, open metasearch engine') }}<br>
         <a href="{{ searx_git_url }}">{{ _('Source code') }}</a>
         | <a href="{{ get_setting('brand.issue_url') }}">{{ _('Issue tracker') }}</a>
         {% if enable_metrics %}| <a href="{{ url_for('stats') }}">{{ _('Engine stats') }}</a>{% endif %}

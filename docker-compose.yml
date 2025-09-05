@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  center-deep:
+    build: 
+      context: .
+      dockerfile: Dockerfile.searxng
+    container_name: center-deep
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+      - "0.0.0.0:8888:8080"
+    environment:
+      - SEARXNG_BIND_ADDRESS=0.0.0.0
+      - SEARXNG_PORT=8080
+      - SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml
+      - SEARXNG_SECRET=${SEARXNG_SECRET}
+      - SEARXNG_REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./searxng-settings:/etc/searxng:rw
+      - ./data:/var/log/searxng
+    depends_on:
+      - redis
+    networks:
+      - center-deep-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: center-deep-redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    expose:
+      - "6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - center-deep-network
+
+networks:
+  center-deep-network:
+    driver: bridge
+
+volumes:
+  redis-data:

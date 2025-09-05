@@ -152,6 +152,8 @@ app.jinja_env.add_extension('jinja2.ext.loopcontrols')  # pylint: disable=no-mem
 app.jinja_env.filters['group_engines_in_tab'] = group_engines_in_tab  # pylint: disable=no-member
 app.secret_key = settings['server']['secret_key']
 
+# Center Deep plugin will be loaded by the plugin system
+
 
 def get_locale():
     locale = localeselector()

@@ -1,0 +1,369 @@
+/* Magic Unicorn Theme - Vibrant and Magical (DEFAULT) */
+:root {
+    /* Magic Unicorn Signature Colors */
+    --unicorn-purple: #b66eff;
+    --unicorn-blue: #00d4ff;
+    --unicorn-pink: #ff6ec7;
+    --unicorn-gold: #ffd700;
+    
+    /* Primary Colors */
+    --primary: var(--unicorn-purple);
+    --primary-hover: #a158ff;
+    --primary-light: #d4a5ff;
+    --secondary: #8a5ed6;
+    --accent: var(--unicorn-blue);
+    --success: #10b981;
+    --warning: var(--unicorn-gold);
+    --danger: #ff6b6b;
+    
+    /* Darker backgrounds with subtle gradient magic */
+    --bg-primary: #030308;
+    --bg-secondary: #0a0516;
+    --bg-tertiary: #110828;
+    --bg-card: rgba(17, 8, 40, 0.9);
+    --bg-hover: rgba(182, 110, 255, 0.08);
+    
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #e0d4ff;
+    --text-tertiary: #b3a1db;
+    --text-muted: #8b7aa3;
+    --text-link: var(--unicorn-blue);
+    
+    /* Magical Borders */
+    --border-primary: rgba(182, 110, 255, 0.2);
+    --border-secondary: rgba(182, 110, 255, 0.3);
+    --border-focus: var(--unicorn-purple);
+    
+    /* Magical Shadows with glow effects */
+    --shadow-sm: 0 2px 4px rgba(182, 110, 255, 0.1);
+    --shadow-md: 0 4px 8px rgba(182, 110, 255, 0.15), 0 0 20px rgba(182, 110, 255, 0.05);
+    --shadow-lg: 0 10px 20px rgba(182, 110, 255, 0.2), 0 0 40px rgba(182, 110, 255, 0.1);
+    --shadow-xl: 0 20px 40px rgba(182, 110, 255, 0.3), 0 0 60px rgba(182, 110, 255, 0.15);
+    
+    /* Gradients */
+    --gradient-magic: linear-gradient(135deg, var(--unicorn-purple) 0%, var(--unicorn-blue) 100%);
+    --gradient-reverse: linear-gradient(135deg, var(--unicorn-blue) 0%, var(--unicorn-purple) 100%);
+    --gradient-dark: linear-gradient(180deg, #0a0516 0%, #150a2e 50%, #1f1245 100%);
+    --gradient-radial: radial-gradient(circle at center, rgba(182, 110, 255, 0.1), transparent 70%);
+}
+
+/* Sparkle animation for magical elements */
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+body {
+    background-color: #0a0e1a;
+    background-image: url('/static/images/backgrounds/unicorn-astronaut-dark.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-primary);
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Add darker magical background overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(182, 110, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Search Home with magical gradient */
+.search-home {
+    background: var(--gradient-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated background particles */
+.search-home::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(182,110,255,0.3)"/><circle cx="80" cy="40" r="1" fill="rgba(0,212,255,0.3)"/><circle cx="50" cy="80" r="1" fill="rgba(255,110,199,0.3)"/></svg>');
+    animation: float 30s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Logo with magical glow */
+.logo-text {
+    background: var(--gradient-magic);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(182, 110, 255, 0.5);
+    animation: shimmer 6s ease-in-out infinite, glow 4s ease-in-out infinite alternate;
+    background-size: 200% 100%;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 30px rgba(182, 110, 255, 0.5); }
+    to { text-shadow: 0 0 50px rgba(182, 110, 255, 0.7), 0 0 70px rgba(0, 212, 255, 0.4); }
+}
+
+.logo-subtitle {
+    color: var(--text-secondary);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* Search form with magical border */
+.search-form-home {
+    background: rgba(31, 18, 69, 0.6);
+    border: 2px solid transparent;
+    background-image: 
+        linear-gradient(var(--bg-card), var(--bg-card)),
+        var(--gradient-magic);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-form-home::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 6s ease-in-out infinite;
+}
+
+.search-form-home:hover,
+.search-form-home:focus-within {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+/* Search button with gradient */
+.search-button {
+    background: var(--gradient-magic);
+    border: none;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.search-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.search-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Result items with magical hover */
+.result-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-magic);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.result-item:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--unicorn-purple);
+    transform: translateY(-2px);
+    background: var(--bg-hover);
+}
+
+.result-item:hover::before {
+    transform: scaleX(1);
+}
+
+.result-title {
+    color: var(--text-link);
+    transition: all 0.3s ease;
+}
+
+.result-item:hover .result-title {
+    color: var(--unicorn-purple);
+    text-shadow: 0 0 10px rgba(182, 110, 255, 0.3);
+}
+
+/* Floating unicorn mascot with extra magic */
+.floating-unicorn {
+    filter: drop-shadow(0 0 20px rgba(182, 110, 255, 0.5));
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-unicorn:hover {
+    filter: drop-shadow(0 0 30px rgba(182, 110, 255, 0.8));
+    transform: scale(1.1);
+}
+
+/* Category tabs with gradient underline */
+.tab.active {
+    color: var(--unicorn-purple);
+    background: transparent;
+    position: relative;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-magic);
+    box-shadow: 0 2px 10px rgba(182, 110, 255, 0.5);
+}
+
+/* Buttons with magical effects */
+.btn-primary {
+    background: var(--gradient-magic);
+    color: white;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Admin panel with magical theme */
+.admin-header {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-bottom: 3px solid transparent;
+    border-image: var(--gradient-magic);
+    border-image-slice: 1;
+    box-shadow: 0 4px 20px rgba(182, 110, 255, 0.2);
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+}
+
+.admin-card:hover {
+    border-color: var(--unicorn-purple);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Stats with gradient numbers */
+.stat-number {
+    background: var(--gradient-magic);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+/* Footer with magical gradient */
+.footer {
+    background: linear-gradient(180deg, transparent, var(--bg-secondary));
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-tertiary);
+    position: relative;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gradient-magic);
+    box-shadow: 0 0 10px rgba(182, 110, 255, 0.5);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-magic);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--unicorn-purple);
+}
+
+/* Selection highlighting */
+::selection {
+    background: rgba(182, 110, 255, 0.3);
+    color: white;
+}
+
+/* Input focus with magical glow */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--unicorn-purple) !important;
+    box-shadow: 0 0 0 3px rgba(182, 110, 255, 0.2), 0 0 20px rgba(182, 110, 255, 0.1) !important;
+}

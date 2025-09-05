@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Center Deep - Beautiful Search</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        function CenterDeep() {
+            const [query, setQuery] = useState('');
+            const [results, setResults] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [suggestions, setSuggestions] = useState([]);
+            const [showHome, setShowHome] = useState(true);
+            
+            const API_URL = window.location.origin;
+            
+            const search = async (e) => {
+                e?.preventDefault();
+                if (!query.trim()) return;
+                
+                setLoading(true);
+                setShowHome(false);
+                
+                try {
+                    const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    setResults(data.results || []);
+                } catch (error) {
+                    console.error('Search error:', error);
+                    setResults([]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const getSuggestions = async (q) => {
+                if (!q || q.length < 2) {
+                    setSuggestions([]);
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${API_URL}/api/suggestions?q=${encodeURIComponent(q)}`);
+                    const data = await response.json();
+                    setSuggestions(Array.isArray(data) ? data.slice(0, 5) : []);
+                } catch {
+                    setSuggestions([]);
+                }
+            };
+            
+            useEffect(() => {
+                const timer = setTimeout(() => getSuggestions(query), 300);
+                return () => clearTimeout(timer);
+            }, [query]);
+            
+            if (showHome) {
+                return (
+                    <div className="home-container">
+                        <div className="logo-container">
+                            <h1 className="logo">Center Deep</h1>
+                            <p className="tagline">🌊 Dive deep into the web with 250+ search engines</p>
+                        </div>
+                        
+                        <form onSubmit={search} className="search-form-home">
+                            <div className="search-box-home">
+                                <input
+                                    type="text"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    placeholder="Search the deep web..."
+                                    className="search-input-home"
+                                    autoFocus
+                                />
+                                <button type="submit" className="search-button-home">
+                                    Search
+                                </button>
+                            </div>
+                            
+                            {suggestions.length > 0 && (
+                                <div className="suggestions">
+                                    {suggestions.map((s, i) => (
+                                        <div 
+                                            key={i} 
+                                            className="suggestion"
+                                            onClick={() => {
+                                                setQuery(s);
+                                                setSuggestions([]);
+                                            }}
+                                        >
+                                            {s}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </form>
+                        
+                        <div className="stats">
+                            <span>🔒 Private</span>
+                            <span>⚡ Fast</span>
+                            <span>🦄 Magical</span>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="results-container">
+                    <header className="search-header">
+                        <div className="header-content">
+                            <h2 className="logo-small" onClick={() => {
+                                setShowHome(true);
+                                setQuery('');
+                                setResults([]);
+                            }}>Center Deep</h2>
+                            
+                            <form onSubmit={search} className="search-form-header">
+                                <input
+                                    type="text"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    placeholder="Search..."
+                                    className="search-input-header"
+                                />
+                                <button type="submit" className="search-button-header">
+                                    Search
+                                </button>
+                            </form>
+                        </div>
+                    </header>
+                    
+                    <main className="results">
+                        {loading && <div className="loading">Searching the deep web...</div>}
+                        
+                        {!loading && results.length === 0 && (
+                            <div className="no-results">No results found</div>
+                        )}
+                        
+                        {!loading && results.map((result, index) => (
+                            <div key={index} className="result">
+                                <a href={result.url} target="_blank" rel="noopener noreferrer" className="result-title">
+                                    {result.title}
+                                </a>
+                                <div className="result-url">{result.pretty_url || result.url}</div>
+                                <div className="result-content">{result.content}</div>
+                                {result.engine && (
+                                    <div className="result-engine">via {result.engine}</div>
+                                )}
+                            </div>
+                        ))}
+                    </main>
+                </div>
+            );
+        }
+        
+        ReactDOM.render(<CenterDeep />, document.getElementById('root'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+FROM python:3.11-alpine
+
+# Install dependencies
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    libxml2-dev \
+    libxslt-dev \
+    git \
+    nodejs \
+    npm \
+    redis \
+    supervisor \
+    nginx
+
+# Create user
+RUN addgroup -S searxng && adduser -S -G searxng searxng
+
+# Set working directory
+WORKDIR /app
+
+# Copy and install Python requirements for both services
+COPY requirements.txt /app/searxng-requirements.txt
+COPY requirements-centerdeep.txt /app/
+
+RUN pip install --no-cache-dir -r searxng-requirements.txt && \
+    pip install --no-cache-dir -r requirements-centerdeep.txt
+
+# Copy SearXNG
+COPY ./searx /app/searx
+
+# Copy Center Deep API
+COPY app.py /app/
+
+# Copy frontend build (we'll create a React app next)
+RUN mkdir -p /app/frontend
+COPY static/ /app/frontend/static/
+COPY templates/ /app/frontend/templates/
+
+# Copy supervisor config to run both services
+RUN mkdir -p /etc/supervisor/conf.d
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Create directories
+RUN mkdir -p /etc/searxng /var/log/searxng /app/instance && \
+    chown -R searxng:searxng /etc/searxng /var/log/searxng /app/instance
+
+# Expose only Center Deep port
+EXPOSE 8888
+
+# Start supervisor to run both services
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

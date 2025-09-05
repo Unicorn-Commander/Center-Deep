@@ -1,0 +1,46 @@
+FROM python:3.11-alpine
+
+# Install build dependencies
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    libxml2-dev \
+    libxslt-dev \
+    git \
+    nodejs \
+    npm \
+    redis \
+    make
+
+# Create user
+RUN addgroup -S searxng && adduser -S -G searxng searxng
+
+# Set working directory
+WORKDIR /usr/local/searxng
+
+# Copy SearXNG source code
+COPY --chown=searxng:searxng ./searx /usr/local/searxng/searx
+COPY --chown=searxng:searxng ./requirements.txt /usr/local/searxng/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create necessary directories
+RUN mkdir -p /etc/searxng /var/log/searxng && \
+    chown -R searxng:searxng /etc/searxng /var/log/searxng
+
+# Set environment variables
+ENV SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml \
+    SEARXNG_BIND_ADDRESS=0.0.0.0 \
+    SEARXNG_PORT=8080
+
+# Switch to non-root user
+USER searxng
+
+# Expose port
+EXPOSE 8080
+
+# Run SearXNG as API backend
+CMD ["python", "-m", "searx.webapp"]

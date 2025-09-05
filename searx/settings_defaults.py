@@ -159,7 +159,7 @@ def apply_schema(settings: dict[str, t.Any], schema: dict[str, t.Any], path_list
 SCHEMA: dict[str, t.Any] = {
     'general': {
         'debug': SettingsValue(bool, False, 'SEARXNG_DEBUG'),
-        'instance_name': SettingsValue(str, 'SearXNG'),
+        'instance_name': SettingsValue(str, 'Center Deep'),
         'privacypolicy_url': SettingsValue((None, False, str), None),
         'contact_url': SettingsValue((None, False, str), None),
         'donation_url': SettingsValue((bool, str), "https://docs.searxng.org/donate.html"),
@@ -167,9 +167,9 @@ SCHEMA: dict[str, t.Any] = {
         'open_metrics': SettingsValue(str, ''),
     },
     'brand': {
-        'issue_url': SettingsValue(str, 'https://github.com/searxng/searxng/issues'),
-        'new_issue_url': SettingsValue(str, 'https://github.com/searxng/searxng/issues/new'),
-        'docs_url': SettingsValue(str, 'https://docs.searxng.org'),
+        'issue_url': SettingsValue(str, 'https://github.com/Unicorn-Commander/Center-Deep/issues'),
+        'new_issue_url': SettingsValue(str, 'https://github.com/Unicorn-Commander/Center-Deep/issues/new'),
+        'docs_url': SettingsValue(str, 'https://github.com/Unicorn-Commander/Center-Deep'),
         'public_instances': SettingsValue((False, str), 'https://searx.space'),
         'wiki_url': SettingsValue((False, str), 'https://github.com/searxng/searxng/wiki'),
         'custom': SettingsValue(dict, {'links': {}}),

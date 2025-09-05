@@ -1,8 +1,27 @@
 {% extends "simple/base.html" %}
 {% from 'simple/icons.html' import icon_big %}
+{% block title %}Center Deep - Private Search Engine - {% endblock %}
 {% block content %}
-<div class="index">
-    <div class="title"><h1>SearXNG</h1></div>
-    {% include 'simple/simple_search.html' %}
+<div class="search-home">
+    <div class="container">
+        <div class="logo-container">
+            <h1 class="logo-text">Center Deep</h1>
+            <p class="logo-subtitle">You can't get deeper than Center Deep</p>
+        </div>
+        
+        <div class="search-container-home">
+            {% include 'simple/simple_search.html' %}
+        </div>
+        
+        <div class="search-stats">
+            <span>🔒 Private & Secure</span>
+            <span>🌊 250+ Search Engines</span>
+            <span>🦄 Powered by Magic</span>
+        </div>
+    </div>
+</div>
+
+<div class="floating-unicorn" title="Magic Unicorn Assistant">
+    <img src="{{ url_for('static', filename='img/magic-unicorn-logo.png') }}" alt="Magic Unicorn">
 </div>
 {% endblock %}

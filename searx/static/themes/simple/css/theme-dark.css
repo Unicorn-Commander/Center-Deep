@@ -1,0 +1,204 @@
+/* Dark Theme - Subdued Gray with Unicorn Character */
+:root {
+    --primary: #60a5fa;
+    --primary-hover: #3b82f6;
+    --primary-light: #93c5fd;
+    --secondary: #94a3b8;
+    --accent: #22d3ee;
+    --success: #34d399;
+    --warning: #fbbf24;
+    --danger: #f87171;
+    
+    --bg-primary: #1e293b;
+    --bg-secondary: rgba(30, 41, 59, 0.95);
+    --bg-tertiary: rgba(51, 65, 85, 0.9);
+    --bg-card: rgba(30, 41, 59, 0.95);
+    --bg-hover: rgba(96, 165, 250, 0.1);
+    --bg-input: rgba(51, 65, 85, 0.9);
+    
+    --text-primary: #e8f0ff;
+    --text-secondary: #b8c5d6;
+    --text-tertiary: #8a9aae;
+    --text-muted: #5a6a7e;
+    --text-link: #00d4ff;
+    
+    --border-primary: rgba(0, 212, 255, 0.2);
+    --border-secondary: rgba(0, 212, 255, 0.3);
+    --border-focus: #00d4ff;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+body {
+    background-color: #1e293b;
+    color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Search Header */
+.search-header-compact {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Search Form */
+.search-form-compact {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+}
+
+.search-form-compact:focus-within {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-input-compact {
+    color: var(--text-primary);
+}
+
+.search-input-compact::placeholder {
+    color: var(--text-muted);
+}
+
+/* Category Tabs */
+.category-tabs {
+    border-bottom: 2px solid var(--border-primary);
+    padding-bottom: 0;
+}
+
+.tab {
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: 0;
+}
+
+.tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.tab.active {
+    color: var(--primary);
+    background: transparent;
+    border-bottom-color: var(--primary);
+}
+
+/* Filter Buttons */
+.filter-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+}
+
+.filter-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-secondary);
+}
+
+/* Dropdown */
+.dropdown-menu {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.dropdown-menu a:hover {
+    background: var(--bg-hover);
+}
+
+/* Results */
+.result-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.result-item:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-secondary);
+}
+
+.result-title {
+    color: var(--text-link);
+}
+
+.result-url {
+    color: var(--success);
+}
+
+.result-content {
+    color: var(--text-secondary);
+}
+
+/* Sidebar */
+.sidebar-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+}
+
+.safe-search-select {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+}
+
+/* Home Page */
+.search-home {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+.search-form-home {
+    background: var(--bg-card);
+    border: 2px solid var(--border-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.search-form-home:hover,
+.search-form-home:focus-within {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-xl);
+}
+
+.logo-text {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+/* Admin */
+.admin-header {
+    background: var(--bg-secondary);
+    border-bottom: 2px solid var(--primary);
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+}
+
+
+/* Footer */
+.footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-tertiary);
+}

@@ -1,0 +1,50 @@
+services:
+  # SearXNG runs internally, not exposed to users
+  searxng:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: searxng-backend
+    restart: unless-stopped
+    environment:
+      - SEARXNG_BIND_ADDRESS=0.0.0.0
+      - SEARXNG_PORT=8080
+      - SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml
+      - SEARXNG_SECRET=4c0a0ecc2a1f80e2f064a5f1ad71b28e55fa3c64903fed34c9dba6da756e461f
+      - SEARXNG_REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    networks:
+      - internal
+    # No ports exposed - only accessible internally
+
+  # Center Deep API - What users actually interact with
+  center-deep-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: center-deep-api
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+      - "0.0.0.0:8888:8888"
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+    depends_on:
+      - searxng
+      - redis
+    networks:
+      - internal
+    volumes:
+      - ./frontend:/app/static
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge

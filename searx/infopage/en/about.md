@@ -1,31 +1,36 @@
-# About SearXNG
+# About Center Deep
 
-SearXNG is a [metasearch engine], aggregating the results of other
-{{link('search engines', 'preferences')}} while not storing information about
-its users.
+🦄 **You can't get deeper than Center Deep**
 
-The SearXNG project is driven by an open community. Come join us on Matrix if
-you have questions or just want to chat about SearXNG at [#searxng:matrix.org]
+Center Deep is a privacy-focused [metasearch engine] that aggregates results from 250+ {{link('search engines', 'preferences')}} while never storing information about its users. Built on the powerful SearXNG foundation, Center Deep takes search privacy to the next level with enhanced features and a magical user experience.
 
-Make SearXNG better:
+## Why Choose Center Deep?
 
-- You can improve SearXNG translations at [Weblate], or...
-- Track development, send contributions, and report issues at [SearXNG sources].
-- To get further information, visit SearXNG's project documentation at [SearXNG
-  docs].
+🔒 **Complete Privacy**: We don't track, store, or profile you. Your searches remain completely anonymous.
 
-## Why use it?
+🌊 **Deep Search Results**: Access 250+ search engines simultaneously, giving you comprehensive results from across the web.
 
-- SearXNG may not offer you as personalized results as Google, but it doesn't
-  generate a profile about you.
-- SearXNG doesn't care about what you search for, never shares anything with a
-  third-party, and can't be used to compromise you.
-- SearXNG is free software; the code is 100% open, and everyone is welcome to
-  make it better.
+⚡ **Lightning Fast**: Optimized performance with powerful caching and intelligent result aggregation.
 
-If you do care about privacy, want to be a conscious user, or otherwise believe
-in digital freedom, make SearXNG your default search engine or run it on your
-own server!
+🦄 **Magical Experience**: Beautiful, intuitive interface designed for the modern web with smooth animations and responsive design.
+
+🛡️ **Ad-Free & Clean**: No advertisements, no tracking scripts, no data collection - just pure search results.
+
+## Privacy First Philosophy
+
+- Center Deep generates zero user profiles - we don't know who you are or what you search for
+- All searches are encrypted and proxied through our secure infrastructure  
+- No search history is stored anywhere - each search is completely independent
+- Third-party engines never see your IP address or personal information
+- Open source transparency - you can verify our privacy claims in the code
+
+## Powered by Advanced Technology
+
+Center Deep leverages cutting-edge search technology while maintaining complete privacy:
+- **Multi-engine aggregation** from 250+ sources including Google, Bing, DuckDuckGo, Yandex, and specialized engines
+- **Intelligent result ranking** that combines relevance signals without compromising privacy  
+- **Real-time search** with sub-second response times
+- **Mobile-optimized** experience across all devices
 
 ## How do I set it as the default search engine?
 

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ q }} - Center Deep Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-form {
+            flex: 1;
+            max-width: 600px;
+        }
+        
+        .search-box {
+            background: white;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-button {
+            background: transparent;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            color: #667eea;
+        }
+        
+        .search-button svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .filters {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 0;
+        }
+        
+        .filters-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .filter-tab {
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-tab:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .filter-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .results-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .results-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .result {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s;
+        }
+        
+        .result:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .result-title {
+            margin-bottom: 5px;
+        }
+        
+        .result-title a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .result-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .result-url {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .result-content {
+            color: #4d5156;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        .result-engines {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .engine-tag {
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 40px 0;
+        }
+        
+        .page-link {
+            padding: 10px 15px;
+            background: white;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #667eea;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .page-link:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .page-link.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .no-results h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span>🔍</span>
+                <span>Center Deep</span>
+            </a>
+            <form action="/search" method="GET" class="search-form">
+                <div class="search-box">
+                    <input type="text" 
+                           name="q" 
+                           class="search-input" 
+                           value="{{ q }}"
+                           autocomplete="off"
+                           required>
+                    <button type="submit" class="search-button">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="filters">
+        <div class="filters-content">
+            <a href="/search?q={{ q }}" class="filter-tab active">All</a>
+            <a href="/search?q={{ q }}&categories=images" class="filter-tab">Images</a>
+            <a href="/search?q={{ q }}&categories=videos" class="filter-tab">Videos</a>
+            <a href="/search?q={{ q }}&categories=news" class="filter-tab">News</a>
+            <a href="/search?q={{ q }}&categories=maps" class="filter-tab">Maps</a>
+        </div>
+    </div>
+    
+    <div class="results-container">
+        {% if number_of_results > 0 %}
+            <div class="results-info">
+                About {{ number_of_results }} results ({{ search_time }} seconds)
+            </div>
+            
+            {% for result in results %}
+            <div class="result">
+                <div class="result-title">
+                    <a href="{{ result.url }}" target="_blank" rel="noopener noreferrer">
+                        {{ result.title | safe }}
+                    </a>
+                </div>
+                <div class="result-url">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#5f6368">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                    </svg>
+                    {{ result.parsed_url[1] }}{{ result.parsed_url[2] }}
+                </div>
+                {% if result.content %}
+                <div class="result-content">
+                    {{ result.content | safe | truncate(300) }}
+                </div>
+                {% endif %}
+                {% if result.engines %}
+                <div class="result-engines">
+                    {% for engine in result.engines %}
+                    <span class="engine-tag">{{ engine }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            {% if pageno > 1 or results|length >= 20 %}
+            <div class="pagination">
+                {% if pageno > 1 %}
+                <a href="/search?q={{ q }}&pageno={{ pageno - 1 }}" class="page-link">← Previous</a>
+                {% endif %}
+                <span class="page-link active">{{ pageno }}</span>
+                {% if results|length >= 20 %}
+                <a href="/search?q={{ q }}&pageno={{ pageno + 1 }}" class="page-link">Next →</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="no-results">
+                <h2>No results found</h2>
+                <p>Try different keywords or check your spelling</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="footer">
+        <p>
+            Powered by SearXNG • 
+            <a href="/preferences">Preferences</a> • 
+            <a href="/about">About</a>
+            {% if current_user and current_user.is_authenticated %}
+            • <a href="/auth/logout">Logout</a>
+            {% endif %}
+        </p>
+    </div>
+</body>
+</html>

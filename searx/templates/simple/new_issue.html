@@ -5,7 +5,7 @@
     <input name="template" type="hidden" value="bug-report.md">
     <textarea name="body" class="issue-hide">{{- '' -}}
 
-**Version of SearXNG, commit number if you are using on master branch and stipulate if you forked SearXNG**
+**Version of Center Deep, commit number if you are using on master branch and stipulate if you forked Center Deep**
 {% if searx_git_url and searx_git_url != 'unknow' %}
 Repository: {{ searx_git_url }}
 Branch: {{ searx_git_branch }}
@@ -18,15 +18,15 @@ in order to fetch the latest commit ID:
 ```
 git log -1
 ```
-If you are using searxng-docker then look at the bottom of the SearXNG page
-and check for the version after "Powered by SearXNG"
+If you are using searxng-docker then look at the bottom of the Center Deep page
+and check for the version after "Powered by Center Deep"
 
 Please also stipulate if you are using a forked version of SearxNG and
 include a link to the fork source code.
 -->
 {% endif %}
-**How did you install SearXNG?**
-<!-- Did you install SearXNG using the official wiki or using searxng-docker
+**How did you install Center Deep?**
+<!-- Did you install Center Deep using the official wiki or using searxng-docker
 or manually by executing the searx/webapp.py file? -->
 **What happened?**
 <!-- A clear and concise description of what the bug is. -->

@@ -1,0 +1,701 @@
+/* Magic Unicorn Theme - Vibrant and Magical (DEFAULT) */
+:root {
+    /* Magic Unicorn Signature Colors */
+    --unicorn-purple: #b66eff;
+    --unicorn-blue: #00d4ff;
+    --unicorn-pink: #ff6ec7;
+    --unicorn-gold: #ffd700;
+    
+    /* Primary Colors */
+    --primary: var(--unicorn-purple);
+    --primary-hover: #a158ff;
+    --primary-light: #d4a5ff;
+    --secondary: #8a5ed6;
+    --accent: var(--unicorn-blue);
+    --success: #10b981;
+    --warning: var(--unicorn-gold);
+    --danger: #ff6b6b;
+    
+    /* Darker backgrounds with subtle gradient magic */
+    --bg-primary: #030308;
+    --bg-secondary: #0a0516;
+    --bg-tertiary: #110828;
+    --bg-card: rgba(17, 8, 40, 0.9);
+    --bg-hover: rgba(182, 110, 255, 0.08);
+    
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #e0d4ff;
+    --text-tertiary: #b3a1db;
+    --text-muted: #8b7aa3;
+    --text-link: var(--unicorn-blue);
+    
+    /* Magical Borders */
+    --border-primary: rgba(182, 110, 255, 0.2);
+    --border-secondary: rgba(182, 110, 255, 0.3);
+    --border-focus: var(--unicorn-purple);
+    
+    /* Magical Shadows with glow effects */
+    --shadow-sm: 0 2px 4px rgba(182, 110, 255, 0.1);
+    --shadow-md: 0 4px 8px rgba(182, 110, 255, 0.15), 0 0 20px rgba(182, 110, 255, 0.05);
+    --shadow-lg: 0 10px 20px rgba(182, 110, 255, 0.2), 0 0 40px rgba(182, 110, 255, 0.1);
+    --shadow-xl: 0 20px 40px rgba(182, 110, 255, 0.3), 0 0 60px rgba(182, 110, 255, 0.15);
+    
+    /* Gradients */
+    --gradient-magic: linear-gradient(135deg, var(--unicorn-purple) 0%, var(--unicorn-blue) 100%);
+    --gradient-reverse: linear-gradient(135deg, var(--unicorn-blue) 0%, var(--unicorn-purple) 100%);
+    --gradient-dark: linear-gradient(180deg, #0a0516 0%, #150a2e 50%, #1f1245 100%);
+    --gradient-radial: radial-gradient(circle at center, rgba(182, 110, 255, 0.1), transparent 70%);
+}
+
+/* Sparkle animation for magical elements */
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+body {
+    background: var(--gradient-dark) !important;
+    background-attachment: fixed !important;
+    color: var(--text-primary);
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Ensure all page sections have consistent background */
+html {
+    background: var(--gradient-dark) !important;
+}
+
+main {
+    background: transparent !important;
+}
+
+/* Add darker magical background overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(182, 110, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Search Home with uniform background */
+.search-home {
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated background particles */
+.search-home::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(182,110,255,0.3)"/><circle cx="80" cy="40" r="1" fill="rgba(0,212,255,0.3)"/><circle cx="50" cy="80" r="1" fill="rgba(255,110,199,0.3)"/></svg>');
+    animation: float 30s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Logo with magical glow */
+.logo-text {
+    background: var(--gradient-magic);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(182, 110, 255, 0.5);
+    animation: shimmer 6s ease-in-out infinite, glow 4s ease-in-out infinite alternate;
+    background-size: 200% 100%;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 30px rgba(182, 110, 255, 0.5); }
+    to { text-shadow: 0 0 50px rgba(182, 110, 255, 0.7), 0 0 70px rgba(0, 212, 255, 0.4); }
+}
+
+.logo-subtitle {
+    color: var(--text-secondary);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* Search form with magical border */
+.search-form-home {
+    background: rgba(31, 18, 69, 0.6);
+    border: 2px solid transparent;
+    background-image: 
+        linear-gradient(var(--bg-card), var(--bg-card)),
+        var(--gradient-magic);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-form-home::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 6s ease-in-out infinite;
+}
+
+.search-form-home:hover,
+.search-form-home:focus-within {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+/* Search button with gradient */
+.search-button {
+    background: var(--gradient-magic);
+    border: none;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.search-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.search-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Result items with magical hover */
+.result-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-magic);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.result-item:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--unicorn-purple);
+    transform: translateY(-2px);
+    background: var(--bg-hover);
+}
+
+.result-item:hover::before {
+    transform: scaleX(1);
+}
+
+.result-title {
+    color: var(--text-link);
+    transition: all 0.3s ease;
+}
+
+.result-item:hover .result-title {
+    color: var(--unicorn-purple);
+    text-shadow: 0 0 10px rgba(182, 110, 255, 0.3);
+}
+
+/* Floating unicorn mascot with extra magic */
+.floating-unicorn {
+    filter: drop-shadow(0 0 20px rgba(182, 110, 255, 0.5));
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-unicorn:hover {
+    filter: drop-shadow(0 0 30px rgba(182, 110, 255, 0.8));
+    transform: scale(1.1);
+}
+
+/* Category tabs with gradient underline */
+.tab.active {
+    color: var(--unicorn-purple);
+    background: transparent;
+    position: relative;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-magic);
+    box-shadow: 0 2px 10px rgba(182, 110, 255, 0.5);
+}
+
+/* Buttons with magical effects */
+.btn-primary {
+    background: var(--gradient-magic);
+    color: white;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Admin panel with magical theme */
+.admin-header {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-bottom: 3px solid transparent;
+    border-image: var(--gradient-magic);
+    border-image-slice: 1;
+    box-shadow: 0 4px 20px rgba(182, 110, 255, 0.2);
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+}
+
+.admin-card:hover {
+    border-color: var(--unicorn-purple);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Stats with gradient numbers */
+.stat-number {
+    background: var(--gradient-magic);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+/* Footer with magical gradient */
+.footer {
+    background: linear-gradient(180deg, transparent, var(--bg-secondary));
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-tertiary);
+    position: relative;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gradient-magic);
+    box-shadow: 0 0 10px rgba(182, 110, 255, 0.5);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-magic);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--unicorn-purple);
+}
+
+/* Selection highlighting */
+::selection {
+    background: rgba(182, 110, 255, 0.3);
+    color: white;
+}
+
+/* Input focus with magical glow */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--unicorn-purple) !important;
+    box-shadow: 0 0 0 3px rgba(182, 110, 255, 0.2), 0 0 20px rgba(182, 110, 255, 0.1) !important;
+}
+
+/* Remove all search containers and make it clean */
+#search_header,
+#search_view {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Search box on results page - normal layout */
+.search_endpoint #search {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 1rem 0 !important;
+}
+
+/* Search box on home page - centered */
+.index_endpoint #search {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Search box container on results page */
+.search_endpoint .search_box {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Search box container on home page */
+.index_endpoint .search_box {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+    gap: 15px !important;
+}
+
+/* Main Search Input */
+#q {
+    background: rgba(17, 8, 40, 0.8) !important;
+    border: 2px solid rgba(182, 110, 255, 0.3) !important;
+    border-radius: 25px !important;
+    outline: none !important;
+    color: var(--text-primary) !important;
+    font-size: 18px !important;
+    padding: 14px 24px !important;
+    margin: 0 !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Search input on home page - centered */
+.index_endpoint #q {
+    width: 500px !important;
+    max-width: 90% !important;
+}
+
+/* Search input on results page - full width */
+.search_endpoint #q {
+    width: 600px !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(182, 110, 255, 0.1) !important;
+    flex-shrink: 0 !important;
+}
+
+#q::placeholder {
+    color: var(--text-muted) !important;
+    font-weight: 400 !important;
+}
+
+#q:focus {
+    border-color: var(--unicorn-purple) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(182, 110, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+    text-align: left !important;
+}
+
+/* Hide clear button */
+#clear_search {
+    display: none !important;
+}
+
+/* Search Button - Clean magical styling */
+#send_search {
+    background: linear-gradient(135deg, var(--unicorn-purple), var(--unicorn-blue)) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 45px !important;
+    height: 45px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    margin: 0 !important;
+    box-shadow: 0 4px 15px rgba(182, 110, 255, 0.3) !important;
+    flex-shrink: 0 !important;
+}
+
+#send_search:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 20px rgba(182, 110, 255, 0.5) !important;
+}
+
+#send_search svg,
+#clear_search svg {
+    fill: white !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* Search form container on homepage */
+.search-container-home {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+/* Footer improvements */
+footer,
+.footer {
+    background: transparent !important;
+    border-top: 2px solid transparent !important;
+    border-image: linear-gradient(90deg, transparent, var(--unicorn-purple), var(--unicorn-blue), transparent) !important;
+    border-image-slice: 1 !important;
+    color: var(--text-tertiary) !important;
+    padding: 2rem 0 !important;
+    margin-top: 3rem !important;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+footer::before,
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: var(--gradient-magic);
+    box-shadow: 0 0 20px rgba(182, 110, 255, 0.8);
+}
+
+footer a,
+.footer a {
+    color: var(--unicorn-blue) !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+}
+
+footer a:hover,
+.footer a:hover {
+    color: var(--unicorn-purple) !important;
+    text-shadow: 0 0 10px rgba(182, 110, 255, 0.5) !important;
+}
+
+/* Results Page Layout Fixes */
+.search_endpoint {
+    background: var(--gradient-dark) !important;
+    min-height: 100vh;
+}
+
+.search_endpoint main {
+    padding-top: 60px !important;
+    background: var(--gradient-dark) !important;
+    min-height: 100vh !important;
+}
+
+/* Top navigation links - aligned with content */
+#links_on_top {
+    position: fixed !important;
+    top: 1rem !important;
+    right: calc(50% - 700px + 1rem) !important;
+    z-index: 1000 !important;
+    background: transparent !important;
+}
+
+/* On smaller screens, use regular margin */
+@media (max-width: 1440px) {
+    #links_on_top {
+        right: 1rem !important;
+    }
+}
+
+/* Home page can have centered navigation */
+.index_endpoint #links_on_top {
+    right: 2rem !important;
+}
+
+/* Search header area spacing */
+.search_endpoint #search_header {
+    padding: 2rem !important;
+    margin-bottom: 2rem !important;
+    background: transparent !important;
+    min-height: auto !important;
+}
+
+/* Results container with flexbox layout */
+#results {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    padding: 0 1rem !important;
+    background: transparent !important;
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 2rem !important;
+}
+
+/* Results list - main column */
+#urls {
+    flex: 1 1 70% !important;
+    margin-right: 0 !important;
+    min-width: 0 !important;
+    order: 1 !important;
+}
+
+/* Individual result items */
+.result {
+    background: rgba(26, 14, 44, 0.6) !important;
+    border: 1px solid var(--border-primary) !important;
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    border-radius: 8px !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Sidebar - flex item instead of absolute */
+#sidebar {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    width: 300px !important;
+    flex: 0 0 300px !important;
+    background: rgba(26, 14, 44, 0.4) !important;
+    padding: 1rem !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-primary) !important;
+    backdrop-filter: blur(5px) !important;
+    height: fit-content !important;
+    position: sticky !important;
+    top: 80px !important;
+    order: 2 !important;
+}
+
+/* Fix main content area */
+.search_endpoint #main_results {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Pagination positioning */
+#pagination {
+    clear: both !important;
+    margin-top: 2rem !important;
+    padding: 2rem 0 !important;
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    order: 3 !important;
+}
+
+.numbered_pagination {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin: 1rem 0 !important;
+    flex-wrap: wrap !important;
+}
+
+.numbered_pagination form {
+    display: inline-block !important;
+    margin: 0 !important;
+}
+
+.numbered_pagination button {
+    background: rgba(26, 14, 44, 0.6) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.numbered_pagination button:hover {
+    background: var(--unicorn-purple) !important;
+    box-shadow: 0 0 10px rgba(182, 110, 255, 0.5) !important;
+}
+
+.numbered_pagination button.selected {
+    background: var(--unicorn-purple) !important;
+    font-weight: bold !important;
+}
+
+@media (max-width: 1200px) {
+    #urls {
+        margin-right: 0 !important;
+    }
+
+    #sidebar {
+        display: none !important;
+    }
+}

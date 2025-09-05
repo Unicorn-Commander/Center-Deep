@@ -1,0 +1,1513 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Center Deep{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="admin-header">
+        <div class="container">
+            <div class="admin-nav">
+                <a href="/" class="admin-logo">
+                    <img src="{{ url_for('static', filename='images/center-deep-logo.png') }}" alt="Center Deep" class="admin-logo-img">
+                    <span>Center Deep Admin</span>
+                </a>
+                <nav class="admin-menu">
+                    <a href="#proxy" class="active">Proxy Settings</a>
+                    <a href="#search">Search Engine</a>
+                    <a href="#llm">LLM Config</a>
+                    <a href="#embedding">Embeddings</a>
+                    <a href="#reranker">Rerankers</a>
+                    <!-- Future features:
+                    <a href="#agents">AI Agents (Pro)</a>
+                    -->
+                    <a href="#toolservers">Tool Servers</a>
+                    <a href="#users">Users</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container admin-content">
+        <!-- Proxy Settings Section -->
+        <section id="proxy" class="admin-section">
+            <h2>🔐 Proxy Configuration</h2>
+            <div class="admin-card">
+                <h3>BrightData Rotating Proxy</h3>
+                <form id="proxyForm" class="admin-form">
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Rotating Proxy</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="proxyEnabled" name="proxyEnabled">
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brightdataUrl">BrightData Proxy URL</label>
+                        <input type="url" id="brightdataUrl" name="brightdataUrl" 
+                               placeholder="https://proxy.brightdata.com:22225">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brightdataUsername">BrightData Username</label>
+                        <input type="text" id="brightdataUsername" name="brightdataUsername" 
+                               placeholder="username-session">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brightdataPassword">BrightData Password</label>
+                        <input type="password" id="brightdataPassword" name="brightdataPassword" 
+                               placeholder="••••••••">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rotationInterval">Rotation Interval (seconds)</label>
+                        <input type="number" id="rotationInterval" name="rotationInterval" 
+                               value="300" min="60" max="3600">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Proxy Settings</button>
+                </form>
+            </div>
+        </section>
+        
+        
+        <!-- Search Engine Configuration -->
+        <section id="search" class="admin-section">
+            <h2>🔍 Center Deep Search Engine</h2>
+            <div class="admin-card">
+                <h3>Search Configuration</h3>
+                <form id="searchForm" class="admin-form">
+                    <div class="form-group">
+                        <label for="searchEngines">Active Search Engines</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="engines" value="google" checked> Google</label>
+                            <label><input type="checkbox" name="engines" value="bing" checked> Bing</label>
+                            <label><input type="checkbox" name="engines" value="duckduckgo" checked> DuckDuckGo</label>
+                            <label><input type="checkbox" name="engines" value="brave"> Brave</label>
+                            <label><input type="checkbox" name="engines" value="qwant"> Qwant</label>
+                            <label><input type="checkbox" name="engines" value="startpage"> StartPage</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="searchTimeout">Request Timeout (seconds)</label>
+                        <input type="number" id="searchTimeout" name="searchTimeout" 
+                               value="10" min="5" max="60">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxResults">Max Results per Page</label>
+                        <input type="number" id="maxResults" name="maxResults" 
+                               value="20" min="10" max="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Privacy Mode (No Tracking)</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="privacyMode" name="privacyMode" checked>
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable Safe Search</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="safeSearch" name="safeSearch">
+                                <span class="toggle-switch"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Search Settings</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- LLM Configuration Section -->
+        <section id="llm" class="admin-section">
+            <h2>🤖 LLM Configuration</h2>
+            
+            <!-- LLM Providers -->
+            <div class="admin-card">
+                <h3>LLM Providers</h3>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addLLMBtn" class="btn-primary">+ Add LLM Provider</button>
+                </div>
+                <div id="llmProvidersList">
+                    <!-- LLM providers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Tool LLM Assignments -->
+            <div class="admin-card">
+                <h3>Tool LLM Assignments</h3>
+                <form id="toolLLMForm" class="admin-form">
+                    <div class="tool-llm-config">
+                        <h4>Search Tool</h4>
+                        <div class="form-group">
+                            <label for="searchLLM">LLM Provider</label>
+                            <select id="searchLLM" name="search_llm">
+                                <option value="">Select LLM Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchEmbedding">Embedding Provider</label>
+                            <select id="searchEmbedding" name="search_embedding">
+                                <option value="">Select Embedding Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchReranker">Reranker Provider</label>
+                            <select id="searchReranker" name="search_reranker">
+                                <option value="">Select Reranker Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchTemp">Temperature</label>
+                            <input type="number" id="searchTemp" name="search_temperature" 
+                                   min="0" max="2" step="0.1" value="0.7">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchTokens">Max Tokens</label>
+                            <input type="number" id="searchTokens" name="search_max_tokens" 
+                                   min="100" max="32000" value="4000">
+                        </div>
+                    </div>
+                    
+                    <div class="tool-llm-config">
+                        <h4>Deep Search Tool</h4>
+                        <div class="form-group">
+                            <label for="deepSearchLLM">LLM Provider</label>
+                            <select id="deepSearchLLM" name="deep_search_llm">
+                                <option value="">Select LLM Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deepSearchEmbedding">Embedding Provider</label>
+                            <select id="deepSearchEmbedding" name="deep_search_embedding">
+                                <option value="">Select Embedding Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deepSearchReranker">Reranker Provider</label>
+                            <select id="deepSearchReranker" name="deep_search_reranker">
+                                <option value="">Select Reranker Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deepSearchTemp">Temperature</label>
+                            <input type="number" id="deepSearchTemp" name="deep_search_temperature" 
+                                   min="0" max="2" step="0.1" value="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="deepSearchTokens">Max Tokens</label>
+                            <input type="number" id="deepSearchTokens" name="deep_search_max_tokens" 
+                                   min="100" max="32000" value="8000">
+                        </div>
+                    </div>
+                    
+                    <div class="tool-llm-config">
+                        <h4>Report Generation</h4>
+                        <div class="form-group">
+                            <label for="reportLLM">LLM Provider</label>
+                            <select id="reportLLM" name="report_llm">
+                                <option value="">Select LLM Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportTemp">Temperature</label>
+                            <input type="number" id="reportTemp" name="report_temperature" 
+                                   min="0" max="2" step="0.1" value="0.3">
+                        </div>
+                        <div class="form-group">
+                            <label for="reportTokens">Max Tokens</label>
+                            <input type="number" id="reportTokens" name="report_max_tokens" 
+                                   min="100" max="32000" value="16000">
+                        </div>
+                    </div>
+                    
+                    <div class="tool-llm-config">
+                        <h4>Academic Report</h4>
+                        <div class="form-group">
+                            <label for="academicLLM">LLM Provider</label>
+                            <select id="academicLLM" name="academic_llm">
+                                <option value="">Select LLM Provider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="academicTemp">Temperature</label>
+                            <input type="number" id="academicTemp" name="academic_temperature" 
+                                   min="0" max="2" step="0.1" value="0.2">
+                        </div>
+                        <div class="form-group">
+                            <label for="academicTokens">Max Tokens</label>
+                            <input type="number" id="academicTokens" name="academic_max_tokens" 
+                                   min="100" max="32000" value="16000">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Tool LLM Settings</button>
+                </form>
+            </div>
+            
+            <!-- Add LLM Provider Modal -->
+            <div id="addLLMModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add LLM Provider</h3>
+                        <button class="close-btn" onclick="closeLLMModal()">&times;</button>
+                    </div>
+                    <form id="addLLMForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="llmName">Provider Name</label>
+                            <input type="text" id="llmName" name="name" required 
+                                   placeholder="e.g., OpenAI, Anthropic, Local LLM">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="llmApiBase">API Base URL</label>
+                            <input type="url" id="llmApiBase" name="api_base" required 
+                                   placeholder="https://api.openai.com/v1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="llmApiKey">API Key</label>
+                            <input type="password" id="llmApiKey" name="api_key" 
+                                   placeholder="sk-...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="llmModel">Model Name</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <select id="llmModelSelect" style="flex: 1;">
+                                    <option value="">Enter API key first</option>
+                                </select>
+                                <input type="text" id="llmModel" name="model_name" required 
+                                       placeholder="Or enter manually" style="flex: 1;">
+                            </div>
+                            <button type="button" onclick="fetchAvailableModels()" class="btn-secondary" style="margin-top: 0.5rem;">
+                                🔍 Fetch Available Models
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Enable Provider</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="llmEnabled" name="enabled" checked>
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeLLMModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Add Provider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Embedding Configuration Section -->
+        <section id="embedding" class="admin-section">
+            <h2>🔍 Embedding Configuration</h2>
+            
+            <!-- Embedding Providers -->
+            <div class="admin-card">
+                <h3>Embedding Providers</h3>
+                <p class="section-description">
+                    Configure embedding models for semantic search and document retrieval. These models convert text into vector representations.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addEmbeddingBtn" class="btn-primary">+ Add Embedding Provider</button>
+                </div>
+                <div id="embeddingProvidersList">
+                    <!-- Embedding providers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Add Embedding Provider Modal -->
+            <div id="addEmbeddingModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add Embedding Provider</h3>
+                        <button class="close-btn" onclick="closeEmbeddingModal()">&times;</button>
+                    </div>
+                    <form id="addEmbeddingForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="embeddingName">Provider Name</label>
+                            <input type="text" id="embeddingName" name="name" required 
+                                   placeholder="e.g., OpenAI Embeddings, Cohere, Local Embeddings">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingApiBase">API Base URL</label>
+                            <input type="url" id="embeddingApiBase" name="api_base" required 
+                                   placeholder="https://api.openai.com/v1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingApiKey">API Key</label>
+                            <input type="password" id="embeddingApiKey" name="api_key" 
+                                   placeholder="sk-...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingModel">Model Name</label>
+                            <input type="text" id="embeddingModel" name="model_name" required 
+                                   placeholder="text-embedding-ada-002, embed-english-v3.0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="embeddingDimension">Vector Dimension</label>
+                            <input type="number" id="embeddingDimension" name="dimension" 
+                                   min="128" max="4096" value="1536" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Enable Provider</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="embeddingEnabled" name="enabled" checked>
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeEmbeddingModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Add Provider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Reranker Configuration Section -->
+        <section id="reranker" class="admin-section">
+            <h2>🔄 Reranker Configuration</h2>
+            
+            <!-- Reranker Providers -->
+            <div class="admin-card">
+                <h3>Reranker Providers</h3>
+                <p class="section-description">
+                    Configure reranking models to improve search result relevance. Rerankers re-score and reorder search results based on semantic similarity.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addRerankerBtn" class="btn-primary">+ Add Reranker Provider</button>
+                </div>
+                <div id="rerankerProvidersList">
+                    <!-- Reranker providers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Add Reranker Provider Modal -->
+            <div id="addRerankerModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add Reranker Provider</h3>
+                        <button class="close-btn" onclick="closeRerankerModal()">&times;</button>
+                    </div>
+                    <form id="addRerankerForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="rerankerName">Provider Name</label>
+                            <input type="text" id="rerankerName" name="name" required 
+                                   placeholder="e.g., Cohere Rerank, Local Reranker">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerApiBase">API Base URL</label>
+                            <input type="url" id="rerankerApiBase" name="api_base" required 
+                                   placeholder="https://api.cohere.ai/v1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerApiKey">API Key</label>
+                            <input type="password" id="rerankerApiKey" name="api_key" 
+                                   placeholder="API key">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerModel">Model Name</label>
+                            <input type="text" id="rerankerModel" name="model_name" required 
+                                   placeholder="rerank-english-v2.0, bge-reranker-large">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rerankerTopK">Top K Results</label>
+                            <input type="number" id="rerankerTopK" name="top_k" 
+                                   min="1" max="100" value="10" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Enable Provider</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="rerankerEnabled" name="enabled" checked>
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeRerankerModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Add Provider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        
+        
+        <!-- Tool Servers Section -->
+        <section id="toolservers" class="admin-section">
+            <h2>🛠️ Tool Servers Management</h2>
+            
+            <div class="admin-card">
+                <h3>Available Tool Servers</h3>
+                <p class="section-description">
+                    Manage OpenAI API v1 compatible tool servers for use with Open WebUI and other applications.
+                    Each tool server provides specialized functionality for search, analysis, and report generation.
+                </p>
+                
+                <div id="toolServersList" class="tool-servers-grid">
+                    <!-- Tool servers will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Tool Server Configuration -->
+            <div class="admin-card">
+                <h3>Tool Server Configuration</h3>
+                <div class="config-info">
+                    <h4>Integration with Open WebUI</h4>
+                    <p>Add these URLs to Open WebUI's tool configuration:</p>
+                    <ul class="integration-urls">
+                        <li><strong>Search Tool:</strong> <code>http://localhost:8001</code></li>
+                        <li><strong>Deep Search:</strong> <code>http://localhost:8002</code></li>
+                        <li><strong>Report Generator:</strong> <code>http://localhost:8003</code></li>
+                        <li><strong>Academic Research:</strong> <code>http://localhost:8004</code></li>
+                    </ul>
+                    
+                    <h4>Docker Management</h4>
+                    <p>Tool servers are managed as Docker containers. Use the controls above to start/stop each server.</p>
+                    <p>To deploy all tool servers:</p>
+                    <pre><code>docker-compose -f docker-compose.tools.yml up -d</code></pre>
+                </div>
+            </div>
+        </section>
+        
+        <!-- User Management Section -->
+        <section id="users" class="admin-section">
+            <h2>👥 User Management</h2>
+            
+            <!-- Password Change -->
+            <div class="admin-card">
+                <h3>Change Password</h3>
+                <form id="passwordForm" class="admin-form">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required minlength="8">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Change Password</button>
+                </form>
+            </div>
+            
+            <!-- User List -->
+            <div class="admin-card">
+                <h3>Manage Users</h3>
+                <div style="margin-bottom: 1rem;">
+                    <button id="addUserBtn" class="btn-primary">+ Add New User</button>
+                </div>
+                <div id="usersList">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Add User Modal -->
+            <div id="addUserModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add New User</h3>
+                        <button class="close-btn" onclick="closeModal()">&times;</button>
+                    </div>
+                    <form id="addUserForm" class="admin-form">
+                        <div class="form-group">
+                            <label for="newUsername">Username</label>
+                            <input type="text" id="newUsername" name="username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newEmail">Email</label>
+                            <input type="email" id="newEmail" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newUserPassword">Password</label>
+                            <input type="password" id="newUserPassword" name="password" required minlength="8">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Admin Access</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="newUserAdmin" name="is_admin">
+                                    <span class="toggle-switch"></span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Create User</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+</div>
+
+<script>
+// Load current settings
+async function loadSettings() {
+    try {
+        const response = await fetch('/api/admin/settings');
+        const settings = await response.json();
+        
+        // Populate forms with current settings
+        document.getElementById('proxyEnabled').checked = settings.proxy.enabled;
+        document.getElementById('brightdataUrl').value = settings.proxy.brightdata_url;
+        document.getElementById('brightdataUsername').value = settings.proxy.brightdata_username;
+        document.getElementById('rotationInterval').value = settings.proxy.rotation_interval;
+        
+        
+        // Search engine settings
+        if (document.getElementById('searchTimeout')) {
+            document.getElementById('searchTimeout').value = settings.search?.timeout || 10;
+            document.getElementById('maxResults').value = settings.search?.max_results || 20;
+        }
+    } catch (error) {
+        console.error('Failed to load settings:', error);
+    }
+}
+
+// Save settings
+async function saveSettings(section, data) {
+    try {
+        const response = await fetch('/api/admin/settings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({section, data})
+        });
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            showNotification('Settings saved successfully!', 'success');
+        }
+    } catch (error) {
+        showNotification('Failed to save settings', 'error');
+    }
+}
+
+// Show notification
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// Form handlers
+document.getElementById('proxyForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    data.enabled = document.getElementById('proxyEnabled').checked;
+    saveSettings('proxy', data);
+});
+
+// Initialize
+loadSettings();
+
+
+// Password change functionality
+document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (newPassword !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/admin/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            document.getElementById('passwordForm').reset();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to change password', 'error');
+    }
+});
+
+// User management functionality
+async function loadUsers() {
+    try {
+        const response = await fetch('/api/admin/users');
+        const users = await response.json();
+        
+        const usersList = document.getElementById('usersList');
+        usersList.innerHTML = '';
+        
+        users.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-item';
+            userDiv.innerHTML = `
+                <div class="user-info">
+                    <strong>${user.username}</strong>
+                    <span class="user-email">${user.email}</span>
+                    <span class="user-role">${user.is_admin ? 'Admin' : 'User'}</span>
+                    <span class="user-date">Created: ${user.created_at || 'N/A'}</span>
+                </div>
+                <div class="user-actions">
+                    <button onclick="deleteUser(${user.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            usersList.appendChild(userDiv);
+        });
+    } catch (error) {
+        console.error('Failed to load users:', error);
+    }
+}
+
+// Add user functionality
+document.getElementById('addUserBtn').addEventListener('click', () => {
+    document.getElementById('addUserModal').style.display = 'flex';
+});
+
+document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const userData = {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        is_admin: document.getElementById('newUserAdmin').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            closeModal();
+            loadUsers();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to create user', 'error');
+    }
+});
+
+async function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/users/${userId}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            loadUsers();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to delete user', 'error');
+    }
+}
+
+function closeModal() {
+    document.getElementById('addUserModal').style.display = 'none';
+    document.getElementById('addUserForm').reset();
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// LLM Configuration Functions
+async function loadLLMProviders() {
+    try {
+        const response = await fetch('/api/admin/llm/providers');
+        const providers = await response.json();
+        
+        const providersList = document.getElementById('llmProvidersList');
+        providersList.innerHTML = '';
+        
+        // Update provider selects
+        const selects = ['searchLLM', 'deepSearchLLM', 'reportLLM', 'academicLLM'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Select LLM Provider</option>';
+        });
+        
+        providers.forEach(provider => {
+            // Add to list
+            const providerDiv = document.createElement('div');
+            providerDiv.className = 'llm-provider-item';
+            providerDiv.innerHTML = `
+                <div class="provider-info">
+                    <strong>${provider.name}</strong>
+                    <span class="provider-model">${provider.model_name}</span>
+                    <span class="provider-url">${provider.api_base}</span>
+                    <span class="provider-status ${provider.enabled ? 'status-active' : 'status-inactive'}">
+                        ${provider.enabled ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                <div class="provider-actions">
+                    <button onclick="toggleLLMProvider(${provider.id})" class="btn-secondary">
+                        ${provider.enabled ? 'Disable' : 'Enable'}
+                    </button>
+                    <button onclick="deleteLLMProvider(${provider.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            providersList.appendChild(providerDiv);
+            
+            // Add to selects if enabled
+            if (provider.enabled) {
+                selects.forEach(selectId => {
+                    const option = document.createElement('option');
+                    option.value = provider.id;
+                    option.textContent = `${provider.name} (${provider.model_name})`;
+                    document.getElementById(selectId).appendChild(option);
+                });
+            }
+        });
+        
+        // Load current tool assignments
+        await loadToolLLMConfig();
+    } catch (error) {
+        console.error('Failed to load LLM providers:', error);
+    }
+}
+
+async function loadToolLLMConfig() {
+    try {
+        const response = await fetch('/api/admin/llm/tool-config');
+        const configs = await response.json();
+        
+        configs.forEach(config => {
+            if (config.tool_name === 'search') {
+                document.getElementById('searchLLM').value = config.llm_provider_id || '';
+                document.getElementById('searchEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('searchReranker').value = config.reranker_provider_id || '';
+                document.getElementById('searchTemp').value = config.temperature;
+                document.getElementById('searchTokens').value = config.max_tokens;
+            } else if (config.tool_name === 'deep_search') {
+                document.getElementById('deepSearchLLM').value = config.llm_provider_id || '';
+                document.getElementById('deepSearchEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('deepSearchReranker').value = config.reranker_provider_id || '';
+                document.getElementById('deepSearchTemp').value = config.temperature;
+                document.getElementById('deepSearchTokens').value = config.max_tokens;
+            } else if (config.tool_name === 'generate_report') {
+                document.getElementById('reportLLM').value = config.llm_provider_id || '';
+                document.getElementById('reportEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('reportReranker').value = config.reranker_provider_id || '';
+                document.getElementById('reportTemp').value = config.temperature;
+                document.getElementById('reportTokens').value = config.max_tokens;
+            } else if (config.tool_name === 'academic_report') {
+                document.getElementById('academicLLM').value = config.llm_provider_id || '';
+                document.getElementById('academicEmbedding').value = config.embedding_provider_id || '';
+                document.getElementById('academicReranker').value = config.reranker_provider_id || '';
+                document.getElementById('academicTemp').value = config.temperature;
+                document.getElementById('academicTokens').value = config.max_tokens;
+            }
+        });
+    } catch (error) {
+        console.error('Failed to load tool LLM config:', error);
+    }
+}
+
+// Add LLM Provider
+document.getElementById('addLLMBtn').addEventListener('click', () => {
+    document.getElementById('addLLMModal').style.display = 'flex';
+});
+
+document.getElementById('addLLMForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const llmData = {
+        name: formData.get('name'),
+        api_base: formData.get('api_base'),
+        api_key: formData.get('api_key'),
+        model_name: formData.get('model_name'),
+        enabled: document.getElementById('llmEnabled').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/llm/providers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(llmData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification(data.message, 'success');
+            closeLLMModal();
+            loadLLMProviders();
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to add LLM provider', 'error');
+    }
+});
+
+// Save Tool LLM Config
+document.getElementById('toolLLMForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const configs = [
+        {
+            tool_name: 'search',
+            llm_provider_id: document.getElementById('searchLLM').value,
+            embedding_provider_id: document.getElementById('searchEmbedding').value,
+            reranker_provider_id: document.getElementById('searchReranker').value,
+            temperature: parseFloat(document.getElementById('searchTemp').value),
+            max_tokens: parseInt(document.getElementById('searchTokens').value)
+        },
+        {
+            tool_name: 'deep_search',
+            llm_provider_id: document.getElementById('deepSearchLLM').value,
+            embedding_provider_id: document.getElementById('deepSearchEmbedding').value,
+            reranker_provider_id: document.getElementById('deepSearchReranker').value,
+            temperature: parseFloat(document.getElementById('deepSearchTemp').value),
+            max_tokens: parseInt(document.getElementById('deepSearchTokens').value)
+        },
+        {
+            tool_name: 'generate_report',
+            llm_provider_id: document.getElementById('reportLLM').value,
+            embedding_provider_id: document.getElementById('reportEmbedding').value,
+            reranker_provider_id: document.getElementById('reportReranker').value,
+            temperature: parseFloat(document.getElementById('reportTemp').value),
+            max_tokens: parseInt(document.getElementById('reportTokens').value)
+        },
+        {
+            tool_name: 'academic_report',
+            llm_provider_id: document.getElementById('academicLLM').value,
+            embedding_provider_id: document.getElementById('academicEmbedding').value,
+            reranker_provider_id: document.getElementById('academicReranker').value,
+            temperature: parseFloat(document.getElementById('academicTemp').value),
+            max_tokens: parseInt(document.getElementById('academicTokens').value)
+        }
+    ];
+    
+    try {
+        const response = await fetch('/api/admin/llm/tool-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ configs })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification('Tool LLM settings saved successfully', 'success');
+        } else {
+            showNotification(data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to save tool LLM settings', 'error');
+    }
+});
+
+async function toggleLLMProvider(providerId) {
+    try {
+        const response = await fetch(`/api/admin/llm/providers/${providerId}/toggle`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            showNotification('Provider status updated', 'success');
+            loadLLMProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to toggle provider', 'error');
+    }
+}
+
+async function deleteLLMProvider(providerId) {
+    if (!confirm('Are you sure you want to delete this LLM provider?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/llm/providers/${providerId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            showNotification('Provider deleted successfully', 'success');
+            loadLLMProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to delete provider', 'error');
+    }
+}
+
+function closeLLMModal() {
+    document.getElementById('addLLMModal').style.display = 'none';
+    document.getElementById('addLLMForm').reset();
+    document.getElementById('llmModelSelect').innerHTML = '<option value="">Enter API key first</option>';
+}
+
+// Fetch available models from the API
+async function fetchAvailableModels() {
+    const apiBase = document.getElementById('llmApiBase').value;
+    const apiKey = document.getElementById('llmApiKey').value;
+    
+    if (!apiBase || !apiKey) {
+        showNotification('Please enter API base URL and API key first', 'error');
+        return;
+    }
+    
+    showNotification('Fetching available models...', 'info');
+    
+    try {
+        const models = await LLMModelDiscovery.discoverModels(apiBase, apiKey);
+        const llmModels = models.filter(m => m.type === 'llm');
+        
+        const selectElement = document.getElementById('llmModelSelect');
+        const inputElement = document.getElementById('llmModel');
+        
+        if (llmModels.length > 0) {
+            selectElement.innerHTML = '<option value="">Select a model</option>';
+            llmModels.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.id;
+                option.textContent = `${model.name || model.id} (${model.provider})`;
+                selectElement.appendChild(option);
+            });
+            
+            // Auto-fill input when model is selected
+            selectElement.onchange = function() {
+                if (this.value) {
+                    inputElement.value = this.value;
+                }
+            };
+            
+            showNotification(`Found ${llmModels.length} models`, 'success');
+        } else {
+            selectElement.innerHTML = '<option value="">No models found</option>';
+            showNotification('No models found. You can enter the model name manually.', 'warning');
+        }
+    } catch (error) {
+        console.error('Failed to fetch models:', error);
+        showNotification('Failed to fetch models. Enter manually.', 'error');
+    }
+}
+
+// Embedding Configuration Functions
+async function loadEmbeddingProviders() {
+    try {
+        const response = await fetch('/api/admin/embedding/providers');
+        const providers = await response.json();
+        
+        const providersList = document.getElementById('embeddingProvidersList');
+        providersList.innerHTML = '';
+        
+        // Update provider selects
+        const selects = ['searchEmbedding', 'deepSearchEmbedding', 'reportEmbedding', 'academicEmbedding'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = '<option value="">Select Embedding Provider</option>';
+            }
+        });
+        
+        providers.forEach(provider => {
+            // Add to list
+            const providerDiv = document.createElement('div');
+            providerDiv.className = 'llm-provider-item';
+            providerDiv.innerHTML = `
+                <div class="provider-info">
+                    <strong>${provider.name}</strong>
+                    <span class="provider-model">${provider.model_name}</span>
+                    <span class="provider-url">${provider.api_base}</span>
+                    <span class="provider-dimension">Dim: ${provider.dimension}</span>
+                    <span class="provider-status ${provider.enabled ? 'status-active' : 'status-inactive'}">
+                        ${provider.enabled ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                <div class="provider-actions">
+                    <button onclick="toggleEmbeddingProvider(${provider.id})" class="btn-secondary">
+                        ${provider.enabled ? 'Disable' : 'Enable'}
+                    </button>
+                    <button onclick="deleteEmbeddingProvider(${provider.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            providersList.appendChild(providerDiv);
+            
+            // Add to selects if enabled
+            if (provider.enabled) {
+                selects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        const option = document.createElement('option');
+                        option.value = provider.id;
+                        option.textContent = `${provider.name} (${provider.model_name})`;
+                        select.appendChild(option);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Failed to load embedding providers:', error);
+    }
+}
+
+// Add Embedding Provider
+document.getElementById('addEmbeddingBtn').addEventListener('click', () => {
+    document.getElementById('addEmbeddingModal').style.display = 'flex';
+});
+
+document.getElementById('addEmbeddingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const embeddingData = {
+        name: formData.get('name'),
+        api_base: formData.get('api_base'),
+        api_key: formData.get('api_key'),
+        model_name: formData.get('model_name'),
+        dimension: parseInt(formData.get('dimension')),
+        enabled: document.getElementById('embeddingEnabled').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/embedding/providers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(embeddingData)
+        });
+        
+        if (response.ok) {
+            showNotification('Embedding provider added successfully', 'success');
+            closeEmbeddingModal();
+            await loadEmbeddingProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to add embedding provider', 'error');
+    }
+});
+
+async function toggleEmbeddingProvider(providerId) {
+    try {
+        const response = await fetch(`/api/admin/embedding/providers/${providerId}/toggle`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            await loadEmbeddingProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to toggle embedding provider', 'error');
+    }
+}
+
+async function deleteEmbeddingProvider(providerId) {
+    if (!confirm('Are you sure you want to delete this embedding provider?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/embedding/providers/${providerId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            showNotification('Embedding provider deleted successfully', 'success');
+            await loadEmbeddingProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to delete embedding provider', 'error');
+    }
+}
+
+function closeEmbeddingModal() {
+    document.getElementById('addEmbeddingModal').style.display = 'none';
+    document.getElementById('addEmbeddingForm').reset();
+}
+
+// Reranker Configuration Functions
+async function loadRerankerProviders() {
+    try {
+        const response = await fetch('/api/admin/reranker/providers');
+        const providers = await response.json();
+        
+        const providersList = document.getElementById('rerankerProvidersList');
+        providersList.innerHTML = '';
+        
+        // Update provider selects
+        const selects = ['searchReranker', 'deepSearchReranker', 'reportReranker', 'academicReranker'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = '<option value="">Select Reranker Provider</option>';
+            }
+        });
+        
+        providers.forEach(provider => {
+            // Add to list
+            const providerDiv = document.createElement('div');
+            providerDiv.className = 'llm-provider-item';
+            providerDiv.innerHTML = `
+                <div class="provider-info">
+                    <strong>${provider.name}</strong>
+                    <span class="provider-model">${provider.model_name}</span>
+                    <span class="provider-url">${provider.api_base}</span>
+                    <span class="provider-topk">Top ${provider.top_k}</span>
+                    <span class="provider-status ${provider.enabled ? 'status-active' : 'status-inactive'}">
+                        ${provider.enabled ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                <div class="provider-actions">
+                    <button onclick="toggleRerankerProvider(${provider.id})" class="btn-secondary">
+                        ${provider.enabled ? 'Disable' : 'Enable'}
+                    </button>
+                    <button onclick="deleteRerankerProvider(${provider.id})" class="btn-danger">Delete</button>
+                </div>
+            `;
+            providersList.appendChild(providerDiv);
+            
+            // Add to selects if enabled
+            if (provider.enabled) {
+                selects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        const option = document.createElement('option');
+                        option.value = provider.id;
+                        option.textContent = `${provider.name} (${provider.model_name})`;
+                        select.appendChild(option);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Failed to load reranker providers:', error);
+    }
+}
+
+// Add Reranker Provider
+document.getElementById('addRerankerBtn').addEventListener('click', () => {
+    document.getElementById('addRerankerModal').style.display = 'flex';
+});
+
+document.getElementById('addRerankerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const rerankerData = {
+        name: formData.get('name'),
+        api_base: formData.get('api_base'),
+        api_key: formData.get('api_key'),
+        model_name: formData.get('model_name'),
+        top_k: parseInt(formData.get('top_k')),
+        enabled: document.getElementById('rerankerEnabled').checked
+    };
+    
+    try {
+        const response = await fetch('/api/admin/reranker/providers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(rerankerData)
+        });
+        
+        if (response.ok) {
+            showNotification('Reranker provider added successfully', 'success');
+            closeRerankerModal();
+            await loadRerankerProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to add reranker provider', 'error');
+    }
+});
+
+async function toggleRerankerProvider(providerId) {
+    try {
+        const response = await fetch(`/api/admin/reranker/providers/${providerId}/toggle`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            await loadRerankerProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to toggle reranker provider', 'error');
+    }
+}
+
+async function deleteRerankerProvider(providerId) {
+    if (!confirm('Are you sure you want to delete this reranker provider?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/reranker/providers/${providerId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            showNotification('Reranker provider deleted successfully', 'success');
+            await loadRerankerProviders();
+        }
+    } catch (error) {
+        showNotification('Failed to delete reranker provider', 'error');
+    }
+}
+
+function closeRerankerModal() {
+    document.getElementById('addRerankerModal').style.display = 'none';
+    document.getElementById('addRerankerForm').reset();
+}
+
+// Tool Server Management
+const TOOL_SERVERS = [
+    {
+        id: 'search',
+        name: 'Search Tool',
+        description: 'Basic search functionality for web, GitHub, Reddit, and more',
+        port: 8001,
+        container: 'center-deep-tool-search',
+        capabilities: ['Web Search', 'GitHub', 'Reddit', 'Stack Overflow', 'Documentation']
+    },
+    {
+        id: 'deep-search',
+        name: 'Deep Search Tool',
+        description: 'Comprehensive multi-source search with link following and analysis',
+        port: 8002,
+        container: 'center-deep-tool-deep-search',
+        capabilities: ['Multi-source aggregation', 'Link following', 'Content extraction', 'Summary generation']
+    },
+    {
+        id: 'report',
+        name: 'Report Generator',
+        description: 'Professional report generation with citations and formatting',
+        port: 8003,
+        container: 'center-deep-tool-report',
+        capabilities: ['Executive summaries', 'Technical reports', 'Business analysis', 'Data visualization']
+    },
+    {
+        id: 'academic',
+        name: 'Academic Research',
+        description: 'Academic paper generation with proper citations and bibliography',
+        port: 8004,
+        container: 'center-deep-tool-academic',
+        capabilities: ['Literature review', 'Citations (APA/MLA)', 'Abstract writing', 'Bibliography']
+    }
+];
+
+async function loadToolServers() {
+    try {
+        // Get Docker container status
+        const response = await fetch('/api/admin/tool-servers/status');
+        const statuses = await response.json();
+        
+        const toolServersList = document.getElementById('toolServersList');
+        toolServersList.innerHTML = '';
+        
+        TOOL_SERVERS.forEach(server => {
+            const status = statuses[server.id] || { status: 'not_found', running: false };
+            
+            const serverCard = document.createElement('div');
+            serverCard.className = 'tool-server-card';
+            serverCard.innerHTML = `
+                <div class="server-header">
+                    <h4>${server.name}</h4>
+                    <div class="server-status ${status.running ? 'status-running' : 'status-stopped'}">
+                        ${status.running ? '● Running' : '○ Stopped'}
+                    </div>
+                </div>
+                <p class="server-description">${server.description}</p>
+                <div class="server-capabilities">
+                    ${server.capabilities.map(cap => `<span class="capability-tag">${cap}</span>`).join('')}
+                </div>
+                <div class="server-info">
+                    <div class="info-item">
+                        <strong>Port:</strong> ${server.port}
+                    </div>
+                    <div class="info-item">
+                        <strong>Container:</strong> ${server.container}
+                    </div>
+                    <div class="info-item">
+                        <strong>URL:</strong> <code>http://localhost:${server.port}</code>
+                    </div>
+                </div>
+                <div class="server-actions">
+                    ${status.running ? 
+                        `<button onclick="stopToolServer('${server.id}')" class="btn-danger">Stop</button>
+                         <button onclick="restartToolServer('${server.id}')" class="btn-secondary">Restart</button>` :
+                        `<button onclick="startToolServer('${server.id}')" class="btn-primary">Start</button>`
+                    }
+                    <button onclick="viewToolServerLogs('${server.id}')" class="btn-secondary">View Logs</button>
+                </div>
+                ${status.running ? `
+                <div class="server-health">
+                    <a href="http://localhost:${server.port}/health" target="_blank" class="health-link">
+                        Check Health Endpoint →
+                    </a>
+                </div>
+                ` : ''}
+            `;
+            
+            toolServersList.appendChild(serverCard);
+        });
+    } catch (error) {
+        console.error('Failed to load tool servers:', error);
+        document.getElementById('toolServersList').innerHTML = 
+            '<div class="error-message">Failed to load tool server status. Make sure Docker is accessible.</div>';
+    }
+}
+
+async function startToolServer(serverId) {
+    try {
+        showNotification('Starting tool server...', 'info');
+        const response = await fetch(`/api/admin/tool-servers/${serverId}/start`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            showNotification('Tool server started successfully', 'success');
+            setTimeout(loadToolServers, 2000); // Reload after container starts
+        } else {
+            const error = await response.json();
+            showNotification(error.error || 'Failed to start tool server', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to start tool server', 'error');
+    }
+}
+
+async function stopToolServer(serverId) {
+    try {
+        const response = await fetch(`/api/admin/tool-servers/${serverId}/stop`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            showNotification('Tool server stopped', 'success');
+            loadToolServers();
+        } else {
+            const error = await response.json();
+            showNotification(error.error || 'Failed to stop tool server', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to stop tool server', 'error');
+    }
+}
+
+async function restartToolServer(serverId) {
+    try {
+        showNotification('Restarting tool server...', 'info');
+        const response = await fetch(`/api/admin/tool-servers/${serverId}/restart`, {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            showNotification('Tool server restarted', 'success');
+            setTimeout(loadToolServers, 3000);
+        } else {
+            const error = await response.json();
+            showNotification(error.error || 'Failed to restart tool server', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to restart tool server', 'error');
+    }
+}
+
+async function viewToolServerLogs(serverId) {
+    // Open logs in new window or modal
+    window.open(`/api/admin/tool-servers/${serverId}/logs`, '_blank');
+}
+
+// Load everything on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadUsers();
+    loadLLMProviders();
+    loadEmbeddingProviders();
+    loadRerankerProviders();
+    loadToolServers();
+    
+    // Refresh tool server status every 30 seconds
+    setInterval(loadToolServers, 30000);
+});
+
+// Smooth scrolling for navigation
+document.querySelectorAll('.admin-menu a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(e.target.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth' });
+        
+        // Update active state
+        document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
+</script>
+<script src="{{ url_for('static', filename='js/llm-model-discovery.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Center Deep - Private Search Engine{% endblock %}
+
+{% block content %}
+<div class="search-home">
+    <div class="container">
+        <div class="logo-container">
+            <h1 class="logo-text">Center Deep</h1>
+            <p class="logo-subtitle">🌊 Dive deep into the web</p>
+        </div>
+        
+        <div class="search-container-home">
+            <form action="/search" method="GET" class="search-form-home">
+                <div class="search-input-container">
+                    <input type="text" 
+                           name="q" 
+                           id="search-input-home"
+                           class="search-input-home" 
+                           placeholder="Dive deep into the web..." 
+                           autocomplete="off"
+                           autofocus>
+                    <div id="search-suggestions" class="search-suggestions hidden"></div>
+                </div>
+                <button type="submit" class="search-button-home">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+        
+        <div class="search-stats">
+            <span>🔒 Private & Secure</span>
+            <span>🌊 Deep Search Results</span>
+            <span>🦄 Powered by Magic</span>
+        </div>
+    </div>
+</div>
+
+<div class="floating-unicorn" title="Magic Unicorn Assistant">
+    <img src="{{ url_for('static', filename='images/magic-unicorn-logo.png') }}" alt="Magic Unicorn">
+</div>
+{% endblock %}
