@@ -1,7 +1,7 @@
 <div align="center">
 
-![Center Deep Homepage](docs/images/center-deep-homepage.png)
-![Center Deep Results](docs/images/center-deep-results.png)
+![Center Deep Homepage](https://raw.githubusercontent.com/Unicorn-Commander/Center-Deep/main/docs/images/center-deep-homepage.png)
+![Center Deep Results](https://raw.githubusercontent.com/Unicorn-Commander/Center-Deep/main/docs/images/center-deep-results.png)
 
 # 🌊 Center Deep
 
