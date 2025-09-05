@@ -1,58 +1,89 @@
-# 🦄 Center Deep - Privacy-First Metasearch Engine
+<div align="center">
 
-> **You can't get deeper than Center Deep**
+![Center Deep Homepage](docs/images/center-deep-homepage.png)
+![Center Deep Results](docs/images/center-deep-results.png)
 
-![Center Deep Homepage - Beautiful dark theme with magical unicorn gradient](docs/images/center-deep-homepage.png)
-![Center Deep Search Results - Clean, private search results from 250+ engines](docs/images/center-deep-results.png)
+# 🌊 Center Deep
 
-## What is Center Deep?
+## **The One-Click Privacy Search Engine**
 
-Center Deep is a beautiful, easy-to-deploy, privacy-focused metasearch engine built on SearXNG. It's your gateway to the entire internet without the tracking, profiling, or filter bubbles.
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](docker-compose.yml)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)](https://python.org)
+[![Stars](https://img.shields.io/github/stars/Unicorn-Commander/Center-Deep?style=social)](https://github.com/Unicorn-Commander/Center-Deep)
 
-### The Problem We Solve
+### 🦄 **Built by [Magic Unicorn Unconventional Technology & Stuff Inc](https://magicunicorn.tech)**
 
-**Privacy is broken on the web.** Every search you make is tracked, stored, and used to build a profile about you. Search engines trap you in filter bubbles, showing you what they think you want to see rather than what's actually out there.
+**Center Deep** is a fork of the excellent SearXNG project, reimagined with a focus on simplicity and ease of deployment. We saw many users struggling with SearXNG's setup process, so we created a one-click solution that just works out of the box while adding a beautiful Magic Unicorn theme and optimized performance.
 
-**Self-hosting is too complex.** Want to run your own private search? Traditional solutions require server administration knowledge, complex configurations, and hours of setup time.
+[**🚀 Get Started**](#-quick-start) • [**✨ Features**](#-why-center-deep) • [**🔧 Configuration**](#-configuration) • [**💬 Community**](#-community--support)
 
-### Our Solution
+</div>
 
-Center Deep makes private searching simple:
+---
 
-- **One-command installation** - Just run `./install.sh` and you're searching privately in under a minute
-- **No tracking, ever** - Your searches stay on your machine, no profiles, no history sent anywhere
-- **250+ search engines** - Aggregates results from Google, Bing, DuckDuckGo, and hundreds more
-- **Beautiful dark theme** - Not another boring search interface - we built the "Magic Unicorn" theme from scratch
-- **Redis-powered performance** - Integrated caching makes searches lightning fast
-- **Docker-based** - Runs anywhere Docker runs: your laptop, home server, or cloud VPS
+## 🎯 **Why Center Deep?**
 
-## ✨ Features
+**Center Deep** is a powerful, privacy-focused metasearch engine that aggregates results from multiple search providers while never tracking you. Built as a modern, user-friendly alternative to complex search solutions, it offers:
 
-🔒 **Complete Privacy** - No tracking, no profiles, no data collection  
-🌊 **250+ Search Engines** - Access results from across the entire web  
-⚡ **Lightning Fast** - Optimized performance with powerful caching  
-🦄 **Beautiful Interface** - Magical purple gradient theme with smooth animations  
-🛡️ **Ad-Free & Clean** - Pure search results without distractions  
+- 🔒 **Complete Privacy**: No tracking, no logs, no ads, no cookies
+- 🚀 **One-Click Setup**: Install and run in under 60 seconds
+- 🎨 **Beautiful Interface**: Magic Unicorn theme with purple gradients
+- 🌊 **250+ Search Engines**: Aggregate results from across the web
+- ⚡ **Redis Caching**: Blazing-fast performance out of the box
+- 🐳 **Docker-Based**: Runs anywhere Docker runs
 
-## 🚀 One-Click Installation
+<table>
+<tr>
+<td width="50%">
 
-### Prerequisites
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+### 🛡️ **Privacy First**
+- Zero tracking or user profiling
+- No cookies or fingerprinting
+- All searches are anonymous
+- Self-hosted on your infrastructure
+- Proxied results for extra privacy
 
-### Install Center Deep
+</td>
+<td width="50%">
+
+### ✨ **Key Features**
+- Aggregates 250+ search engines
+- Beautiful Magic Unicorn theme
+- Dark mode by default
+- Smart result ranking
+- Image proxy for privacy
+- Mobile-responsive design
+
+</td>
+</tr>
+</table>
+
+---  
+
+## ⚡ **Quick Start**
+
+### 🎯 **The Truly One-Click Install**
 
 ```bash
-git clone https://github.com/YourUsername/Center-Deep.git
-cd Center-Deep
+# Clone and auto-install
+git clone https://github.com/Unicorn-Commander/Center-Deep.git && cd Center-Deep
 ./install.sh
+
+# That's literally it. The installer handles everything.
 ```
 
-That's it! 🎉
+**Our installer automatically:**
+- ✅ Checks if Docker is installed
+- ✅ Sets up Docker Compose
+- ✅ Configures Redis with optimized settings
+- ✅ Creates environment configuration
+- ✅ Builds and starts all services
+- ✅ Verifies everything is running
 
-Center Deep will be available at:
+**Access Center Deep at:**
 - **http://localhost:8888**
-- **http://0.0.0.0:8888**
+- **http://0.0.0.0:8888** (from other devices on your network)
 
 ## 🛠️ Manual Installation
 
@@ -113,52 +144,124 @@ Center Deep is designed with privacy as the top priority:
 - Third-party engines never see your IP address
 - Open source and transparent
 
-## 🦄 About Center Deep
+## 🆚 **Center Deep vs Center Deep Pro**
 
-Center Deep is our open-source foundation on the path to building **Center Deep Pro** - a next-generation AI-powered search experience. 
+<div align="center">
 
-This release takes the powerful SearXNG metasearch engine and enhances it with:
-- Beautiful magical interface design with custom "Magic Unicorn" theme
-- Optimized performance with integrated Redis caching
-- Enhanced privacy features - absolutely zero tracking
-- 250+ search engine integrations for comprehensive results
-- Mobile-responsive design that works everywhere
-- One-command Docker deployment
+### **Choose Your Edition**
 
-## 🚀 What's Next: Center Deep Pro
+| Feature | 🆓 **Center Deep** <br>(Open Source) | 💼 **Center Deep Pro** <br>(Coming Soon) |
+|:--------|:----------------------------------:|:----------------------------------------:|
+| **🔍 Core Search** | ✅ 250+ search engines | ✅ 250+ engines + AI ranking |
+| **🎨 Interface** | ✅ Magic Unicorn theme | ✅ Multiple themes + customization |
+| **⚡ Performance** | ✅ Redis caching | ✅ Advanced caching + CDN |
+| **👥 Users** | ✅ Unlimited local users | ✅ User accounts & preferences |
+| **📊 Analytics** | ❌ None (privacy-first) | ✅ Private analytics dashboard |
+| **🔗 API Access** | ❌ Not included | ✅ Full REST API |
+| **🤖 AI Features** | ❌ Not included | ✅ AI-powered summaries & ranking |
+| **🎯 Custom Search** | ❌ Not included | ✅ Custom search operators |
+| **📞 Support** | Community | Priority support |
+| **💰 Price** | **FREE Forever** | **[Join Waitlist](mailto:hello@magicunicorn.tech)** |
 
-We're building the future of search with Center Deep Pro, which will add:
-- AI-powered result ranking and summarization
-- Custom search algorithms tailored to your needs
-- Advanced filtering and search operators
-- Team collaboration features
-- Developer API access
-- And much more...
+</div>
 
-## 🏢 Company
+> 🚀 **Want early access to Center Deep Pro?** [Join the waitlist](mailto:hello@magicunicorn.tech)
 
-Built by [Magic Unicorn Unconventional Technology & Stuff Inc](https://magicunicorn.tech)
+---
 
-We like problem solving and doing awesome things with technology. If you can dream it, and you can fund it, we can probably build it.
+## 🏗️ **Architecture**
 
-## 📝 License
+<div align="center">
 
-Center Deep is open source, built on SearXNG (AGPL-3.0). See [LICENSE](LICENSE) for details.
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
+│   Browser   │────▶│  Center Deep │────▶│ Search Engines  │
+└─────────────┘     │   (SearXNG)  │     │  (250+ sites)   │
+                    └──────┬───────┘     └─────────────────┘
+                           │
+                    ┌──────▼───────┐
+                    │    Redis     │
+                    │   (Cache)    │
+                    └──────────────┘
+```
 
-## 🙏 Acknowledgments
+</div>
 
-- Built on the excellent [SearXNG](https://github.com/searxng/searxng) project
-- Powered by magic and unicorns 🦄
-- Redis caching powered by [Redis](https://redis.io) / [Valkey](https://valkey.io)
+---
+
+## 🤝 **Contributing**
+
+We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation, we'd love your help.
+
+```bash
+# Fork and clone
+git clone https://github.com/Unicorn-Commander/Center-Deep.git
+
+# Create feature branch
+git checkout -b feature/awesome-feature
+
+# Make your changes and commit
+git add .
+git commit -m "Add awesome feature"
+
+# Push and create PR
+git push origin feature/awesome-feature
+```
+
+---
+
+## 🛡️ **Security & Privacy**
+
+- 🔐 **No user tracking** - We don't store any search queries
+- 🔒 **No cookies** - Sessions are stateless
+- 🛡️ **Proxied results** - Your IP never reaches search engines
+- 🚫 **No JavaScript tracking** - Clean, tracking-free interface
+- 📦 **Isolated containers** - Secure Docker deployment
+- 🔄 **Regular updates** - Built on actively maintained SearXNG
+
+Found a vulnerability? Email `security@magicunicorn.tech`
+
+---
+
+## 💬 **Community & Support**
+
+<div align="center">
+
+### **Join Our Community**
+
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-181717?logo=github)](https://github.com/Unicorn-Commander/Center-Deep/issues)
+[![Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?logo=github)](https://github.com/Unicorn-Commander/Center-Deep/discussions)
+[![Email](https://img.shields.io/badge/Email-hello@magicunicorn.tech-blue)](mailto:hello@magicunicorn.tech)
+
+</div>
+
+---
+
+## 🙏 **Acknowledgments**
+
+- 🔍 **[SearXNG Team](https://github.com/searxng/searxng)** - For creating the amazing foundation we built upon
+- 👥 **The Community** - For feedback, contributions, and making this project better
+- 🦄 **[Magic Unicorn](https://magicunicorn.tech)** - For making this project possible
+- ⚡ **[Redis](https://redis.io)** - For the blazing-fast caching layer
 
 ---
 
 <div align="center">
 
+## ⭐ **Star us if Center Deep makes your search easier!**
+
+---
+
+### **🦄 A [Magic Unicorn](https://magicunicorn.tech) Production**
+
+Built with ❤️ and 🦄 to make privacy-first search accessible to everyone
+
 **🔒 Private & Secure | 🌊 250+ Search Engines | 🦄 Powered by Magic**
 
 **Center Deep v1.0** - Your gateway to the deep web, without the creepy tracking
 
-*You can't get deeper than Center Deep*
+***You can't get deeper than Center Deep***
+
+[**Website**](https://center-deep.com) • [**Pro Version**](mailto:hello@magicunicorn.tech) • [**Issues**](https://github.com/Unicorn-Commander/Center-Deep/issues)
 
 </div>
